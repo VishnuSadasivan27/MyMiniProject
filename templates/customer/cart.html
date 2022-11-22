@@ -1,0 +1,78 @@
+{% extends 'home/main.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'store/main.css' %}">
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="box-element">
+
+				<a  class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Continue Shopping</a>
+
+				<br>
+				<br>
+				<table class="table">
+					<tr>
+						<th><h5>Items: <strong>{{order.get_cart_items}}</strong></h5></th>
+<!--						<th><h5>Total:<strong> ${{order.get_cart_total|floatformat:2}}</strong></h5></th>-->
+						<th>
+							<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'Checkout' %}">Checkout</a>
+						</th>
+					</tr>
+				</table>
+
+			</div>
+
+			<br>
+			<div class="box-element">
+				<div class="cart-row">
+					<div style="flex:2"></div>
+					<div style="flex:2"><strong>Item</strong></div>
+					<div style="flex:2"><strong>Price</strong></div>
+					<div style="flex:3"><strong>Quantity</strong></div>
+<!--					<div style="flex:3"><strong>Total</strong></div>-->
+				</div>
+				{% for item in items %}
+				<div class="cart-row">
+					<div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"></div>
+					<div style="flex:2"><p>{{item.product.Product_name}}</p></div>
+					<div style="flex:2"><p>{{item.product.price|floatformat:2}}</p></div>
+					<div style="flex:2">
+
+
+						<div class="container">
+						<input type="button" onclick="decrementValue()" value="-" />
+						<input type="text" name="quantity" value="1" maxlength="2" max="10" size="1" id="number" />
+						<input type="button" onclick="incrementValue()" value="+" />
+						</div>
+					</div>
+<!--					<div style="flex:2"><p>${{item.get_total|floatformat:2}}</p></div>-->
+                    <div style="flex:1"><a class="btn btn-outline-success" href="{% url 'RemoveCart' item.id %}">Remove</a></div>
+				</div>
+
+				{% endfor %}
+			</div>
+		</div>
+
+	</div>
+<script>
+function incrementValue()
+{
+    var value = parseInt(document.getElementById('number').value, 10);
+    value = isNaN(value) ? 0 : value;
+    if(value<10){
+        value++;
+            document.getElementById('number').value = value;
+    }
+}
+function decrementValue()
+{
+    var value = parseInt(document.getElementById('number').value, 10);
+    value = isNaN(value) ? 0 : value;
+    if(value>1){
+        value--;
+            document.getElementById('number').value = value;
+    }
+
+}
+</script>
+{% endblock content %}

@@ -1,0 +1,69 @@
+<!doctype html>
+{% extends 'admin/customersearchmain.html' %}
+{% load static %}
+<html lang="en">
+  <head>
+  	<title>Table 03</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+	</head>
+	<body>
+	<section class="ftco-section">
+		{% block content %}
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section"></h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h4 class="text-center mb-4">Customer Table</h4>
+					<div class="table-wrap">
+						<table class="table">
+					    <thead class="thead-primary">
+					      <tr>
+					        <th>FIRSTNAME</th>
+					        <th>LAST NAME</th>
+					        <th>EMAIL</th>
+					        <th>PHONE NUMBER</th>
+					        <th>STATUS</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+						{% for customer in customers %}
+					      <tr>
+
+					        <th scope="row" class="scope" >{{customer.first_name}}</th>
+					        <td>{{customer.last_name}}</td>
+					        <td>{{customer.email}}</td>
+					        <td>{{customer.phone_no}}</td>
+					        <td>{{customer.status}}</td>
+							<td><a href="/Admins/Deactivate/{{customer.id}}/" class="btn btn-primary">Deactivate</a></td>
+
+					      </tr>
+						 {% endfor %}
+					    </tbody>
+					  </table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</section>
+{% endblock content %}
+	<script src="js/jquery.min.js"></script>
+  <script src="js/popper.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/main.js"></script>
+
+	</body>
+</html>
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+          *{
+    transition: all 0.6s;
+}
+
+html {
+    height: 100%;
+}
+
+body{
+    font-family: 'Lato', sans-serif;
+    color: #888;
+    margin: 0;
+}
+
+#main{
+    display: table;
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+}
+
+.fof{
+   display: table-cell;
+   vertical-align: middle;
+}
+
+.fof h1{
+   font-size: 50px;
+   display: inline-block;
+   padding-right: 12px;
+   animation: type .5s alternate infinite;
+}
+.fa-home{
+    font-size: 50px;
+    color: #888;
+}
+a{
+    cursor: pointer;
+}
+
+
+@keyframes type{
+   from{box-shadow: inset -3px 0px 0px #888;}
+   to{box-shadow: inset -3px 0px 0px transparent;}
+}
+        </style>
+    </head>
+    <body>
+
+        <div id="main">
+            <div class="fof">
+
+                    <h4>{{error}}</h4>
+
+                        <a href="customer_reg/<str:role>" class="btn-block">
+
+                            <i class="fa fa-home"></i>
+                          </a>
+            </div>
+        </div>
+
+    </body>
+</html>

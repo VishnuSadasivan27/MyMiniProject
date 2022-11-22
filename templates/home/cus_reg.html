@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{role}}Registration</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="{% static 'Login/fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="{% static 'Login/css/style.css' %}">
+</head>
+<body>
+
+    <div class="main">
+
+        <!-- Sign up form -->
+        <section class="signup">
+            <div class="container">
+                <div class="signup-content">
+                    <div class="signup-form">
+
+                        <h2 class="form-title">{{role}} Sign up</h2>
+
+                        <form method="POST" action = "submit/{{role}}" class="register-form" id="register-form">
+                            {% csrf_token %}
+                            <div class="form-group">.
+                                <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="first-name" id="first-name" onkeyup='fnameValidation(this)' placeholder="Your FirstName" required pattern="[a-zA-Z]{2,20}"
+                                oninvalid="setCustomValidity('Invalid Firstname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                              <span id="name" class="new" style="color:red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="last-name" id="last-name" onkeyup="lnameValidation(this)" placeholder="Your Last Name" required pattern="[a-zA-Z]{1,20}"
+                                oninvalid="setCustomValidity('Invalid lastname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="lname" class="new" style="color:red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><i class="zmdi zmdi-email"></i></label>
+                                <input type="email" name="email" id="email" onkeyup='emailValidation(this)' placeholder="Your Email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                                <span id="mail" class="new" style="color:red;"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone"><i class="zmdi zmdi-phone"></i></label>
+                                <input type="text" name="phone" id="phone"  onkeyup='phoneValidation(this)' placeholder="Your Phone Number" required pattern="[6-9]{1}[0-9]{9}" >
+                                <span id="phone1" class="new" style="color:red;"></span>
+                                </h5>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" name="pass" id="pass"onkeyup='passwordValidation(this)' placeholder="Enter a Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}"
+  title="Must contain at least one  number and one uppercase and lowercase letter and special character and must contain 8field" >
+                                 <span id="pass1" class="new" style="color:red;"></span>
+                                </h5>
+                            </div>
+                            <div class="form-group">
+                                <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                                <input type="password" name="re_pass" id="re_pass" onkeyup='cpasswordValidation(this)' placeholder="Repeat your password" required >
+                                     <span id="pass2" class="new" style="color:red;"></span>
+                            </div>
+
+
+<!--                            <div class="form-group">-->
+<!--                                <label for="role"><i class="zmdi zmdi-account material-icons-name"></i></label>-->
+<!--                                <input type="text" name="role" id="role" placeholder="Your Role" >-->
+                                <!-- <h5 id="firstnamecheck" style="color: red;">
+**Firstname is missing
+                                </h5> -->
+<!--                            </div>-->
+                            <!-- <div class="form-group">
+                                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
+                                <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
+                            </div> -->
+                            <div class="form-group form-button">
+                                <input type="submit" name="signup" id="signup" class="form-submit"  onclick="matchPassword()" value="Register"/>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="signup-image">
+                        <figure><img src="{% static 'Login/images/signup-image.jpg' %}" alt="sing up image"></figure>
+                        <a href="{% url 'Login' %}" class="signup-image-link">I am already member</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sing in  Form -->
+        <!-- <section class="sign-in">
+            <div class="container">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="{% static 'images/signin-image.jpg' %}" alt="sing up image"></figure>
+                        <a href="#" class="signup-image-link">Create an account</a>
+                    </div>
+
+                    <div class="signin-form">
+                        <h2 class="form-title">Sign up</h2>
+                        <form method="POST" class="register-form" id="login-form">
+                            <div class="form-group">
+                                <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                <input type="text" name="your_name" id="your_name" placeholder="Your Name" >
+
+                            </div>
+                            <div class="form-group">
+                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
+                                <input type="password" name="your_pass" id="your_pass" placeholder="Password" >
+                            </div>
+                            <div class="form-group">
+                                <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
+                                <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+                            </div>
+                            <div class="form-group form-button">
+                                <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
+                            </div>
+                        </form>
+                        <div class="social-login">
+                            <span class="social-label">Or login with</span>
+                            <ul class="socials">
+                                <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
+                                <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
+                                <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'Login/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'Login/js/main.js' %}"></script>
+
+    <script>
+    function fnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("name");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 2){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = 'your input must more than two chracters';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function lnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("lname");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function emailValidation(inputTxt){
+    // ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    var regx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+    var textField = document.getElementById("mail");
+
+    if(inputTxt.value != '' ){
+        if(inputTxt.value.match(regx)){
+            textField.textContent = '';
+            textField.style.color = "green";
+        }else{
+            textField.textContent = 'email id  is not valid!!! please insert a valid one';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function phoneValidation(inputTxt){
+
+    var regx = /[6-9]{1}[0-9]{9}/;
+    var textField = document.getElementById("phone");
+
+    if(inputTxt.value != '' ){
+
+        if((inputTxt.value.length == 10)){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'please enter a valid number';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = 'your input must be a 10 digit number';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function passwordValidation(inputTxt){
+
+    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}/;
+    var textField = document.getElementById("pass1");
+
+    if(inputTxt.value != '' ){
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'Must contain at least one number and one uppercase and lowercase letter and aleast 5 characters';
+                textField.style.color = "red";
+            }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function cpasswordValidation(inputTxt){
+
+    var regx =  document.getElementById("pass").value;
+    var regy =  document.getElementById("re_pass").value;
+    var textField = document.getElementById("pass2");
+    var textField1 = document.getElementById("pass1");
+
+    if(inputTxt.value != '' ){
+            if(regx == regy){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'Entered to passwords are not same!!';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = '';
+            textField.style.color = "red";
+        }
+
+        function allownums(a)
+{
+
+if(a < 1 ||a > 15)
+alert("invalid")
+else
+alert("vaild")
+}
+}
+    </script>
+</body>
+</html>

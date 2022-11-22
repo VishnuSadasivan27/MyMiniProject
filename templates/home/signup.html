@@ -1,0 +1,63 @@
+
+{% load static %}
+<!doctype html>
+
+        <html>
+
+
+			<head>
+					   <title>Signup</title>
+						<meta charset="utf8">
+						<meta name="keyword">
+						<title>home page</title>
+						<link rel="stylesheet" href="{% static 'store/mystyle.css' %}"/>
+
+            </head>
+
+				    <body>
+
+								<!--services----------------------->
+								<section class="services">
+									<!--heading----------->
+									<br><br><br>
+									<div class="services-heading">
+												<h2>PLEASE SELECT YOUR USER</h2>
+												<p>REGISTRATION</p>
+
+									</div>
+									<br>
+									<!--box-container----------------->
+									<div class="box-container">
+									  <!--box-1-------->
+									    <div class="box">
+											<img src="{% static 'store/images/customer.jpg' %}">
+										    <font>CUSTOMER</font>
+											<a href="/customer_reg/Customer">REGISTER</a>
+										</div>
+									  <!--box-2-------->
+
+										<div class="box">
+											<img src="{% static 'store/images/farmer.jpg' %}">
+										     <font> FARMER </font>
+
+											<a href="/customer_reg/Farmer">REGISTER</a>
+										</div>
+
+									  <!--box-3-------->
+								         <div class="box">
+											<img src="{% static 'store/images/deliver.jpg' %}">
+										     <font>DELIVERY BOY</font>
+											<a href="/customer_reg/Delivery_Boy">REGISTER</a>
+										</div>
+
+
+									   </div>
+								</section>
+								 <!--footer------------->
+                              <footer>
+									<a href="#"></a>
+									<p></p>
+							  </footer>
+					</body>
+        </html>
+

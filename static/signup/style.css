@@ -1,0 +1,22 @@
+body{
+     margin: 0;
+     padding: 0;
+     font-family: sans-serif;
+}
+.container{
+         position: relative;
+         height: 300px;
+         width: 1200px;
+         margin: 240px auto;
+       }
+.container. box{
+          position: relative;
+          width: cal(400px-30px);
+          height: cal(300px-30px);
+          background: #000;
+          float: left;
+          margin: 15px;
+          box-sizing: border-box;
+          overflow: hidden;
+          border-radius: 10px
+}

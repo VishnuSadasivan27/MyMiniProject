@@ -159,6 +159,9 @@ class LoginPage(View):
                 request.session['email']=admin.email
                 request.session['password'] = admin.password
                 print(email)
+                customers = Registration.objects.filter(role="Customer", status='active').values()
+                count=customers.count()
+                print(count)
             # cond = Registration.objects.all()
             return HttpResponse("<script>alert('login  Successfull');window.location='/adminhome/';</script>")
 
@@ -206,7 +209,7 @@ class LoginPage(View):
             return HttpResponse("<script>alert('Unsuccessfull..Invalid credential');window.location='/Login/';</script>")
             error="Invalid Username or Password"
             return render(request,"home/error.html",{'error':error})
-@method_decorator(login_required,name='dispatch')
+
 class Logout(View):
     def get(self,request):
         for sesskey in request.session.keys():

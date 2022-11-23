@@ -44,13 +44,25 @@
 
 
  <label> Product Name: </label>
- <input type="text" name="pname" id="pName" autofocus="false" autocomplete="off" class="form-control"  placeholder="Enter Product Name" required> <br>
+ <input type="text" name="pname" id="pName" autofocus="false" autocomplete="off" onkeyup='nameValidation(this)' class="form-control"  placeholder="Enter Product Name" required pattern="[a-zA-Z]{2,20}"
+ oninvalid="setCustomValidity('Invalid Productname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30"> <br>
+     <span id="name" class="new" style="color:red;"></span>
 
  <label> Product Price: </label>
- <input type="text" name="pprice" id="pPrice" autofocus="false" autocomplete="off" class="form-control"  placeholder="Enter Product Price" required> <br>
+ <input type="text" name="pprice" id="pPrice" autofocus="false" autocomplete="off" onkeyup='priceValidation(this)'class="form-control"  placeholder="Enter Product Price" required pattern="\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?"
+ oninvalid="setCustomValidity('Invalid price')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30"> <br>
+     <span id="price" class="new" style="color:red;"></span>
 
  <label> Quantity: </label>
- <input type="text" name="quantity" id="quantity" autofocus="false" autocomplete="off" class="form-control"  placeholder="Enter Product Quantity" required> <br>
+ <input type="text" name="quantity" id="quantity" autofocus="false" autocomplete="off" onkeyup='quantityValidation(this)' class="form-control"  placeholder="Enter Product Quantity" required pattern="\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?"
+  oninvalid="setCustomValidity('Invalid Quantity')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30"> <br>
+     <span id="quantity1" class="new" style="color:red;"></span>
 
  <label> Add date: </label>
  <input type="date" name="adddate" id="adddate" autofocus="false" autocomplete="off" class="form-control"  placeholder="Enter Product add date" required> <br>
@@ -59,7 +71,7 @@
  <input type="date" name="expiry" id="expiry" autofocus="false" autocomplete="off" class="form-control"  placeholder="Enter Product Expiry date" required> <br>
 
  <label> Upload Image: </label>
- <input type="file" name="pimage" id="pImage" autofocus="false" autocomplete="off" class="form-control" required> <br>
+ <input type="file" name="pimage" id="pImage" autofocus="false" autocomplete="off" class="form-control" accept="image/x-png,image/gif,image/jpeg" required > <br>
 
 
 
@@ -71,6 +83,86 @@
  </form>
  </div>
  <script src="add.js"></script>
+<script>
+function nameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("name");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 2){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = 'your input must more than two chracters';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function priceValidation(inputTxt){
+
+    var regx = /\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/;
+    var textField = document.getElementById("price");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'please enter a valid price';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = 'Required a mininum single number';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function quantityValidation(inputTxt){
+
+    var regx = /\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/;
+    var textField = document.getElementById("quantity1");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'please enter a valid quantity';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = 'Required a mininum single number';
+            textField.style.color = "red";
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+</script>
 {% endblock content %}
 </body>
 </html>

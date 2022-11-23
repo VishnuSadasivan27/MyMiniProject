@@ -216,7 +216,7 @@ function emailValidation(inputTxt){
 function phoneValidation(inputTxt){
 
     var regx = /[6-9]{1}[0-9]{9}/;
-    var textField = document.getElementById("phone");
+    var textField = document.getElementById("phone1");
 
     if(inputTxt.value != '' ){
 
@@ -241,7 +241,7 @@ function phoneValidation(inputTxt){
 }
 function passwordValidation(inputTxt){
 
-    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}/;
+    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
     var textField = document.getElementById("pass1");
 
     if(inputTxt.value != '' ){

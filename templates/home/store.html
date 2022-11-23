@@ -16,7 +16,7 @@
 
 			<img class="thumbnail" src="{{data.imageURL}}">
 		    <div class="box-element product">
-				{{data.id}}
+				
 			    <h6><strong>Name:{{data.Product_name}}</strong></h6>
 			    <hr>
 				<h6><strong>Quantity:{{data.quantity}} &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Addded Date:{{data.adddate}}  </strong></h6>
@@ -30,7 +30,7 @@
 
 				<button data-product={{data.id}}  data-action="add"  class="btn btn-outline-secondary add-btn update-cart">
 				<a class="btn btn-outline-success" href="{% url 'AddCart' data.id %}">Add to Cart</a></button>
-				<a class="btn btn-outline-success" href="#">View</a>
+<!--				<a class="btn btn-outline-success" href="#">View</a>-->
 				<h4 style="display: inline-block;float:right"><strong>Rs.{{data.price|floatformat:2}}</strong></h4>
 
 		 	</div>

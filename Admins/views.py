@@ -15,6 +15,7 @@ class Customerview(View):
     def get(self,request):
         customers = Registration.objects.filter(role="Customer",status='active').values()
         return render(request,'admin/customerview.html',{'customers':customers})
+
 class Deletedcustomer(View):
     def get(self,request):
         customers = Registration.objects.filter(role="Customer",status='inactive').values()

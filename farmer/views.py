@@ -20,8 +20,8 @@ class ProductAdd(View):
         expirydate = request.POST.get("expiry")
         print(Product_name, price, quantity, image, adddate, expirydate)
         r = MyProduct(Product_name=Product_name , price=price, quantity=quantity, image=image, adddate=adddate,expirydate=expirydate)
-
         r.save()
+        return HttpResponse("<script>alert('Product Added');window.location='/farmer/Addproduct';</script>")
         return render(request, 'farmer/product_add.html')
 
 class Farmerprofile(View):

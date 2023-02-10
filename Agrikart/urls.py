@@ -25,7 +25,7 @@ urlpatterns = [
     path('customer',include('customer.urls')),
     path('farmer/',include('farmer.urls')),
     path('Admins/',include('Admins.urls')),
-    path('captcha',include('captcha.urls')),
+    # path('captcha',include('captcha.urls')),
     
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

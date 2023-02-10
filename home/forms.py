@@ -15,12 +15,12 @@
 #         model = Deliveryboy_reg
 #         fields = '__all__'
 
-from django import forms
-from captcha.fields import CaptchaField
-
-
-class MyForms(forms.Form):
-    captcha=CaptchaField()
+# from django import forms
+# from captcha.fields import CaptchaField
+#
+#
+# class MyForms(forms.Form):
+#     captcha=CaptchaField()
 
 
 

@@ -14,7 +14,7 @@ from django.shortcuts import redirect, render
 from customer.models import Order
 from home.models import Registration,MyProduct,AdminLogin
 # import js2py
-from home.forms import MyForms
+# from home.forms import MyForms
 # CustomerForm,FarmerForm,DeliverForm
 
 # from home.models import Users

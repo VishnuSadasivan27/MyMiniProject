@@ -8,6 +8,7 @@ from customer.models import Order
 
 class Checkout(View):
     def get(self,request):
+
         return render(request,'customer/checkout.html')
 class Cart(View):
     def get(self, request):

@@ -3,8 +3,38 @@ from django.views import View
 from django.shortcuts import redirect, render
 from home.models import MyProduct
 from customer.models import OrderItem
+from django.shortcuts import redirect, render
 from home.views import Registration
 from customer.models import Order
+
+def plusqty(request,id):
+    carts=OrderItem.objects.filter(id=id)
+    print("hello",carts)
+    for cart in carts:
+
+        if int(cart.product.quantity) > cart.quantity:
+            cart.quantity +=1
+            cart.total = int(cart.quantity) * int(cart.product.price)
+
+            cart.save()
+            return redirect('ViewCart')
+        # messages.success(request, 'Out of Stock')
+        return redirect('ViewCart')
+
+#minus
+def minusqty(request,id):
+    carts=OrderItem.objects.filter(id=id)
+    print("hello",carts)
+    for cart in carts:
+
+        if int(cart.quantity) > 1:
+            cart.quantity =cart.quantity-1;
+            cart.total = int(cart.quantity) * int(cart.product.price)
+
+            cart.save()
+            return redirect('ViewCart')
+        # messages.success(request, 'Out of Stock')
+        return redirect('ViewCart')
 
 class Checkout(View):
     def get(self,request):
@@ -27,6 +57,7 @@ class AddCart(View):
             # print(cart)
             print(customer)
             addcart=OrderItem(product_id=id,customer_id=customer)
+            addcart.total=addcart.product.price
             addcart.save()
             # order, created = Order.objects.get_or_create(customer=customer, complete=False)
             # items = Order.orderitem_set.all()

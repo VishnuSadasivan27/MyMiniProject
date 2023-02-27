@@ -44,13 +44,16 @@
 <div class="col-6">
 <ul class="pagination justify-content-end set_quantity">
 <li class="page-item">
+	<a href="{% url 'minusqty' item.id %}">
 <button class="page-link " onclick="decreaseNumber('textbox{{item.product.id}}','itemval{{item.product.id}}')">
-<i class="fas fa-minus"></i> </button>
+<i class="fas fa-minus"></i> </button></a>
 </li>
-<li class="page-item"><input type="text" name="" class="page-link" value="0" id="textbox{{item.product.id}}" >
+<li class="page-item"><input type="text" name="" class="page-link" value="{{item.quantity}}" id="textbox{{item.product.id}}" >
 </li>
 <li class="page-item">
-<button class="page-link" onclick="increaseNumber('textbox{{item.product.id}}','itemval{{item.product.id}}')"> <i class="fas fa-plus"></i></button>
+<a href="{% url 'plusqty' item.id %}">
+<button class="page-link"  onclick="increaseNumber('textbox{{item.product.id}}','itemval{{item.product.id}}')"> <i class="fas fa-plus"></i></button>
+</a>
 </li>
 </ul>
 </div>
@@ -62,7 +65,7 @@
 <p><i class="fas fa-heart"></i>MOVE TO WISH LIST </p>
 </div>
 <div class="col-4 d-flex justify-content-end price_money">
-<h3>$<span id="itemval{{item.product.id}}">0.00 </span></h3>
+<h3>$<span id="itemval{{item.product.id}}">{{item.total}}</span></h3>
 </div>
 </div>
 </div>
@@ -178,61 +181,61 @@
 <!-- Popper.js first, then Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
-{% for item in items %}
-<script type="text/javascript">
+<!--{% for item in items %}-->
+<!--<script type="text/javascript">-->
 
-var product_total_amt = document.getElementById('product_total_amt');
-var shipping_charge = document.getElementById('shipping_charge');
-var total_cart_amt = document.getElementById('total_cart_amt');
-var discountCode = document.getElementById('discount_code1');
-const decreaseNumber = (incdec, itemprice) => {
-var itemval = document.getElementById(incdec);
-var itemprice = document.getElementById(itemprice);
-console.log( itemprice.innerHTML);
-// console.log(itemval.value);
-if(itemval.value <= 0){
-itemval.value = 0;
-alert('Negative quantity not allowed');
-}else{
-itemval.value = parseInt(itemval.value) - 1;
-itemval.style.background = '#fff';
-itemval.style.color = '#000';
-itemprice.innerHTML  = parseInt(itemprice.innerHTML) - {{item.product.price}};
-product_total_amt.innerHTML  = parseInt(product_total_amt.innerHTML) - {{item.product.price}};
-total_cart_amt.innerHTML  = parseInt(product_total_amt.innerHTML) + parseInt(shipping_charge.innerHTML);
-}
-}
-const increaseNumber = (incdec, itemprice) => {
-var itemval = document.getElementById(incdec);
-var itemprice = document.getElementById(itemprice);
-// console.log(itemval.value);
-if(itemval.value >= {{item.product.quantity}}){
-itemval.value = {{item.product.quantity}};
-alert('max quantity allowed');
-itemval.style.background = 'red';
-itemval.style.color = '#fff';
-}else{
-itemval.value = parseInt(itemval.value) + 1;
-itemprice.innerHTML  = parseInt(itemprice.innerHTML ) + {{item.product.price}};
-product_total_amt.innerHTML  = parseInt(product_total_amt.innerHTML) + {{item.product.price}};
-total_cart_amt.innerHTML  = parseInt(product_total_amt.innerHTML) + parseInt(shipping_charge.innerHTML);
-}
-}
+<!--var product_total_amt = document.getElementById('product_total_amt');-->
+<!--var shipping_charge = document.getElementById('shipping_charge');-->
+<!--var total_cart_amt = document.getElementById('total_cart_amt');-->
+<!--var discountCode = document.getElementById('discount_code1');-->
+<!--const decreaseNumber = (incdec, itemprice) => {-->
+<!--var itemval = document.getElementById(incdec);-->
+<!--var itemprice = document.getElementById(itemprice);-->
+<!--console.log( itemprice.innerHTML);-->
+<!--// console.log(itemval.value);-->
+<!--if(itemval.value <= 0){-->
+<!--itemval.value = 0;-->
+<!--alert('Negative quantity not allowed');-->
+<!--}else{-->
+<!--itemval.value = parseInt(itemval.value) - 1;-->
+<!--itemval.style.background = '#fff';-->
+<!--itemval.style.color = '#000';-->
+<!--itemprice.innerHTML  = parseInt(itemprice.innerHTML) - {{item.product.price}};-->
+<!--product_total_amt.innerHTML  = parseInt(product_total_amt.innerHTML) - {{item.product.price}};-->
+<!--total_cart_amt.innerHTML  = parseInt(product_total_amt.innerHTML) + parseInt(shipping_charge.innerHTML);-->
+<!--}-->
+<!--}-->
+<!--const increaseNumber = (incdec, itemprice) => {-->
+<!--var itemval = document.getElementById(incdec);-->
+<!--var itemprice = document.getElementById(itemprice);-->
+<!--// console.log(itemval.value);-->
+<!--if(itemval.value >= {{item.product.quantity}}){-->
+<!--itemval.value = {{item.product.quantity}};-->
+<!--alert('max quantity allowed');-->
+<!--itemval.style.background = 'red';-->
+<!--itemval.style.color = '#fff';-->
+<!--}else{-->
+<!--itemval.value = parseInt(itemval.value) + 1;-->
+<!--itemprice.innerHTML  = parseInt(itemprice.innerHTML ) + {{item.product.price}};-->
+<!--product_total_amt.innerHTML  = parseInt(product_total_amt.innerHTML) + {{item.product.price}};-->
+<!--total_cart_amt.innerHTML  = parseInt(product_total_amt.innerHTML) + parseInt(shipping_charge.innerHTML);-->
+<!--}-->
+<!--}-->
 
 
-const  discount_code = () => {
-let totalamtcurr = parseInt(total_cart_amt.innerHTML);
-let error_trw = document.getElementById('error_trw');
-if(discountCode.value === 'thapa'){
-let newtotalamt = totalamtcurr - 15;
-total_cart_amt.innerHTML = newtotalamt;
-error_trw.innerHTML = "Hurray! code is valid";
-}else{
-error_trw.innerHTML = "Try Again! Valid code is thapa";
-}
-}
-</script>
-{% endfor %}
+<!--const  discount_code = () => {-->
+<!--let totalamtcurr = parseInt(total_cart_amt.innerHTML);-->
+<!--let error_trw = document.getElementById('error_trw');-->
+<!--if(discountCode.value === 'thapa'){-->
+<!--let newtotalamt = totalamtcurr - 15;-->
+<!--total_cart_amt.innerHTML = newtotalamt;-->
+<!--error_trw.innerHTML = "Hurray! code is valid";-->
+<!--}else{-->
+<!--error_trw.innerHTML = "Try Again! Valid code is thapa";-->
+<!--}-->
+<!--}-->
+<!--</script>-->
+<!--{% endfor %}-->
 </body>
 </html>
 {% endblock content %}

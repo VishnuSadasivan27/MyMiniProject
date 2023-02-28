@@ -129,7 +129,9 @@
 <h2 class="product_name mb-5">The Total Amount Of</h2>
 <div class="price_indiv d-flex justify-content-between">
 <p>Product amount</p>
-<p>$<span id="product_total_amt">0.00</span></p>
+
+<p>$<span id="product_total_amt">{% for item in items %}{{sum(item.total)}}{% endfor %}</span></p>
+
 </div>
 <div class="price_indiv d-flex justify-content-between">
 <p>Shipping Charge</p>

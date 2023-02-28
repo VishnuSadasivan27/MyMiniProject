@@ -11,6 +11,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(MyProduct, on_delete=models.SET_NULL, null=True)
     customer = models.ForeignKey(Registration, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.IntegerField(default=1, null=True, blank=True)
+    totalproductcost= models.IntegerField(default=0, null=True, blank=True)
     total = models.IntegerField(default=1, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 

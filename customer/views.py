@@ -58,6 +58,11 @@ class AddCart(View):
             print(customer)
             addcart=OrderItem(product_id=id,customer_id=customer)
             addcart.total=addcart.product.price
+            addcart.totalproductcost=addcart.totalproductcost
+            addcart.totalproductcost = int(addcart.totalproductcost) + int(addcart.total)
+            print("deyyyyyyyyyyyyyyyyyyyyy",addcart.totalproductcost)
+
+
             addcart.save()
             # order, created = Order.objects.get_or_create(customer=customer, complete=False)
             # items = Order.orderitem_set.all()
@@ -69,6 +74,7 @@ class ViewCart(View):
             # cart = MyProduct.objects.filter(id=id)
             customer = request.session.get('id')
             cartitem=OrderItem.objects.filter(customer_id=customer)
+
             print(cartitem)
             print(customer)
             context = {'items': cartitem}

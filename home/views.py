@@ -11,8 +11,9 @@ import json
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import redirect, render
-from customer.models import Order
+from customer.models import Order,Cus_address
 from home.models import Registration,MyProduct,AdminLogin
+from customer.models import OrderItem
 # import js2py
 # from home.forms import MyForms
 # CustomerForm,FarmerForm,DeliverForm
@@ -61,6 +62,8 @@ def adminhome(request):
     return render(request,'home/adminhome.html')
 def farmerhome(request):
     return render(request,'home/farmerhome.html')
+def delivaryhome(request):
+    return render(request,'delivaryboy/delivaryhome.html')
 def index(request):
     return render(request,'home/home.html')
 def Login(request):
@@ -139,6 +142,24 @@ class Submit(View):
                 return render(request, 'home/home.html', {'role': role})
             else:
                 return HttpResponse("<script>alert('Email Id already Exist');window.location='//';</script>")
+        elif role == "Delivery_Boy":
+            status = "inactive"
+            print(first_name, last_name, email, phone_no, password, role, status)
+            if not Registration.objects.filter(email=email).exists():
+                print("Not exist")
+
+                # val.user_id = Registration.objects.get(id)
+                # val.first_name = first_name
+                # val.password = password
+                # val.email = email
+                # val.save()
+                r = Registration(first_name=first_name, last_name=last_name, phone_no=phone_no, role=role,status=status, email=email, password=password)
+                r.save()
+                return HttpResponse(
+                    "<script>alert('Account has created pls Wait');window.location='/Login/';</script>")
+                return render(request, 'home/home.html', {'role': role})
+            else:
+                return HttpResponse("<script>alert('Email Id already Exist');window.location='//';</script>")
 
                 # error = "Email already exist"
                 # return render(request,"home/error.html",{'error':error})
@@ -199,7 +220,29 @@ class LoginPage(View):
                    request.session['phone_no'] = admin.phone_no
                    request.session['id'] = admin.id
                    messages.warning(request, 'Successfully Logged')
-                   return redirect('farmerhome')
+                   return redirect('delivaryhome')
+               # return HttpResponse("<script>alert('Successfull');window.location='/farmerhome/';</script>")
+               # return render(request, "{% url 'store' %}")
+               # print("login")
+           else:
+               return HttpResponse("<script>alert('Please wait for approval');window.location='/Login/';</script>")
+        elif Registration.objects.filter(email=username, password=password, role='Delivery_Boy').exists():
+           if Registration.objects.filter(email=username, password=password,status='active').exists():
+               deli_login = Registration.objects.filter(email=username, password=password)
+               print(deli_login)
+               for admin in deli_login:
+                   email = admin.email
+                   id = admin.first_name
+                   print(id)
+                   request.session['email'] = admin.email
+                   request.session['password'] = admin.password
+                   request.session['first_name'] = admin.first_name
+                   request.session['last_name'] = admin.last_name
+                   request.session['role'] = admin.role
+                   request.session['phone_no'] = admin.phone_no
+                   request.session['id'] = admin.id
+                   messages.warning(request, 'Successfully Logged')
+                   return redirect('delivaryhome')
                # return HttpResponse("<script>alert('Successfull');window.location='/farmerhome/';</script>")
                # return render(request, "{% url 'store' %}")
                # print("login")
@@ -216,13 +259,41 @@ class Logout(View):
             del request.session[sesskey]
             logout(request)
             return redirect('Login')
+
+class Orderaddress(View):
+    def post(self, request):
+        cus_id = request.session.get('id')
+        # user= Cus_address.objects.filter(customer_id=cus_id)
+        address = request.POST.get("address")
+        panchayat = request.POST.get("panchayat")
+        city = request.POST.get("city")
+        pincode = request.POST.get("pincode")
+        phone = request.POST.get("phone")
+        print(cus_id, address, panchayat, city, pincode, phone)
+        r = Cus_address(customer_id=cus_id,address=address, panchayat=panchayat, city=city, pincode=pincode,phone=phone)
+        r.save()
+        # user.save()
+        return redirect('payment')
+
+
+
+
+
+
+
+
+
+
+
+
+
 # class MyProduct(View):
 #     model = MyProduct
 #     def get(self,request):
 #         queryset = MyProduct.objects.all()
 #         return render(request,"home/text.html",{'queryset':queryset})
 
-# # email = "admin@gmail.com"
+# email = "admin@gmail.com"
 # password = "admin@123"
 # r = AdminLogin(email=email,password=password)
 # print(email,password)

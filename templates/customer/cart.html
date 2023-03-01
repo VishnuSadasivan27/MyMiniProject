@@ -38,7 +38,7 @@
 <p class="mb-2">PRICE:{{item.product.price|floatformat:2}}$</p>
 <p class="mb-2">TOTAL QUANTITY-{{item.product.quantity}}KG</p>
 <p class="mb-3">EXPIRY DATE: {{item.product.expirydate}}</p>
-	<p class="mb-3">textbox{{item.product.id}}</p>
+
 </div>
 <!-- quantity inc dec  -->
 <div class="col-6">
@@ -62,10 +62,10 @@
 <div class="row">
 <div class="col-8 d-flex justify-content-between remove_wish">
 	<p><a href="{% url 'RemoveCart' item.id %}"></a><i class="fas fa-trash-alt" ></i><a href="{% url 'RemoveCart' item.id %}"> REMOVE ITEM</p></a>
-<p><i class="fas fa-heart"></i>MOVE TO WISH LIST </p>
+<!--<p><i class="fas fa-heart"></i>MOVE TO WISH LIST </p>-->
 </div>
 <div class="col-4 d-flex justify-content-end price_money">
-<h3>$<span id="itemval{{item.product.id}}">{{item.total}}</span></h3>
+<h3>Rs.<span id="itemval{{item.product.id}}">{{item.total}}</span></h3>
 </div>
 </div>
 </div>
@@ -126,24 +126,24 @@
 <!-- right side div -->
 <div class="col-md-12 col-lg-4 col-11 mx-auto mt-lg-0 mt-md-5">
 <div class="right_side p-3 shadow bg-white">
-<h2 class="product_name mb-5">The Total Amount Of</h2>
-<div class="price_indiv d-flex justify-content-between">
-<p>Product amount</p>
+<!--<h2 class="product_name mb-5">The Total Amount Of</h2>-->
+<!--<div class="price_indiv d-flex justify-content-between">-->
+<!--<p>Product amount</p>-->
 
-<p>$<span id="product_total_amt">{% for item in items %}{{sum(item.total)}}{% endfor %}</span></p>
+<!--<p>$<span id="product_total_amt"></span></p>-->
+
+<!--</div>-->
+<!--<div class="price_indiv d-flex justify-content-between">-->
+<!--<p>Shipping Charge</p>-->
+<!--<p>$<span id="shipping_charge">50.0</span></p>-->
+<!--</div>-->
+<!--<hr />-->
+<!--<div class="total-amt d-flex justify-content-between font-weight-bold">-->
+<!--<p>The total amount of (including VAT)</p>-->
+<!--<p>$<span id="total_cart_amt">0.00</span></p>-->
 
 </div>
-<div class="price_indiv d-flex justify-content-between">
-<p>Shipping Charge</p>
-<p>$<span id="shipping_charge">50.0</span></p>
-</div>
-<hr />
-<div class="total-amt d-flex justify-content-between font-weight-bold">
-<p>The total amount of (including VAT)</p>
-<p>$<span id="total_cart_amt">0.00</span></p>
-
-</div>
-	<a href="{% url 'Checkout' %}"><button class="btn btn-primary text-uppercase" >Checkout</button></a>
+	<a href="{% url 'Checkout'%}"><button class="btn btn-primary text-uppercase" >Checkout</button></a>
 </div>
 <!--&lt;!&ndash; discount code part &ndash;&gt;-->
 <!--<div class="discount_code mt-3 shadow">-->

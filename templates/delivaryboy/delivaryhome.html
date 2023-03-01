@@ -1,4 +1,4 @@
-{% extends 'admin/customersearchmain.html' %}
+{% extends 'delivaryboy/delivarymain.html' %}
 {% load static %}
 {% block content %}
 <!-- Content Wrapper. Contains page content -->
@@ -29,7 +29,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Admin
+
         <small>Control panel</small>
       </h1>
       <ol class="breadcrumb">
@@ -46,14 +46,14 @@
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
-              <h3>150</h3>
+              <h3></h3>
 
-                <p><b>All Customer</b></p>
+                <p><b>view Assigned Job</b></p>
             </div>
             <div class="icon">
               <i class="ion ion-bag"></i>
             </div>
-            <a href="{% url 'Customerview' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url 'Viewmyjob' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
         <!-- ./col -->
@@ -61,79 +61,65 @@
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner">
-              <h3>53<sup style="font-size: 20px">%</sup></h3>
+              <h3><sup style="font-size: 20px"></sup></h3>
 
-                <p><b>All Farmer</b></p>
+                <p><b>View my Salary</b></p>
             </div>
             <div class="icon">
-              <i class="ion ion-person-add"></i>
+              <i class="ion ion-dollar"></i>
             </div>
-            <a href="{% url 'Farmerview' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>N</h3>
+<!--        &lt;!&ndash; ./col &ndash;&gt;-->
+<!--        <div class="col-lg-3 col-xs-6">-->
+<!--          &lt;!&ndash; small box &ndash;&gt;-->
+<!--          <div class="small-box bg-yellow">-->
+<!--            <div class="inner">-->
+<!--              <h3>N</h3>-->
 
-              <p><b>All Delivary Boy</b></p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="{% url 'Delivaryboyview' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-yellow">
-            <div class="inner">
-              <h3>N</h3>
+<!--              <p><b>All Delivary Boy</b></p>-->
+<!--            </div>-->
+<!--            <div class="icon">-->
+<!--              <i class="ion ion-bag"></i>-->
+<!--            </div>-->
+<!--            <a href="" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="col-lg-3 col-xs-6">-->
+<!--          &lt;!&ndash; small box &ndash;&gt;-->
+<!--          <div class="small-box bg-yellow">-->
+<!--            <div class="inner">-->
+<!--              <h3>N</h3>-->
 
-              <p><b>Delivary Boy Request Approve</b></p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
-            <a href="{% url 'Deliboyapprove' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>65</h3>
+<!--              <p><b>Delivary Boy Request Approve</b></p>-->
+<!--            </div>-->
+<!--            <div class="icon">-->
+<!--              <i class="ion ion-bag"></i>-->
+<!--            </div>-->
+<!--            <a href="" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; ./col &ndash;&gt;-->
+<!--        <div class="col-lg-3 col-xs-6">-->
+<!--          &lt;!&ndash; small box &ndash;&gt;-->
+<!--          <div class="small-box bg-red">-->
+<!--            <div class="inner">-->
+<!--              <h3>65</h3>-->
 
-              <p>Farmer Request Approve</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="{% url 'Farmer_approval' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-red">
-            <div class="inner">
-              <h3>65</h3>
-
-              <p>Deleted Customer</p>
-            </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="{% url 'Deletecustomer' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
-      </div>
-      <!-- /.row -->
-      <!-- Main row -->
-      <div class="row">
+<!--              <p>Farmer Request Approve</p>-->
+<!--            </div>-->
+<!--            <div class="icon">-->
+<!--              <i class="ion ion-pie-graph"></i>-->
+<!--            </div>-->
+<!--            <a href="" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; ./col &ndash;&gt;-->
+<!--      </div>-->
+<!--      &lt;!&ndash; /.row &ndash;&gt;-->
+<!--      &lt;!&ndash; Main row &ndash;&gt;-->
+<!--      <div class="row">-->
 
         <section class="col-lg-12 connectedSortable">
 
@@ -154,12 +140,11 @@
               <i class="fa fa-map-marker"></i>
 
               <h3 class="box-title">
-                Admin Panel
+                Delivary boy Panel
               </h3>
             </div>
             <div class="box-body">
-              <div id="world-map" style="height: 250px; width: 100%;">Our website provide a easy,fast access of data and secure use of your details.This website provide a easy interaction with the admin..All rejection and acception all the customer,farmer,Delivary boy are done by the admin.He also control all the payment details of the website and helps for the efficient working of the website.He can view all the vacanciesand details in the website</p></div>
-              <p>we declare that we will provide our best to you and we will provide 24*7 and userfriendly customerservices</p>
+              <div id="world-map" style="height: 250px; width: 100%;">Our website provide a easy,fast access of data and secure use of your details.We will try to provide a Easy interaction in this website.Farmers can add their product and view their product.Our farmers provide best service and product to the customer</div>
             </div>
             <!-- /.box-body-->
 

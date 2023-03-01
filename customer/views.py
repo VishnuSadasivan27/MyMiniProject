@@ -1,12 +1,16 @@
 from django.http.response import HttpResponse
 from django.views import View
+import stripe
+from django.conf import settings
+from django.urls import reverse
 from django.shortcuts import redirect, render
 from home.models import MyProduct
-from customer.models import OrderItem
+from customer.models import OrderItem,Cus_address
+
 from django.shortcuts import redirect, render
 from home.views import Registration
 from customer.models import Order
-
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
 def plusqty(request,id):
     carts=OrderItem.objects.filter(id=id)
     print("hello",carts)
@@ -38,8 +42,18 @@ def minusqty(request,id):
 
 class Checkout(View):
     def get(self,request):
+        id=request.session.get('id')
+        carts = OrderItem.objects.filter(customer_id=id)
+        print(carts)
+        print("heyyyyyyyiww",id)
 
-        return render(request,'customer/checkout.html')
+        total = 0
+        for i in carts:
+            print(i)
+            total +=int( i.total )
+
+        print(total)
+        return render(request,'customer/checkout.html',{'total':total})
 class Cart(View):
     def get(self, request):
         return render(request, 'customer/cart.html')
@@ -57,8 +71,8 @@ class AddCart(View):
             # print(cart)
             print(customer)
             addcart=OrderItem(product_id=id,customer_id=customer)
-            addcart.total=addcart.product.price
-            addcart.totalproductcost=addcart.totalproductcost
+            addcart.total=int(addcart.total)+int(addcart.product.price)
+
             addcart.totalproductcost = int(addcart.totalproductcost) + int(addcart.total)
             print("deyyyyyyyyyyyyyyyyyyyyy",addcart.totalproductcost)
 
@@ -87,3 +101,39 @@ class RemoveCart(View):
         return redirect('ViewCart')
 
 
+
+def payment(request):
+
+    id = request.session.get('id')
+    carts = OrderItem.objects.filter(customer_id=id)
+
+    total = 0
+    for i in carts:
+        print(i)
+        total += int(i.total)
+    stripe.api_key = settings.STRIPE_PRIVATE_KEY
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price':'price_1MgYfzSIFeJdW3Ax15HlhI8O',
+            'quantity': 1,
+
+          
+        }],
+        mode='payment',
+        success_url=request.build_absolute_uri(reverse('thanks'))+'?session_id = {CHECKOUT_SESSION_ID}',
+        cancel_url=request.build_absolute_uri(reverse('ViewCart')),
+    )
+    context = {
+        'session_id': session.id,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY
+    }
+    return render(request, 'customer/payment.html', context)
+def thanks(request):
+    cus_id = request.session.get('id')
+    cartitem = Cus_address.objects.filter(customer_id=cus_id)
+    complete="True"
+    a=Order(customer_id=cus_id,complete=complete)
+    print(cus_id,complete)
+    a.save()
+    return render(request, 'customer/thanks.html')

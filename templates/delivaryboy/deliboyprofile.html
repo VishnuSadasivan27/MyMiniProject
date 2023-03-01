@@ -1,7 +1,8 @@
-{% extends 'admin/customersearchmain.html' %}
+{% extends 'delivaryboy/delivarymain.html' %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 
 <head>
   {% block content %}
@@ -49,7 +50,7 @@
       <h1>Profile</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'adminhome' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'farmerhome' %}">Home</a></li>
           <li class="breadcrumb-item">Users</li>
           <li class="breadcrumb-item active">Profile</li>
         </ol>
@@ -64,8 +65,8 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
               <img src="{% static 'admin/assets/img/profile-img.jpg' %}" alt="Profile" class="rounded-circle">
-              <h2>{{request.session.email}}</h2>
-              <h3>Admin</h3>
+              <h2>{{request.session.first_name}}</h2>
+              <h3>{{request.session.role}}</h3>
 <!--              <div class="social-links mt-2">-->
 <!--                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>-->
 <!--                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>-->
@@ -88,6 +89,10 @@
                   <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
                 </li>
 
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                </li>
+
 <!--                <li class="nav-item">-->
 <!--                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>-->
 <!--                </li>-->
@@ -104,6 +109,36 @@
                   <p class="small fst-italic"></p>
 
                   <h5 class="card-title">Profile Details</h5>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">First Name</div>
+                    <div class="col-lg-9 col-md-8">{{request.session.first_name}}</div>
+                  </div>
+                    <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">Last Name</div>
+                    <div class="col-lg-9 col-md-8">{{request.session.last_name}}</div>
+                  </div>
+
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Title</div>
+                    <div class="col-lg-9 col-md-8">{{request.session.role}}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Country</div>
+                    <div class="col-lg-9 col-md-8">USA</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Address</div>
+                    <div class="col-lg-9 col-md-8"></div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Phone</div>
+                    <div class="col-lg-9 col-md-8">{{request.session.phone_no}}</div>
+                  </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
@@ -124,6 +159,68 @@
                           <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
                         </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{request.session.first_name}}">
+                      </div>
+                    </div>
+                      <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="lastName" value="{{request.session.last_name}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea name="about" class="form-control" id="about" style="height: 100px"></textarea>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="company" class="col-md-4 col-lg-3 col-form-label">role</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="company" type="text" class="form-control" id="company" value="{{request.session.role}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">District</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="Job" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">LandMark</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="country" type="text" class="form-control" id="Country" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">pin</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="address" type="text" class="form-control" id="Address" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="phone" type="text" class="form-control" id="Phone" value="{{request.session.phone_no}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="email" type="email" class="form-control" id="Email" value="{{request.session.email}}">
                       </div>
                     </div>
 
@@ -246,7 +343,7 @@
 
   </main><!-- End #main -->
 
- 
+
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 

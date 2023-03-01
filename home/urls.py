@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from home.views import CustomerRegistration,Submit,LoginPage,MyProduct,Logout
+from home.views import CustomerRegistration,Submit,LoginPage,MyProduct,Logout,Orderaddress
 # from Agrikart.home import views
 urlpatterns = [
    path('',views.index,name='index'),
@@ -12,7 +12,9 @@ urlpatterns = [
    path('signup',views.signup,name='signup'),
    path('adminhome/',views.adminhome,name='adminhome'),
    path('farmerhome/',views.farmerhome,name='farmerhome'),
+   path('delivaryhome/',views.delivaryhome,name='delivaryhome'),
    path('Login/loginpage/',LoginPage.as_view(),name="loginpage"),
+   path('Orderaddress',Orderaddress.as_view(), name='Orderaddress'),
    path('store/', views.store, name="store"),
    path('searchbar/', views.searchbar, name='searchbar'),
    path('Logout',Logout.as_view(),name='Logout'),

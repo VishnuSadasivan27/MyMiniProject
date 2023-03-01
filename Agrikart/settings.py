@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'customer',
     'Admins',
     'farmer',
+    'delivaryboy',
     # 'captcha',
 ]
 
@@ -138,3 +139,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RECAPTCHA_PUBLIC_KEY = '6Lf_dtsiAAAAAI9L_5GkcLCXZcMk2FDPvvNO8avz'
 RECAPTCHA_PRIVATE_KEY = '6Lf_dtsiAAAAABqb5f4rCaLvzL2neCNQPROmbmHy'
 
+STRIPE_PRIVATE_KEY ='sk_test_51MfoNzSIFeJdW3Ax2PTrb84BXc5Kh7OKsQiJNyzR52WBrHkCAQ8dl7WhMNqNGbDpB14BZHadOm8FDdxjv2S9Ur7r00AGa7RFdd'
+STRIPE_PUBLIC_KEY ='pk_test_51MfoNzSIFeJdW3AxEitNlnXrLrXxLbdPQScQZBSpM1QBw3U4x9s2yiEBs27qPtd7NZnrs0iHwMnPN9N1hR8TAlJ700uUC2K841'

@@ -1,0 +1,135 @@
+{% extends 'delivaryboy/delivarymain.html' %}
+{% block content %}
+<div class="container">
+        <div class="table-responsive">
+            <br>
+            <br>
+            <br>
+            <table class="table text-center">
+                <thead>
+                    <tr>
+
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Panchayat</th>
+                        <th>City</th>
+                        <th>Pin</th>
+                        <th>Contact No</th>
+                        <th>Option</th>
+                        <th>Option</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                <!-- <td><a href=""><div class="btn btn-success">Approve</div></a></td> -->
+                {% for order in orders%}
+                  <tr>
+                <td>{{order.customer.first_name}}</td>
+                <td>{{order.customer.last_name}}</td>
+                 <td>{{order.customer.email}}</td>
+                <td>{{order.address}}</td>
+                <td>{{order.panchayat}}</td>
+                <td>{{order.city}}</td>
+                <td>{{order.pin}}</td>
+                 <td>{{order.phone}}</td>
+
+
+                <td><a href=""<div class="btn btn-success">Accept</div></a></td>
+                <td><a href=""<div class="btn btn-danger">Reject</div></a></td>
+                  </tr>
+
+                 {% endfor %}
+               <!-- <td><div class="btn btn-primary">Approve</div> </td>
+                        <td><div class="btn btn-primary1">Cancel </div> </td>  -->
+
+                        <!-- <td>.com</td>
+                        <td>1 Year</td>
+                        <td>$70.00</td>
+                        <td>$5</td>
+                        <td>$5</td>
+                        <td>$70.00</td>
+                         <td>$5</td>
+                        <td>$70.00</td>
+
+                        <td><div class="btn btn-primary">Approve</div> </td>
+                        <td><div class="btn btn-primary1">Cancel </div> </td>
+                    </tr>
+                    <tr>
+                        <td>.in</td>
+                        <td>1 Year</td>
+                        <td>$50.00</td>
+                        <td>$3</td>
+                        <td>$5</td>
+                        <td><div class="btn btn-primary">Sign Up </div> </td>
+                    </tr>
+                    <tr>
+                        <td>.org</td>
+                        <td>1 Year</td>
+                        <td>$90.00</td>
+                        <td>$7</td>
+                        <td>$5</td>
+                        <td><div class="btn btn-primary">Sign Up </div> </td>
+                    </tr>
+                    <tr>
+                        <td>.com</td>
+                        <td>1 Year</td>
+                        <td>$70.00</td>
+                        <td>$5</td>
+                        <td>$5</td>
+                        <td><div class="btn btn-primary">Sign Up </div> </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<style>
+*{
+    margin: 10;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color:#fff;
+    padding: 10px 10px 0 10px;
+}
+
+.container .table thead tr th{
+    background-color:#673AB7;
+    padding: 30px 10px;
+    border: none;
+    color: white;
+}
+td:nth-child(2n+1){
+    background-color: #EDE7F6;
+}
+td:nth-child(2n){
+    background-color: white;
+}
+.container .table tbody tr td {
+    padding: 30px 10px;
+    font-weight: 600;
+}
+.btn.btn-primary{
+    background-color:green;
+    padding: 10px;
+    width: 80px;
+    border: 1px solid #fff ;
+}
+.btn.btn-primary1{
+    background-color: red;
+    padding: 10px;
+    width: 80px;
+    border: 1px solid #673AB7 ;
+}
+/* .btn.btn-primary1:hover{
+    background-color: red;
+}
+.btn.btn-primary:hover{
+    background-color: green;
+ } */
+</style>
+{% endblock %}

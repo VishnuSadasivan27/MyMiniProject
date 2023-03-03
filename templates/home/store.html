@@ -21,7 +21,7 @@
 			    <hr>
 				<h6><strong>Quantity:{{data.quantity}} &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Addded Date:{{data.adddate}}  </strong></h6>
 				<hr>
-				<h6><strong>Expiry Date:{{data.expirydate}}</strong></h6>
+				<h6><strong >Expiry Date:{{data.expirydate}}</strong></h6>
 				<hr>
 <!--				<h6><strong></strong></h6>-->
 <!--				<hr>-->
@@ -31,7 +31,8 @@
 				<button data-product={{data.id}}  data-action="add"  class="btn btn-outline-secondary add-btn update-cart">
 				<a class="btn btn-outline-success" href="{% url 'AddCart' data.id %}">Add to Cart</a></button>
 <!--				<a class="btn btn-outline-success" href="#">View</a>-->
-				<h4 style="display: inline-block;float:right"><strong>Rs.{{data.price|floatformat:2}}</strong></h4>
+
+				<h4 style="display: inline-block;float:right"><strong class="qty" id="qty_sugar">Rs.{{data.price|floatformat:2}}</strong></h4>
 
 		 	</div>
 		</div>
@@ -40,6 +41,21 @@
 		<h3 style="color:beige;"></h3>
 		{% endfor %}
 	</div>
+<style>
+	function calculateTotal()
+{
 
+  let item_price={}
+
+  item_price.sugar = ($("#qty_sugar").val()+10 )
+  $(function()
+ {
+    $(".qty").on("change keyup",calculateTotal)
+})
+
+
+
+}
+</style>
 {% endblock content %}
 

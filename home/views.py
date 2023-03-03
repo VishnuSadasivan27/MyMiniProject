@@ -220,7 +220,7 @@ class LoginPage(View):
                    request.session['phone_no'] = admin.phone_no
                    request.session['id'] = admin.id
                    messages.warning(request, 'Successfully Logged')
-                   return redirect('delivaryhome')
+                   return redirect('farmerhome')
                # return HttpResponse("<script>alert('Successfull');window.location='/farmerhome/';</script>")
                # return render(request, "{% url 'store' %}")
                # print("login")

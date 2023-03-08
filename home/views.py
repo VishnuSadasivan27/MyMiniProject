@@ -275,6 +275,24 @@ class Orderaddress(View):
         # user.save()
         return redirect('payment')
 
+class Changepassword(View):
+    def post(self, request):
+        id = request.session.get('id')
+        user = Registration.objects.filter(id=id)
+        old_pass = request.POST.get("cpassword")
+        new_pass1 = request.POST.get("newpassword")
+        new_pass2= request.POST.get("renewpassword")
+        print(old_pass,new_pass1,new_pass2);
+        current_password = request.session.get('password')
+        if(old_pass==current_password):
+
+
+             user.update(password=new_pass1)
+             return redirect('Customerprofile')
+        else:
+            return HttpResponse("<script>alert('current password is wrong');window.location='/Customerprofile/';</script>")
+
+
 
 
 

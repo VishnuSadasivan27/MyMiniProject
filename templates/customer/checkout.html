@@ -12,9 +12,9 @@
 <div class="row">
     <div class="col-lg-6">
         <div class="box-element" id='form-wrapper'>
-
-            <form method="POST" action = "Orderaddress" class="register-form" id="register-form">
+<form method="POST" action = "Orderaddress" class="register-form" id="register-form">
                     {% csrf_token %}
+
                 <div id="user-info">
                     <div class="form-field">
                         <input required class="form-control" type="text" name="{{request.session.first_name}}" value="{{request.session.first_name}}" placeholder="{{request.session.first_name}}" readonly>

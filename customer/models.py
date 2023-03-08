@@ -20,10 +20,6 @@ class OrderItem(models.Model):
     #     total = self.product.price * self.quantity
     #     return total
 
-
-
-
-
 class Cus_address(models.Model):
     customer = models.ForeignKey(Registration, on_delete=models.SET_NULL,null=True,blank =True)
     myorder = models.ForeignKey(OrderItem, on_delete=models.SET_NULL, null=True, blank=True)

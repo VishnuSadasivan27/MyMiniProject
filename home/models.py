@@ -62,6 +62,7 @@ class Registration(models.Model):
     status = models.CharField(max_length=200,default="inactive")
     password = models.CharField(max_length=200)
     email = models.EmailField(unique=True, max_length=100)
+    user_image = models.ImageField(null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, max_length=100, null=True)
     review = models.ForeignKey(Review, on_delete=models.CASCADE, max_length=100, null=True)
     def int(self):

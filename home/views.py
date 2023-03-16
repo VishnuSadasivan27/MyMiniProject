@@ -281,29 +281,14 @@ class Changepassword(View):
         user = Registration.objects.filter(id=id)
         old_pass = request.POST.get("cpassword")
         new_pass1 = request.POST.get("newpassword")
-        new_pass2= request.POST.get("renewpassword")
-        print(old_pass,new_pass1,new_pass2);
-        current_password = request.session.get('password')
-        if(old_pass==current_password):
-
-
-             user.update(password=new_pass1)
-             return redirect('Customerprofile')
+        new_pass2 = request.POST.get("renewpassword")
+        print(old_pass, new_pass1, new_pass2);
+        current_password = Registration.objects.filter(id=id).values('password').get()['password']
+        if (old_pass == current_password):
+            user.update(password=new_pass1)
+            return HttpResponse("<script>alert('Succesfully updated');window.location='customercustomerprofile';</script>")
         else:
-            return HttpResponse("<script>alert('current password is wrong');window.location='/Customerprofile/';</script>")
-
-
-
-
-
-
-
-
-
-
-
-
-
+            return HttpResponse("<script>alert('current password is wrong');window.location='customercustomerprofile';</script>")
 
 # class MyProduct(View):
 #     model = MyProduct

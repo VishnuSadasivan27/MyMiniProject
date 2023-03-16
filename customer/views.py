@@ -2,6 +2,7 @@ from django.http.response import HttpResponse
 from django.views import View
 import stripe
 from django.conf import settings
+from django.core.files.storage import default_storage
 from django.urls import reverse
 from django.shortcuts import redirect, render
 from home.models import MyProduct
@@ -137,3 +138,26 @@ def thanks(request):
     print(cus_id,complete)
     a.save()
     return render(request, 'customer/thanks.html')
+
+class Updatecustomer(View):
+    def post(self,request):
+        first_name = request.POST.get("firstname")
+        last_name = request.POST.get("lastname")
+        email = request.POST.get("email")
+        phone_no = request.POST.get("phone")
+        user_image = request.FILES.get("p_image_select")
+        print(first_name, last_name, email, phone_no,user_image)
+        id=request.session.get('id')
+        user = Registration.objects.filter(id=id)
+        user.update(first_name=first_name, last_name=last_name, phone_no=phone_no, email=email,user_image=user_image )
+
+        if user_image:
+            # Save the file to a folder
+            filename = default_storage.save('static/images' + ouser_image.name, user_image)
+            user_image_url = default_storage.url(filename)
+            print("785775869699690000000000000000000",user_image_url)
+            context={'user_image':user_image_url}
+        else:
+            context={'user_image':None}
+
+        return render(request,'customer/customerprofile.html',context)

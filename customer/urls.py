@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from customer.views import Customerprofile,AddCart,Checkout,Cart,ViewCart,RemoveCart
+from customer.views import Customerprofile,AddCart,Checkout,Cart,ViewCart,RemoveCart,Updatecustomer
 
 # from Agrikart.home import views
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
    path('RemoveCart/<id>/',RemoveCart.as_view(), name='RemoveCart'),
    path('plusqty/<int:id>/',views.plusqty,name='plusqty'),
    path('payment',views.payment,name='payment'),
+   path('/Updatecustomer',Updatecustomer.as_view(),name='Updatecustomer'),
    path('minusqty/<int:id>/',views.minusqty,name='minusqty'),
    path('cart',Cart.as_view(), name='Cart'),
    path('Checkout',Checkout.as_view() , name='Checkout'),

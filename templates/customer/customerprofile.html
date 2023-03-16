@@ -63,9 +63,9 @@
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="{% static 'admin/assets/img/profile-img.jpg' %}" alt="Profile" class="rounded-circle">
-              <h2>{{objs.first_name}}</h2>
-              <h3>{{objs.role}}</h3>
+              <img src="{{user_imageURL}}" alt="Profile" class="rounded-circle">
+              <h2>{{request.session.first_name}} {{request.session.last_name}}</h2>
+              <h3>{{request.session.role}}</h3>
 <!--              <div class="social-links mt-2">-->
 <!--                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>-->
 <!--                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>-->
@@ -124,15 +124,6 @@
                     <div class="col-lg-9 col-md-8">{{request.session.role}}</div>
                   </div>
 
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Country</div>
-                    <div class="col-lg-9 col-md-8">USA</div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Address</div>
-                    <div class="col-lg-9 col-md-8"></div>
-                  </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Phone</div>
@@ -149,65 +140,41 @@
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
-                  <form>
+                  <form method="POST" action = "Updatecustomer" class="update-form" id="update-form">
+                    {% csrf_token %}
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="assets/img/profile-img.jpg" alt="Profile">
+                        <img src="{{user_imageURL}}" alt="Profile">
                         <div class="pt-2">
-                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <a input type="file" name="pimage" id="pImage" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <input type="file" name="p_image_select" placeholder="Select Image">
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
                         </div>
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                      <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{request.session.first_name}}">
+                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}">
                       </div>
                     </div>
                       <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                      <label for="lastname" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{request.session.last_name}}">
+                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}">
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="about" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                      <label for="role" class="col-md-4 col-lg-3 col-form-label">role</label>
                       <div class="col-md-8 col-lg-9">
-                        <textarea name="about" class="form-control" id="about" style="height: 100px">n est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
+                        <input name="role" type="text" class="form-control" id="role" value="{{request.session.role}}" readonly>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="company" class="col-md-4 col-lg-3 col-form-label">role</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="company" type="text" class="form-control" id="company" value="{{request.session.role}}">
-                      </div>
-                    </div>
 
-                    <div class="row mb-3">
-                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">District</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="job" type="text" class="form-control" id="Job" value="">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">LandMark</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="country" type="text" class="form-control" id="Country" value="USA">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">pin</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="address" type="text" class="form-control" id="Address" value="">
-                      </div>
-                    </div>
 
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
@@ -308,21 +275,25 @@
                     <div class="row mb-3">
                       <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="cpassword" type="password" class="form-control" id="currentPassword">
+                        <input name="cpassword" type="password" class="form-control" onkeyup="curpasswordValidation(this)" placeholder="Enter you current Password" id="currentPassword" required>
+                        <span id="pass" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                      <label  class="col-md-4 col-lg-3 col-form-label">New Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                        <input name="newpassword" type="password" class="form-control" id="newPassword" onkeyup='passwordValidation(this)' placeholder="Enter a new Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}"
+  title="Must contain at least one  number and one uppercase and lowercase letter and special character and must contain 8field" >
+                      <span id="pass1" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                        <input name="renewpassword" type="password" onkeyup='cpasswordValidation(this)' placeholder="Enter your new Password again" class="form-control" id="renewPassword">
+                         <span id="pass2" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
@@ -358,8 +329,69 @@
   <script src="{% static 'admin/assets/vendor/tinymce/tinymce.min.js' %}"></script>
   <script src="{% static 'admin/assets/vendor/php-email-form/validate.js' %}"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <!-- Template Main JS File -->
   <script src="{% static 'admin/assets/js/main.js' %}"></script>
+
+<script>
+
+  $('#pImage').click(function(){
+      $('#p_image_select').click();
+  });
+
+function passwordValidation(inputTxt){
+
+    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
+    var textField = document.getElementById("pass1");
+
+    if(inputTxt.value != '' ){
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'Must contain at least one number and one uppercase and lowercase letter and aleast 5 characters';
+                textField.style.color = "red";
+            }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+function cpasswordValidation(inputTxt){
+
+    var regx =  document.getElementById("newPassword").value;
+    var regy =  document.getElementById("renewPassword").value;
+    var textField = document.getElementById("pass2");
+    var textField1 = document.getElementById("pass1");
+
+    if(inputTxt.value != '' ){
+            if(regx == regy){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+            }else{
+                textField.textContent = 'Entered to passwords are not same!!';
+                textField.style.color = "red";
+            }
+        }else{
+            textField.textContent = '';
+            textField.style.color = "red";
+        }
+
+        function allownums(a)
+{
+
+if(a < 1 ||a > 15)
+alert("invalid")
+else
+alert("vaild")
+}
+}
+
+</script>
 {% endblock content %}
 </body>
 

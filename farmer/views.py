@@ -3,6 +3,7 @@ from django.http.response import HttpResponse
 from django.views import View
 from home.models import MyProduct
 from django.shortcuts import redirect, render
+from home.models import Registration
 
 # Create your views here.
 class Addproduct(View):
@@ -31,3 +32,17 @@ class Farmerprofile(View):
         return render(request,'farmer/farmerprofile.html')
 
 
+class FarmerChangepassword(View):
+    def post(self, request):
+        id = request.session.get('id')
+        user = Registration.objects.filter(id=id)
+        old_pass = request.POST.get("cpassword")
+        new_pass1 = request.POST.get("newpassword")
+        new_pass2= request.POST.get("renewpassword")
+        print(old_pass,new_pass1,new_pass2);
+        current_password = Registration.objects.filter(id=id).values('password').get()['password']
+        if(old_pass==current_password):
+             user.update(password=new_pass1)
+             return HttpResponse("<script>alert('Succesfully updated');window.location='Farmerprofile';</script>")
+        else:
+            return HttpResponse("<script>alert('current password is wrong');window.location='Farmerprofile';</script>")

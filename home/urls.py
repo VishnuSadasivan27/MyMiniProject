@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from home.views import CustomerRegistration,Submit,LoginPage,MyProduct,Logout,Orderaddress,Changepassword
-from customer.views import Updatecustomer
+from customer.views import Updatecustomer,Addaddress
 # from Agrikart.home import views
 urlpatterns = [
    path('',views.index,name='index'),
@@ -27,5 +27,6 @@ urlpatterns = [
    # path('forgotPassword/', views.forgotPassword, name='forgotPassword'),
    # path('resetPassword/', views.resetPassword, name='resetPassword'),
    path('Updatecustomer',Updatecustomer.as_view(),name='Updatecustomer'),
+   path('Addaddress',Addaddress.as_view(),name='Addaddress'),
 ]
 

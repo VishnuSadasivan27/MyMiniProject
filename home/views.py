@@ -1,10 +1,11 @@
 from django.http.response import HttpResponse
 from django.contrib.auth import authenticate,login,logout
 from django.views import View
-from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import django.contrib.sessions
 from django.template import loader
+from .decorators import user_login_required
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib.auth import authenticate
 import json
@@ -12,7 +13,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from customer.models import Order,Cus_address
-from home.models import Registration,MyProduct,AdminLogin
+from home.models import Registration,MyProduct,AdminLogin,Address
 from customer.models import OrderItem
 # import js2py
 # from home.forms import MyForms
@@ -70,10 +71,13 @@ def Login(request):
     return render(request,'home/Login.html')
 def signup(request):
     return render(request,'home/signup.html')
-
+@user_login_required
 def store(request):
     datas = MyProduct.objects.all()
-    return render(request,'home/store.html',{'datas':datas})
+    id = request.session['id']
+    user = Registration.objects.get(id=id)
+    print(user.image)
+    return render(request,'home/store.html',{'datas':datas,'user': user})
 
 # def cart(request):
 #     if request.user.is_authenticated:
@@ -259,22 +263,38 @@ class Logout(View):
             del request.session[sesskey]
             logout(request)
             return redirect('Login')
-
+@method_decorator(user_login_required, name='dispatch')
 class Orderaddress(View):
     def post(self, request):
         cus_id = request.session.get('id')
+
         # user= Cus_address.objects.filter(customer_id=cus_id)
         address = request.POST.get("address")
+        district = request.POST.get("district")
         panchayat = request.POST.get("panchayat")
         city = request.POST.get("city")
+        landmark=request.POST.get("landmark")
         pincode = request.POST.get("pincode")
         phone = request.POST.get("phone")
-        print(cus_id, address, panchayat, city, pincode, phone)
-        r = Cus_address(customer_id=cus_id,address=address, panchayat=panchayat, city=city, pincode=pincode,phone=phone)
+        r = Cus_address(customer_id=cus_id, address=address, district=district, panchayat=panchayat, city=city,pincode=pincode, landmark=landmark, phone=phone)
         r.save()
-        # user.save()
-        return redirect('payment')
+        if not Address.objects.filter(user_id=cus_id).exists():
+            print(cus_id, address, panchayat, city, pincode, phone)
+            add = Address(address=address, panchayat=panchayat, district=district,city=city, pincode=pincode,landmark=landmark,user_id=cus_id)
+            add.save()
+            return redirect('payment')
+        else:
+            user= Address.objects.get(user_id=cus_id)
+            user.address=address
+            user.panchayat=panchayat
+            user.city=city
+            user.pin=pincode
+            user.landmark=landmark
+            user.save()
+            return redirect('payment')
 
+
+@method_decorator(user_login_required, name='dispatch')
 class Changepassword(View):
     def post(self, request):
         id = request.session.get('id')

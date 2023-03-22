@@ -63,7 +63,7 @@
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="{{user_imageURL}}" alt="Profile" class="rounded-circle">
+              <img src="{{user.imageURL}}" alt="Profile" class="rounded-circle">
               <h2>{{request.session.first_name}} {{request.session.last_name}}</h2>
               <h3>{{request.session.role}}</h3>
 <!--              <div class="social-links mt-2">-->
@@ -92,9 +92,9 @@
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
                 </li>
 
-<!--                <li class="nav-item">-->
-<!--                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>-->
-<!--                </li>-->
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#Address">Address</button>
+                </li>
 
                 <li class="nav-item">
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
@@ -140,15 +140,16 @@
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
-                  <form method="POST" action = "Updatecustomer" class="update-form" id="update-form">
+                  <form method="POST" action = "Updatecustomer" class="update-form" enctype="multipart/form-data" id="update-form">
                     {% csrf_token %}
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="{{user_imageURL}}" alt="Profile">
+                        <img src="{{user.imageURL}}" alt="Profile">
                         <div class="pt-2">
-                          <a input type="file" name="pimage" id="pImage" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                          <input type="file" name="p_image_select" placeholder="Select Image">
+                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                           <input type="file" name="pimage" id="pImage" autofocus="false" autocomplete="off" class="form-control" accept="image/x-png,image/gif,image/jpeg,image/HEIC" required > <br>
+
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
                         </div>
                       </div>
@@ -224,6 +225,62 @@
                   </form><!-- End Profile Edit Form -->
 
                 </div>
+                <div class="tab-pane fade profile-edit pt-3" id="Address">
+
+                  <!-- Profile Edit Form -->
+                  <form method="POST" action = "Addaddress" class="update-form" enctype="multipart/form-data" id="Address-form">
+                    {% csrf_token %}
+
+
+                    <div class="row mb-4">
+                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}">
+                      </div>
+                    </div>
+                        <div class="row mb-2">
+                      <label for="District" class="col-md-4 col-lg-3 col-form-label">District</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}">
+                      </div>
+                    </div>
+                      <div class="row mb-4">
+                      <label for="Panchayat" class="col-md-4 col-lg-3 col-form-label">Panchayat</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-4">
+                      <label for="city" class="col-md-4 col-lg-3 col-form-label">City</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}">
+                      </div>
+                    </div>
+                    <div class="row mb-4">
+                      <label for="landmark" class="col-md-4 col-lg-3 col-form-label">Landmark</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}">
+                      </div>
+                    </div>
+
+
+
+                     <div class="row mb-4">
+                      <label for="Pincode" class="col-md-4 col-lg-3 col-form-label">Pincode</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="pincode" type="text" class="form-control" id="Pincode" value="{{address.pin}}">
+                      </div>
+                    </div>
+
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form><!-- End Profile Edit Form -->
+
+                </div>
+
 
 <!--                <div class="tab-pane fade pt-3" id="profile-settings">-->
 

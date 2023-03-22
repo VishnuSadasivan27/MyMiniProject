@@ -11,8 +11,8 @@
 <center>
 <div class="row">
     <div class="col-lg-6">
-        <div class="box-element" id='form-wrapper'>
-<form method="POST" action = "Orderaddress" class="register-form" id="register-form">
+        <div class="box-element" id='form-wrapper' >
+       <form method="POST" action = "Orderaddress" class="register-form" id="register-form">
                     {% csrf_token %}
 
                 <div id="user-info">
@@ -20,7 +20,7 @@
                         <input required class="form-control" type="text" name="{{request.session.first_name}}" value="{{request.session.first_name}}" placeholder="{{request.session.first_name}}" readonly>
                     </div>
                     <div class="form-field">
-                    <input required class="form-control" type="email" name="{{request.session.email}}" value="{{request.session.email}}" placeholder="{{request.session.email}}" readonly>
+                        <input required class="form-control" type="email" name="{{request.session.email}}" value="{{request.session.email}}" placeholder="{{request.session.email}}" readonly>
                     </div>
                 </div>
                 <div id="shipping-info">
@@ -28,19 +28,28 @@
                     <p>Shipping Information:</p>
                     <hr>
                     <div class="form-field">
-                        <input class="form-control" type="text" name="address" placeholder="Address..">
+                        <input class="form-control" type="text" name="address" placeholder="Address" value="{{address.address}}">
                 </div>
+              <div class="form-field">
+                <input class="form-control" type="text" name="district"  placeholder="district" value="{{address.district}}">
+            </div>
+
 
                 <div class="form-field">
-                        <input class="form-control" type="text" name="panchayat"  placeholder="panchayat" >
+                        <input class="form-control" type="text" name="panchayat"  placeholder="Panchayat" value="{{address.panchayat}}">
+                    </div>
+
+
+                    <div class="form-field">
+                        <input class="form-control" type="text" name="city" placeholder="City" value="{{address.city}}">
+                    </div>
+
+                     <div class="form-field">
+                        <input class="form-control" type="text" name="landmark"  placeholder="landmark" value="{{address.landmark}}">
                     </div>
 
                     <div class="form-field">
-                        <input class="form-control" type="text" name="city" placeholder="city">
-                    </div>
-
-                    <div class="form-field">
-                        <input class="form-control" type="text" name="pincode" id=pincode onkeyup="pinValidation(this)"placeholder="Pin code.."
+                        <input class="form-control" type="text" name="pincode" id=pincode onkeyup="pinValidation(this)" placeholder="Pincode" value="{{address.pin}}"
                         oninvalid="setCustomValidity('Invalid pin')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30">
@@ -48,7 +57,7 @@
                     </div>
 
                     <div class="form-field">
-                    <input class="form-control" type="number" name="phone" placeholder="{{request.session.phone_no}}" onkeyup='phoneValidation(this)' required pattern="[6-9]{1}[0-9]{9}">
+                    <input class="form-control" type="number" name="phone" placeholder="Phone No:" value="{{request.session.phone_no}}"   onkeyup='phoneValidation(this)' required pattern="[6-9]{1}[0-9]{9}">
                     <span id="phone1" class="new" style="color:red;"></span>
                     </div>
                 </div>

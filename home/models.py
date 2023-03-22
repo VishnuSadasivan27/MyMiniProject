@@ -38,21 +38,6 @@ import uuid
 import datetime
 
 
-class Address(models.Model):
-    address = models.CharField(max_length=200)
-    dob = models.CharField(max_length=200)
-    district = models.CharField(max_length=200)
-    state = models.CharField(max_length=200)
-    landmark = models.CharField(max_length=200)
-    pin = models.CharField(max_length=200)
-    city = models.CharField(max_length=200)
-    idproof = models.ImageField(upload_to =  None)
-    image = models.ImageField(upload_to = None)
-
-class Review(models.Model):
-    date = models.DateField()
-    Description = models.CharField(max_length=200)
-
 
 class Registration(models.Model):
     first_name = models.CharField(max_length=200)
@@ -62,11 +47,38 @@ class Registration(models.Model):
     status = models.CharField(max_length=200,default="inactive")
     password = models.CharField(max_length=200)
     email = models.EmailField(unique=True, max_length=100)
-    user_image = models.ImageField(null=True, blank=True)
-    address = models.ForeignKey(Address, on_delete=models.CASCADE, max_length=100, null=True)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, max_length=100, null=True)
+    image = models.ImageField(default='default.png',upload_to = 'userimage/')
+
     def int(self):
         return self.id
+
+    @property
+    def imageURL(self):
+        try:
+            url = self.image.url
+        except:
+            url = ''
+        return url
+
+class Review(models.Model):
+    date = models.DateField()
+    Description = models.CharField(max_length=200)
+    user = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
+
+
+
+class Address(models.Model):
+    address = models.CharField(max_length=200)
+    district = models.CharField(max_length=200)
+    panchayat= models.CharField(max_length=200)
+    landmark = models.CharField(max_length=200)
+    pin = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    idproof = models.ImageField(upload_to =  None)
+    user = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
+
+
+
 
     # class Meta:
     #     ordering = ['-first_name']

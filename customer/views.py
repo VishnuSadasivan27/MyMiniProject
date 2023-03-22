@@ -4,14 +4,31 @@ import stripe
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.urls import reverse
+from home.decorators import user_login_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from home.models import MyProduct
 from customer.models import OrderItem,Cus_address
-
+from home.models import Address
 from django.shortcuts import redirect, render
 from home.views import Registration
 from customer.models import Order
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
+
+
+
+def user_login_required(function):
+    def wrapper(request, login_url='Login', *args, **kwargs):
+        if not 'email' in request.session:
+            return redirect(login_url)
+        else:
+            return function(request, *args, **kwargs)
+
+    return wrapper
+
+
+@method_decorator(user_login_required, name='dispatch')
 def plusqty(request,id):
     carts=OrderItem.objects.filter(id=id)
     print("hello",carts)
@@ -26,7 +43,8 @@ def plusqty(request,id):
         # messages.success(request, 'Out of Stock')
         return redirect('ViewCart')
 
-#minus
+
+@method_decorator(user_login_required, name='dispatch')
 def minusqty(request,id):
     carts=OrderItem.objects.filter(id=id)
     print("hello",carts)
@@ -40,7 +58,7 @@ def minusqty(request,id):
             return redirect('ViewCart')
         # messages.success(request, 'Out of Stock')
         return redirect('ViewCart')
-
+@method_decorator(user_login_required, name='dispatch')
 class Checkout(View):
     def get(self,request):
         id=request.session.get('id')
@@ -52,19 +70,27 @@ class Checkout(View):
         for i in carts:
             print(i)
             total +=int( i.total )
-
         print(total)
-        return render(request,'customer/checkout.html',{'total':total})
+        user=Registration.objects.get(id=id)
+        address=Address.objects.get(user_id=id)
+
+        return render(request,'customer/checkout.html',{'total':total,'user':user,'address':address})
+
+@method_decorator(user_login_required, name='dispatch')
 class Cart(View):
     def get(self, request):
-        return render(request, 'customer/cart.html')
-
+        user = Registration.objects.get(id=id)
+        return render(request, 'customer/cart.html',{'user':user})
+@method_decorator(user_login_required, name='dispatch')
 class Customerprofile(View):
     def get(self,request):
-        l_id=request.session.get('id')
-        print(l_id)
-        return render(request,'customer/customerprofile.html')
-
+        id=request.session.get('id')
+        user = Registration.objects.get(id=id)
+        address=Address.objects.get(user_id=id)
+        print(user)
+        context={'user':user,'address':address}
+        return render(request,'customer/customerprofile.html',context)
+@method_decorator(user_login_required, name='dispatch')
 class AddCart(View):
     def get(self, request,id):
             # cart = MyProduct.objects.filter(id=id)
@@ -84,6 +110,7 @@ class AddCart(View):
             # items = []
             # context = {'items': items}
             return redirect('ViewCart')
+@method_decorator(user_login_required, name='dispatch')
 class ViewCart(View):
     def get(self, request):
             # cart = MyProduct.objects.filter(id=id)
@@ -92,9 +119,9 @@ class ViewCart(View):
 
             print(cartitem)
             print(customer)
-            context = {'items': cartitem}
-            return render(request, 'customer/cart.html',context)
-
+            user = Registration.objects.get(id=customer)
+            return render(request, 'customer/cart.html',{'items': cartitem,'user':user})
+@method_decorator(user_login_required, name='dispatch')
 class RemoveCart(View):
     def get(self, request,id):
         cart_id= OrderItem.objects.get(id=id)
@@ -102,34 +129,44 @@ class RemoveCart(View):
         return redirect('ViewCart')
 
 
-
+@user_login_required
 def payment(request):
-
     id = request.session.get('id')
     carts = OrderItem.objects.filter(customer_id=id)
+    user = Registration.objects.get(id=id)
 
-    total = 0
+    total1 = 0
     for i in carts:
-        print(i)
-        total += int(i.total)
+        total1 += int(i.total)
+
+    total=total1*100
+
     stripe.api_key = settings.STRIPE_PRIVATE_KEY
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
-            'price':'price_1MgYfzSIFeJdW3Ax15HlhI8O',
+            'price_data': {
+                'currency': 'inr',
+                'unit_amount': total,
+                'product_data': {
+                    'name': 'Your Cart'
+                },
+            },
             'quantity': 1,
-
-          
         }],
         mode='payment',
-        success_url=request.build_absolute_uri(reverse('thanks'))+'?session_id = {CHECKOUT_SESSION_ID}',
+        success_url=request.build_absolute_uri(reverse('thanks')) + '?session_id={CHECKOUT_SESSION_ID}',
         cancel_url=request.build_absolute_uri(reverse('ViewCart')),
     )
+
     context = {
         'session_id': session.id,
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        'user': user,
+        'total': total
     }
     return render(request, 'customer/payment.html', context)
+@user_login_required
 def thanks(request):
     cus_id = request.session.get('id')
     cartitem = Cus_address.objects.filter(customer_id=cus_id)
@@ -137,27 +174,62 @@ def thanks(request):
     a=Order(customer_id=cus_id,complete=complete)
     print(cus_id,complete)
     a.save()
-    return render(request, 'customer/thanks.html')
-
+    user=Registration.objects.get(id=cus_id)
+    return render(request, 'customer/thanks.html',{'user':user})
+@method_decorator(user_login_required, name='dispatch')
 class Updatecustomer(View):
-    def post(self,request):
+    def post(self, request):
+        pimage = request.FILES.get("pimage")
         first_name = request.POST.get("firstname")
         last_name = request.POST.get("lastname")
         email = request.POST.get("email")
-        phone_no = request.POST.get("phone")
-        user_image = request.FILES.get("p_image_select")
-        print(first_name, last_name, email, phone_no,user_image)
-        id=request.session.get('id')
-        user = Registration.objects.filter(id=id)
-        user.update(first_name=first_name, last_name=last_name, phone_no=phone_no, email=email,user_image=user_image )
-
-        if user_image:
-            # Save the file to a folder
-            filename = default_storage.save('static/images' + ouser_image.name, user_image)
-            user_image_url = default_storage.url(filename)
-            print("785775869699690000000000000000000",user_image_url)
-            context={'user_image':user_image_url}
-        else:
-            context={'user_image':None}
-
+        phone_no = ','.join(request.POST.getlist("phone"))
+        print(first_name, last_name, email, phone_no, pimage)
+        id = request.session.get('id')
+        user = Registration.objects.get(id=id)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone_no = phone_no
+        user.email = email
+        user.image = pimage
+        user.save()
+        print(user.image)
+        context = {'user': user}
         return render(request,'customer/customerprofile.html',context)
+@method_decorator(user_login_required, name='dispatch')
+class Addaddress(View):
+    def post(self, request):
+        id = request.session['id']
+        if not Address.objects.filter(user_id=id).exists():
+            address = request.POST.get("Address")
+            District = request.POST.get("District")
+            panchayat = request.POST.get("panchayat")
+            city = request.POST.get("city")
+            landmark = request.POST.get("landmark")
+            pincode = request.POST.get("pincode")
+
+            r=Address(address=address,district=District,panchayat=panchayat,city=city,landmark=landmark,pin=pincode,user_id=id)
+            r.save()
+            address = Address.objects.get(user_id=id)
+            user = Registration.objects.get(id=id)
+            context={'address':address,'user':user}
+            return render(request, 'customer/customerprofile.html', context)
+        else:
+            address = request.POST.get("Address")
+            District = request.POST.get("District")
+            panchayat = request.POST.get("panchayat")
+            city = request.POST.get("city")
+            landmark = request.POST.get("landmark")
+            pincode = request.POST.get("pincode")
+            user = Address.objects.get(user_id=id)
+            user.address = address
+            user.district = District
+            user.panchayat = panchayat
+            user.city = city
+            user.landmark = landmark
+            user.pin=pincode
+            user.save()
+            address = Address.objects.get(user_id=id)
+            user = Registration.objects.get(id=id)
+            context={'address':address,'user':user}
+            return render(request, 'customer/customerprofile.html', context)

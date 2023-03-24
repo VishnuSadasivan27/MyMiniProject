@@ -28,7 +28,7 @@ def user_login_required(function):
     return wrapper
 
 
-@method_decorator(user_login_required, name='dispatch')
+@user_login_required
 def plusqty(request,id):
     carts=OrderItem.objects.filter(id=id)
     print("hello",carts)
@@ -44,7 +44,7 @@ def plusqty(request,id):
         return redirect('ViewCart')
 
 
-@method_decorator(user_login_required, name='dispatch')
+@user_login_required
 def minusqty(request,id):
     carts=OrderItem.objects.filter(id=id)
     print("hello",carts)

@@ -5,7 +5,6 @@ from home.models import MyProduct
 from django.shortcuts import redirect, render
 from home.models import Registration
 
-# Create your views here.
 class Addproduct(View):
     def get(self,request):
         return render(request,'farmer/product_add.html')
@@ -24,6 +23,9 @@ class ProductAdd(View):
         r.save()
         return HttpResponse("<script>alert('Product Added');window.location='/farmer/Addproduct';</script>")
         return render(request, 'farmer/product_add.html')
+
+
+
 
 class Farmerprofile(View):
     def get(self,request):

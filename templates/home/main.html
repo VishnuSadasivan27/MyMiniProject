@@ -29,6 +29,78 @@
 
   <!-- Template Main CSS File -->
   <link href="{% static 'admin/assets/css/style.css' %}" rel="stylesheet">
+  <style>
+   .result-search-box {
+        position: relative;
+        padding-left: 50px;
+    }
+
+    .result-display-box {
+        position: absolute;
+        max-height: 350px;
+        overflow-y: scroll;
+        background: white;
+        overflow-x: hidden;
+        width: 24.7%;
+        font-size: 13px;
+        border-radius: 0px 0px 5px 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5), 0 1px 5px rgba(0, 0, 0, 0.0) inset;
+        top: 50px;
+    }
+
+
+    /* width */
+
+    .result-display-box::-webkit-scrollbar {
+        width: 13px;
+    }
+
+    .result-display-box::-webkit-scrollbar-thumb {
+        background: #131F8E;
+        border-radius: 5px;
+        height: 100px;
+        scroll-behavior: smooth;
+    }
+
+
+    /* Handle on hover */
+
+    .result-display-box::-webkit-scrollbar-thumb:hover {
+        background: #00095B;
+    }
+
+    .result-hide {
+        display: none;
+    }
+
+    .result-show {
+        display: block;
+    }
+
+    .search-result-row{
+      display: flex;
+      align-content: center;
+      align-items: center;
+      align-self: center;
+      padding: 5px;
+    }
+
+    .search-result-row:hover{
+        background: lightgrey;
+        cursor: pointer;
+    }
+
+    .search-result-row img {
+        max-height: 50px;
+        border-radius: 0px;
+    }
+
+    .search-result-row p {
+        margin-left: 10px;
+        font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
 
 
   <!-- =======================================================
@@ -59,7 +131,7 @@
   </script>
 </head>
 
-<body>
+<body class="body-class">
 
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
@@ -82,7 +154,9 @@
     <div class="search-bar">
       <form class="search-form d-flex align-items-center" method="get" action="{% url 'searchbar' %}">
         {% csrf_token %}
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <input type="text" id="result-search-bar" placeholder="Search..." name="text" onkeyup="searchFunc(this.value)">
+        <div class="result-display-box result-hide" id="db">
+        </div>
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
     </div><!-- End Search Bar -->
@@ -471,9 +545,9 @@
 <!--        </div>&lt;!&ndash; End Right side columns &ndash;&gt;-->
 
 <!--      </div>-->
-    </section>
+<!--    </section>-->
 
-  </main><!-- End #main -->
+<!--  </main>&lt;!&ndash; End #main &ndash;&gt;-->
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
@@ -500,10 +574,95 @@
   <script src="{% static 'admin/assets/vendor/simple-datatables/simple-datatables.js' %}"></script>
   <script src="{% static 'admin/assets/vendor/tinymce/tinymce.min.js' %}"></script>
   <script src="{% static 'admin/assets/vendor/php-email-form/validate.js' %}"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <!-- Template Main JS File -->
  <script type="text/javascript" src="{% static 'cart.js' %}" ></script>
   <script src="{% static 'admin/assets/js/main.js' %}"></script>
+<script>
+// function searchFunc(val){
+//   console.log("searchFunc called with value: " + val);
+//   $.ajax({
+//     url:"/searchbar1/",
+//     method:"GET",
+//     data:{text:val},
+//     success:function(data){
+//       // Show the search results container
+//       var element = document.getElementById("db");
+//       element.classList.remove("result-hide");
+//       element.classList.add("result-show");
+//       $(".result-display-box").html("jghkj");
+      // Clear any previous search results
+      // $(".result-search-box").empty();
+
+      // Loop through each search result and create an image element for each
+      // for (var i = 0; i < data.datas.length; i++) {
+      //   var imageURL = data.datas[i].imageURL;
+      //   var imageElement = $("<img src='" + imageURL + "'/>");
+      //   $(".result-search-box").append(imageElement);
+      // }
+  //   },
+  //   error:function(xhr, status, error){
+  //     console.log("The error is : "+error);
+  //   }
+  // });
+// }
+
+
+    function searchFunc(val){
+
+        var element = document.getElementById("db");
+        element.classList.remove("result-hide");
+        element.classList.add("result-show");
+
+        if(val!=""){
+            console.log("The changed class name are : "+element.classList);
+
+            $.ajax({
+                url:"/searchbar1/",
+                method:"GET",
+                data:{text:val},
+                success:function(data){
+                    $(".result-display-box").empty();
+                  for(let i=0; i < data.datas.length; i++){
+                      var res= data.datas[i];
+
+                      console.log("The product name : "+res[1]);
+                      var form= $("<form class='searchItemForm' onclick='submitForm ("+i+")'></form>");
+                      var id= res[0];
+                      form.attr("method", "GET");
+                      form.attr("action", "{% url 'searchbar_id' %}");
+                      var contentdiv= $(".result-display-box");
+                      var item_id= $("<input type='text' name='search_id' id='search_id' value='"+res[0]+"' hidden>");
+                      var newDiv= $("<div class='search-result-row'></div>");
+                      var res_img= $("<img src='"+res[6]+"' alt='"+res[1]+"'>");
+                      var res_name= $("<p>"+res[1]+" (Rs. "+res[3]+")</p>");
+                      newDiv.append(res_img);
+                      newDiv.append(item_id)
+                      newDiv.append(res_name);
+                      form.append(newDiv);
+                      contentdiv.append(form);
+                  }
+                  console.log("working.....\nThe data is : "+data.datas.length);
+                },
+                error:function(xhr, status, error){
+                  // alert("error : "+e);
+                  const values = Object.values(xhr);
+                  console.log("The error is : "+xhr.responseText);
+                }
+            })
+        }
+        else{
+            element.classList.remove("result-show");
+            element.classList.add("result-hide");
+        }
+    }
+
+    function submitForm(i){
+        document.getElementsByClassName('searchItemForm')[i]    .submit ();
+    }
+
+</script>
+
 
 </body>
 

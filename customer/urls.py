@@ -9,10 +9,10 @@ urlpatterns = [
    path('ViewCart',ViewCart.as_view(), name='ViewCart'),
    # path('Orderaddress',Orderaddress.as_view(), name='Orderaddress'),
    path('RemoveCart/<id>/',RemoveCart.as_view(), name='RemoveCart'),
-   path('plusqty/<int:id>/',views.plusqty,name='plusqty'),
+   path('plusqty/',views.plusqty,name='plusqty'),
    path('payment',views.payment,name='payment'),
    path('Updatecustomer',Updatecustomer.as_view(),name='Updatecustomer'),
-   path('minusqty/<int:id>/',views.minusqty,name='minusqty'),
+   path('minusqty/',views.minusqty,name='minusqty'),
    path('cart',Cart.as_view(), name='Cart'),
    path('Checkout',Checkout.as_view() , name='Checkout'),
 ]

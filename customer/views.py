@@ -1,6 +1,9 @@
+from _decimal import Decimal
 from django.http.response import HttpResponse
 from django.views import View
 import stripe
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.urls import reverse
@@ -14,6 +17,8 @@ from home.models import Address
 from django.shortcuts import redirect, render
 from home.views import Registration
 from customer.models import Order
+
+from django.views.decorators.csrf import csrf_protect
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
@@ -28,8 +33,60 @@ def user_login_required(function):
     return wrapper
 
 
+@csrf_protect
+def plusqty(request):
+    id = request.POST.get('ids')
+    print("my id is",id)
+    user = request.session.get('id')
+    carts = OrderItem.objects.filter(customer_id=user)
+    cart = get_object_or_404(OrderItem, id=id)
+
+    if int(cart.product.quantity) > cart.quantity:
+        cart.quantity += 1
+        cart.total = Decimal(str(cart.quantity)) * Decimal(str(cart.product.price))
+        print(cart.total)
+        print(cart.quantity)
+        cart.save()
+        total1= 0
+        for i in carts:
+            print(i)
+            total1 += int(i.total)
+        print("The rotal",total1)
+        shipping = total1 + 50
+
+        data = {'quantity': cart.quantity, 'total': cart.total, 'total1': total1, 'shipping': shipping}
+        return JsonResponse(data)
+    else:
+        data = {'error': 'Out of Stock'}
+        return JsonResponse(data, status=400)
+
+def minusqty(request):
+    id = request.POST.get('ids')
+    print("my id is",id)
+    user = request.session.get('id')
+    carts = OrderItem.objects.filter(customer_id=user)
+    cart = get_object_or_404(OrderItem, id=id)
+
+    if int(cart.product.quantity) > 1:
+        cart.quantity -= 1
+        cart.total = Decimal(str(cart.quantity)) * Decimal(str(cart.product.price))
+        print(cart.total)
+        print(cart.quantity)
+        cart.save()
+        total1 = 0
+        for i in carts:
+            print(i)
+            total1 += int(i.total)
+        print("The rotal", total1)
+        shipping=total1+50
+
+        data = {'quantity': cart.quantity, 'total': cart.total, 'total1': total1,'shipping':shipping}
+        return JsonResponse(data)
+    else:
+        data = {'error': 'Out of Stock'}
+        return JsonResponse(data, status=400)
 @user_login_required
-def plusqty(request,id):
+def plusqty1(request,id):
     carts=OrderItem.objects.filter(id=id)
     print("hello",carts)
     for cart in carts:
@@ -44,20 +101,22 @@ def plusqty(request,id):
         return redirect('ViewCart')
 
 
-@user_login_required
-def minusqty(request,id):
-    carts=OrderItem.objects.filter(id=id)
-    print("hello",carts)
-    for cart in carts:
 
-        if int(cart.quantity) > 1:
-            cart.quantity =cart.quantity-1;
-            cart.total = int(cart.quantity) * int(cart.product.price)
 
-            cart.save()
-            return redirect('ViewCart')
-        # messages.success(request, 'Out of Stock')
-        return redirect('ViewCart')
+# @user_login_required
+# def minusqty(request,id):
+#     carts=OrderItem.objects.filter(id=id)
+#     print("hello",carts)
+#     for cart in carts:
+#
+#         if int(cart.quantity) > 1:
+#             cart.quantity =cart.quantity-1;
+#             cart.total = int(cart.quantity) * int(cart.product.price)
+#
+#             cart.save()
+#             return redirect('ViewCart')
+#         # messages.success(request, 'Out of Stock')
+#         return redirect('ViewCart')
 @method_decorator(user_login_required, name='dispatch')
 class Checkout(View):
     def get(self,request):
@@ -119,8 +178,12 @@ class ViewCart(View):
 
             print(cartitem)
             print(customer)
+            total1=0
+            for i in cartitem:
+                total1 += int(i.total)
+            shipping = total1 + 50
             user = Registration.objects.get(id=customer)
-            return render(request, 'customer/cart.html',{'items': cartitem,'user':user})
+            return render(request, 'customer/cart.html',{'items': cartitem,'user':user,'total1':total1,'shipping':shipping})
 @method_decorator(user_login_required, name='dispatch')
 class RemoveCart(View):
     def get(self, request,id):

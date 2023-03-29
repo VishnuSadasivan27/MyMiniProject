@@ -60,10 +60,7 @@ class Registration(models.Model):
             url = ''
         return url
 
-class Review(models.Model):
-    date = models.DateField()
-    Description = models.CharField(max_length=200)
-    user = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
+
 
 
 
@@ -73,6 +70,7 @@ class Address(models.Model):
     panchayat= models.CharField(max_length=200)
     landmark = models.CharField(max_length=200)
     pin = models.CharField(max_length=200)
+    Aadhar = models.ImageField(default='default.png',upload_to = 'userimage/')
     city = models.CharField(max_length=200)
     idproof = models.ImageField(upload_to =  None)
     user = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
@@ -96,14 +94,26 @@ class Address(models.Model):
 #     expirydate = models.DateField("expirydate")
 #     review = models.ForeignKey(Review, on_delete=models.CASCADE, max_length=100, null=True)
 
+class Catagory(models.Model):
+    catagory_name = models.CharField(max_length = 200,null=True)
+    catagory_image= models.ImageField(default='default.png',upload_to = 'catagory/')
+    discription = models.CharField(max_length=100,null=True)
+    @property
+    def imageURL(self):
+        try:
+            url = self.catagory_image.url
+        except:
+            url = ''
+        return url
+
 class MyProduct(models.Model):
     Product_name = models.CharField(max_length = 200,null=True)
     price = models.CharField(max_length=100,null=True)
     quantity = models.CharField(max_length=100,null=True)
     image = models.ImageField(null=True, blank=True)
+    catagory= models.ForeignKey(Catagory, on_delete=models.CASCADE, max_length=100, null=True)
     adddate = models.DateField("adddate",null=True)
     expirydate = models.DateField("expirydate",null=True)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, max_length=100, null=True)
     farmer = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
 
     def __str__(self):
@@ -117,7 +127,12 @@ class MyProduct(models.Model):
             url = ''
         return url
 
-
+class Review(models.Model):
+    date = models.DateField()
+    Description = models.CharField(max_length=200)
+    rating= models.CharField(max_length=200)
+    product= models.ForeignKey(MyProduct, on_delete=models.CASCADE, max_length=100, null=True)
+    user = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
 
 
 

@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
-from Admins.views import Farmer_approve,Customerview,Farmerview,Activate,Deactivate,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
+from Admins.views import Farmer_approve,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
 urlpatterns = [
    path('Farmer_approval',Farmer_approve.as_view(),name='Farmer_approval'),
    path('Customerview',Customerview.as_view(),name='Customerview'),
+   path('Addcatagory',Addcatagory.as_view(),name='Addcatagory'),
    path('Deletecustomer',Deletedcustomer.as_view(),name='Deletecustomer'),
    path('Farmerview',Farmerview.as_view(),name='Farmerview'),
    path('Delivaryboyview',Delivaryboyview.as_view(),name='Delivaryboyview'),
@@ -21,4 +22,8 @@ urlpatterns = [
    path('Deliboysearchbar/', views.Deliboysearchbar, name='Deliboysearchbar'),
    path('customerdsearchbar/', views.customerdsearchbar, name='customerdsearchbar'),
    path('Adminprofile/', Adminprofile.as_view(), name='Adminprofile'),
-   ]
+   path('Uploadcatagory',Uploadcatagory.as_view(),name='Uploadcatagory'),
+   path('Viewcatagory', Viewcatagory.as_view(), name='Viewcatagory'),
+   path('RemoveCatagory/', RemoveCatagory.as_view(), name='RemoveCatagory'),
+
+]

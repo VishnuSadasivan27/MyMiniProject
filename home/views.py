@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from customer.models import Order, Cus_address
-from home.models import Registration, MyProduct, AdminLogin, Address
+from home.models import Registration, MyProduct, AdminLogin, Address,Catagory
 from customer.models import OrderItem
 
 
@@ -24,6 +24,7 @@ from customer.models import OrderItem
 # from home.models import Users
 # from django.contrib.auth.models import User
 # Create your views here.
+
 def updateItem(request):
     data = json.loads(request.data)
     ProductId = data['ProductId']
@@ -152,7 +153,14 @@ def store(request):
 #         items = []
 #     context = {'items': items}
 #     return render(request, 'store/cart.html', context)
-
+@method_decorator(user_login_required, name='dispatch')
+class Catagorydisplay(View):
+    def get(self, request):
+        catagory=Catagory.objects.all()
+        id = request.session['id']
+        user = Registration.objects.get(id=id)
+        print(user.image)
+        return render(request, 'customer/catagorypage.html', {'catagory':catagory,'user':user})
 
 # customer registration
 class CustomerRegistration(View):
@@ -272,7 +280,7 @@ class LoginPage(View):
                 request.session['id'] = admin.id
 
                 messages.warning(request, 'Successfully Logged')
-                return redirect('store')
+                return redirect('Catagorydisplay')
         elif Registration.objects.filter(email=username, password=password, role='Farmer').exists():
             if Registration.objects.filter(email=username, password=password, status='active').exists():
                 farmer_login = Registration.objects.filter(email=username, password=password)

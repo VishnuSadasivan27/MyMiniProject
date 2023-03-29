@@ -40,46 +40,39 @@
 <p class="mb-3">EXPIRY DATE: {{item.product.expirydate}}</p>
 
 </div>
-<!-- quantity inc dec  -->
+
 <div class="col-6">
 <ul class="pagination justify-content-end set_quantity">
 <li class="page-item">
-<!--	<a href="minusqty' item.id %}">-->
+
 <button class="minus-btn" data-id="{{ item.id }}">
 <i class="fas fa-minus"></i> </button></a>
 </li>
-<!--<li class="page-item"><input type="text"  value="" id="retrievevalue" ></li>-->
-  <h5><span class="quantity-input" data-id="{{ item.id }}">{{ item.quantity }}</span></h5>
+
+  <span class="quantity-input" data-id="{{ item.id }}">{{ item.quantity }}</span>
 
 
 <li class="page-item">
-<!--<a href="{'plusqty' item.id %}">-->
-{% csrf_token %}
-<!--<button class="plus-btn" data-id="{{ item.id }}">+</button>-->
-<!--<input type="number" class="quantity-input" name="quantity" value="{{ car.quantity }}" readonly>-->
-<!--<span class="total-price" id="result">{{item.total}}</span>-->
 
 <button class="plus-btn" data-id="{{ item.id }}"> <i class="fas fa-plus"></i></button>
-<!--</a>-->
-
-<!--<button class="plus-btn" >+</button>-->
-<!--<input type="number" readonly>-->
 
 </li>
 </ul>
 </div>
 </div>
 <!-- //remover move and price -->
-<div class="row">
+<!--	{% csrf_token%}-->
+<div class="row" data-id="{{ item.id }}">
 <div class="col-8 d-flex justify-content-between remove_wish">
-	<p><a href="{% url 'RemoveCart' item.id %}"></a><i class="fas fa-trash-alt" ></i><a href="{% url 'RemoveCart' item.id %}"> REMOVE ITEM</p></a>
+	<p><a href=""></a><i class="fas fa-trash-alt"  data-id="{{ item.id }}">
+
+	</i><a href="" class= "removeitem" data-id="{{ item.id }}"> REMOVE ITEM</a>
 <!--<p><i class="fas fa-heart"></i>MOVE TO WISH LIST </p>-->
 </div>
+
+
 	{% csrf_token%}
-<!--<div class="quantity-input" name="quantity" value="{{ item.id }}" >-->
-<!--<h3>Rs.<span id="result">{{item.total}}</span></h3>-->
-<!--&lt;!&ndash;	"itemval{{item.product.id}}"&ndash;&gt;-->
-<!--</div>-->
+
 	<div class="ha" name="quantity" value="{{ item.id }}">
 <!--  <input type="text" name="quantity" value="{{ item.quantity }}" class="quantity" data-id="{{ item.id }}" readonly>-->
   <h3>Rs.<span class="total-price" data-id="{{ item.id }}">{{ item.total }}</span></h3>
@@ -95,10 +88,6 @@
 <div class="card p-4">
 <div class="row">
 	{% endfor %}
-<!-- cart images div-->
-<!--<div class="col-md-5 col-11 mx-auto bg-light d-flex justify-content-center align-items-center shadow product_img">-->
-<!--<img src="images/img3.png" class="img-fluid" alt="cart img">-->
-<!--</div>-->
 
 
 
@@ -109,32 +98,17 @@
 <!-- product name  -->
 <div class="col-6 card-title">
 <h1 class="mb-4 product_name"></h1>
-<!--<p class="mb-2"></p>-->
-<!--<p class="mb-2">COLOR: Green</p>-->
-<!--<p class="mb-3">SIZE: M</p>-->
-<!--</div>-->
-<!--&lt;!&ndash; quantity inc dec &ndash;&gt;-->
-<!--<div class="col-6">-->
-<!--<ul class="pagination justify-content-end set_quantity">-->
-<!--<li class="page-item">-->
-<!--<button class="page-link " onclick="decreaseNumber('textbox1','itemval1')"> <i class="fas fa-minus"></i> </button>-->
-<!--</li>-->
-<!--<li class="page-item"><input type="text" name="" class="page-link" value="0" id="textbox1" >-->
-<!--</li>-->
-<!--<li class="page-item">-->
-<!--<button class="page-link" onclick="increaseNumber('textbox1','itemval1')"> <i class="fas fa-plus"></i></button>-->
-<!--</li>-->
+
 </ul>
 </div>
 </div>
 <!-- //remover move and price -->
 <div class="row">
 <div class="col-8 d-flex justify-content-between remove_wish">
-<!--<p><i class="fas fa-trash-alt"></i> REMOVE ITEM</p>-->
-<!--<p><i class="fas fa-heart"></i>MOVE TO WISH LIST </p>-->
+
 </div>
 <div class="col-4 d-flex justify-content-end price_money">
-<!--<h3>$<span id="itemval1">0.00 </span> </h3>-->
+
 </div>
 </div>
 </div>
@@ -147,8 +121,7 @@
 <h2 class="product_name mb-5">The Total Amount Of</h2>
 <div class="price_indiv d-flex justify-content-between">
 <p>Product amount</p>
-
-<p>$<span id="result">{{total1}}</span></p>
+<p>$<span id="result">{{total1}}</span>
 
 </div>
 <div class="price_indiv d-flex justify-content-between">
@@ -311,6 +284,35 @@
 	});
 </script>
 
+
+
+<script>
+	$(document).on('click', '.removeitem', function() {
+		var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+		var id = $(this).data('id');
+		console.log("The product quantity: " + id);
+		$.ajax({
+			url: '/customerRemoveCart/',
+			type: 'POST',
+			data: {'ids': id},
+			headers: { "X-CSRFToken": csrftoken },
+			success: function(data) {
+
+				$('.uniquetotal-price[data-id="' + id + '"]').text(data.total1);
+				$('.shipping-price[data-id="' + id + '"]').text(data.shipping)
+				$('#result').text(data.total1);
+				$('#result1').text(data.shipping);
+
+
+				console.log("The product total: " + data.total1);
+				console.log("The product total: " + data.shipping);
+			},
+			error: function(xhr, status, error) {
+				alert(xhr.responseJSON.error);
+			}
+		});
+	});
+</script>
 
 
 

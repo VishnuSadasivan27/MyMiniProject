@@ -129,6 +129,7 @@ class Checkout(View):
         for i in carts:
             print(i)
             total +=int( i.total )
+        total=total+50
         print(total)
         user=Registration.objects.get(id=id)
         address=Address.objects.get(user_id=id)
@@ -186,10 +187,20 @@ class ViewCart(View):
             return render(request, 'customer/cart.html',{'items': cartitem,'user':user,'total1':total1,'shipping':shipping})
 @method_decorator(user_login_required, name='dispatch')
 class RemoveCart(View):
-    def get(self, request,id):
-        cart_id= OrderItem.objects.get(id=id)
+    def post(self, request):
+        id = request.POST.get('ids')
+        print("remove item id",id)
+        customer=request.session.get('id')
+        cart_id= OrderItem.objects.filter(id=id)
+        cart = OrderItem.objects.filter(customer_id=customer)
         cart_id.delete()
-        return redirect('ViewCart')
+        total1 = 0
+        for i in cart:
+            total1 += int(i.total)
+        shipping = total1 + 50
+        print(shipping)
+        data={'total1':total1,'shipping':shipping}
+        return JsonResponse(data)
 
 
 @user_login_required
@@ -202,7 +213,7 @@ def payment(request):
     for i in carts:
         total1 += int(i.total)
 
-    total=total1*100
+    total=(total1*100)+50
 
     stripe.api_key = settings.STRIPE_PRIVATE_KEY
     session = stripe.checkout.Session.create(

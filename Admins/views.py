@@ -1,7 +1,8 @@
 from django.http.response import HttpResponse
 from django.views import View
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from home.models import Registration
+from home.models import Registration,Catagory
 from django.contrib import messages
 from django.db.models import Q
 from customer.models import Order
@@ -11,6 +12,11 @@ class Farmer_approve(View):
     def get(self,request):
         values = Registration.objects.filter(role='Farmer',status="inactive").values()
         return render(request,'admin/Farmer_approve.html',{'values':values})
+
+class Addcatagory(View):
+    def get(self,request):
+
+        return render(request,'admin/catagory.html')
 class Deliboyapprove(View):
     def get(self,request):
         values = Registration.objects.filter(role='Delivery_Boy',status="inactive").values()
@@ -161,5 +167,31 @@ class Adminprofile(View):
     def get(self,request):
         return render(request,'admin/adminprofile.html')
 
+class Uploadcatagory(View):
+    def post(self,request):
+        if request.method == 'POST':
+            catagoryname=request.POST.get('cataname')
+            description=request.POST.get('discription')
+            cataimage=request.FILES.get('cataimage')
+            cata=Catagory(catagory_name=catagoryname,catagory_image=cataimage,discription=description)
+            cata.save()
+            return HttpResponse("<script>alert('Product is Added');window.location='/adminhome/';</script>")
+
+            return redirect('')
+
+class Viewcatagory(View):
+    def get(self,request):
+        catas=Catagory.objects.all()
+        return render(request,'admin/catagoryview.html',{'catas':catas})
+
+class RemoveCatagory(View):
+    def post(self, request):
+        id = request.POST.get('ids')
+        print("remove item id",id)
+        cata_id= Catagory.objects.filter(id=id)
+
+        cata_id.delete()
+        data={'data':"succees"}
+        return JsonResponse(data)
 
 

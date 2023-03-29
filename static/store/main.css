@@ -12,3 +12,13 @@ h2 { color: var(--text-clr); font-size: 1.5rem; } .main_cart { background: #fff;
 .page-link:hover { text-decoration: none; color: #495057; outline: none !important; }
 .page-link:focus { box-shadow: none; }
 .price_indiv p { font-size: 1.1rem; } .fa-heart:hover { color: red; }
+span.quantity-input {
+  display: inline-block;
+  padding: 10px 30px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #333;
+  border: 2px solid #333;
+  border-radius: 40px;
+  background-color: #f7f7f7;
+}

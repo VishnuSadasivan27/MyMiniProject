@@ -5,9 +5,22 @@
     <link rel="stylesheet" type="text/css" href="{% static 'store/storemain.css' %}">
 <style>
     img.thumbnail{
-    margin-top:55px;
-    margin-right:25px;
+
     }
+	.col-lg-4{
+		            width: 30%;
+                    margin: 15px;
+                    box-sizing: border-box;
+                    float:left;
+                    text-align:center;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    padding-top: 10px;
+                    box-shadow:0 14px 28px rgba(0,0,0,0),
+                    0 10px 10px rgba(0,0,0,0.22);
+                    transition: .4s;
+                    background: #f2f2f2;
+	}
 </style>
     <div class="row">
 <!--		 <form method="POST" action = "loginpage/" class="login-form" id="login-form">-->
@@ -17,11 +30,11 @@
 			<img class="thumbnail" src="{{data.imageURL}}">
 		    <div class="box-element product">
 
-			    <h6><strong>Name:{{data.Product_name}}</strong></h6>
+			    <h6><strong>{{data.Product_name}}</strong></h6>
 			    <hr>
 				<h6><strong>Quantity:{{data.quantity}} &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Addded Date:{{data.adddate}}  </strong></h6>
 				<hr>
-				<h6><strong >Expiry Date:{{data.expirydate}}</strong></h6>
+				<h6><strong >Expiry:{{data.expirydate}}</strong></h6>
 				<hr>
 <!--				<h6><strong></strong></h6>-->
 <!--				<hr>-->

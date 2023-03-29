@@ -112,7 +112,7 @@ class MyProduct(models.Model):
     quantity = models.CharField(max_length=100,null=True)
     image = models.ImageField(null=True, blank=True)
     catagory= models.ForeignKey(Catagory, on_delete=models.CASCADE, max_length=100, null=True)
-    adddate = models.DateField("adddate",null=True)
+    adddate = models.DateField(auto_now_add=True)
     expirydate = models.DateField("expirydate",null=True)
     farmer = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
 

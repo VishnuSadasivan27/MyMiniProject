@@ -25,7 +25,9 @@
 
   <link rel="stylesheet" href="{% static 'admins/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <div class="content-wrapper">
+
+
+<div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -63,12 +65,12 @@
             <div class="inner">
               <h3>53<sup style="font-size: 20px">%</sup></h3>
 
-                <p><b>View my Products</b></p>
+                <p><b>Predict my product</b></p>
             </div>
             <div class="icon">
               <i class="ion ion-person-add"></i>
             </div>
-            <a href="" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
+            <a href="{% url 'Predictproduct' %}" class="small-box-footer">Click here <i class="fa fa-arrow-circle-right"></i></a>
           </div>
         </div>
 

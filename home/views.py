@@ -135,10 +135,10 @@ def signup(request):
 
 
 @user_login_required
-def store(request):
-    datas = MyProduct.objects.all()
-    id = request.session['id']
-    user = Registration.objects.get(id=id)
+def store(request,id):
+    datas = MyProduct.objects.filter(catagory_id=id)
+    person = request.session['id']
+    user = Registration.objects.get(id=person)
     print(user.image)
     return render(request, 'home/store.html', {'datas': datas, 'user': user})
 
@@ -304,7 +304,7 @@ class LoginPage(View):
             else:
                 return HttpResponse("<script>alert('Please wait for approval');window.location='/Login/';</script>")
         elif Registration.objects.filter(email=username, password=password, role='Delivery_Boy').exists():
-            if Registration.objects.filter(email=username, password=password, status='active').exists():
+            if Registration.objects.filter(email=username, password=password).exists():
                 deli_login = Registration.objects.filter(email=username, password=password)
                 print(deli_login)
                 for admin in deli_login:
@@ -326,8 +326,7 @@ class LoginPage(View):
             else:
                 return HttpResponse("<script>alert('Please wait for approval');window.location='/Login/';</script>")
         else:
-            return HttpResponse(
-                "<script>alert('Unsuccessfull..Invalid credential');window.location='/Login/';</script>")
+            return HttpResponse("<script>alert('Unsuccessfull..Invalid credential');window.location='/Login/';</script>")
             error = "Invalid Username or Password"
             return render(request, "home/error.html", {'error': error})
 

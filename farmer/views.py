@@ -3,23 +3,36 @@ from django.http.response import HttpResponse
 from django.views import View
 from home.models import MyProduct
 from django.shortcuts import redirect, render
-from home.models import Registration
+from home.models import Registration,Catagory
+import subprocess
+
+def Predictproduct(request):
+    # run your machine learning script using subprocess
+    subprocess.run(['python', 'farmer/Machine_learning_knn.py'])
+    return render(request, 'home/farmerhome.html')
 
 class Addproduct(View):
     def get(self,request):
-        return render(request,'farmer/product_add.html')
+        mycat=Catagory.objects.all()
+
+        return render(request,'farmer/product_add.html',{'mycat':mycat})
 
 
 class ProductAdd(View):
     def post(self, request):
-        Product_name = request.POST.get("pname")
-        price = request.POST.get("pprice")
+        Product_name = request.POST.get("product_name")
+        price = request.POST.get("price")
         quantity = request.POST.get("quantity")
-        image = request.FILES.get("pimage")
-        adddate = request.POST.get("adddate")
+        image = request.FILES.get("primage")
         expirydate = request.POST.get("expiry")
-        print(Product_name, price, quantity, image, adddate, expirydate)
-        r = MyProduct(Product_name=Product_name , price=price, quantity=quantity, image=image, adddate=adddate,expirydate=expirydate)
+        catagory= request.POST.get("catagory")
+        print(Product_name, price, quantity, image, catagory, expirydate)
+        data=Catagory.objects.filter(catagory_name=catagory).values('id').get()['id']
+        cataid=Catagory.objects.get(id=data)
+        print(cataid)
+        id=request.session.get('id')
+        user = Registration.objects.get(id=id)
+        r = MyProduct(Product_name=Product_name , price=price, quantity=quantity, image=image,expirydate=expirydate,catagory=cataid,farmer=user)
         r.save()
         return HttpResponse("<script>alert('Product Added');window.location='/farmer/Addproduct';</script>")
         return render(request, 'farmer/product_add.html')

@@ -6,7 +6,7 @@ from customer.views import Customerprofile,AddCart,Checkout,Cart,ViewCart,Remove
 urlpatterns = [
    path('customerprofile',Customerprofile.as_view(),name='Customerprofile'),
    path('AddCart/<id>/',AddCart.as_view(), name='AddCart'),
-   path('ViewCart',ViewCart.as_view(), name='ViewCart'),
+   path('/ViewCart',ViewCart.as_view(), name='ViewCart'),
    # path('Orderaddress',Orderaddress.as_view(), name='Orderaddress'),
    path('RemoveCart/',RemoveCart.as_view(), name='RemoveCart'),
    path('plusqty/',views.plusqty,name='plusqty'),

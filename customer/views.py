@@ -157,19 +157,19 @@ class AddCart(View):
             customer = request.session.get('id')
             # print(cart)
             print(customer)
-            addcart=OrderItem(product_id=id,customer_id=customer)
-            addcart.total=int(addcart.total)+int(addcart.product.price)
+            if OrderItem.objects.filter(product_id=id).exists():
+                return HttpResponse("<script>alert('Products already exists in cart');window.location='/customer/ViewCart';</script>")
+            else:
+                addcart=OrderItem(product_id=id,customer_id=customer)
+                addcart.total=int(addcart.total)+int(addcart.product.price)
 
-            addcart.totalproductcost = int(addcart.totalproductcost) + int(addcart.total)
-            print("deyyyyyyyyyyyyyyyyyyyyy",addcart.totalproductcost)
+                addcart.totalproductcost = int(addcart.totalproductcost) + int(addcart.total)
+                print("deyyyyyyyyyyyyyyyyyyyyy",addcart.totalproductcost)
 
 
-            addcart.save()
-            # order, created = Order.objects.get_or_create(customer=customer, complete=False)
-            # items = Order.orderitem_set.all()
-            # items = []
-            # context = {'items': items}
-            return redirect('ViewCart')
+                addcart.save()
+
+                return redirect('ViewCart')
 @method_decorator(user_login_required, name='dispatch')
 class ViewCart(View):
     def get(self, request):

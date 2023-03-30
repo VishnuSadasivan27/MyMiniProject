@@ -2,7 +2,7 @@ from django.http.response import HttpResponse
 from django.views import View
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
-from home.models import Registration,Catagory
+from home.models import Registration,Catagory,Address
 from django.contrib import messages
 from django.db.models import Q
 from customer.models import Order
@@ -10,7 +10,10 @@ from customer.models import Order
 
 class Farmer_approve(View):
     def get(self,request):
-        values = Registration.objects.filter(role='Farmer',status="inactive").values()
+        # val=Address.objects.all().values('first_name','last_name')
+        values = Address.objects.filter(user_id__role='Farmer',user_id__status="inactive").all()
+        # values=Address.objects.all()
+        print(values)
         return render(request,'admin/Farmer_approve.html',{'values':values})
 
 class Addcatagory(View):
@@ -54,7 +57,8 @@ class Activate(View):
         dele.status="active"
         print(dele.status)
         dele.save()
-        values = Registration.objects.filter(role='Farmer',status="inactive").values()
+        print(dele.first_name)
+        values = Address.objects.filter(user_id__role='Farmer',user_id__status="inactive").all()
         return render(request, 'admin/Farmer_approve.html',{'values': values})
 
         return HttpResponse("<script>alert('Activated ');window.location='/AdminsFarmer_approval';</script>")

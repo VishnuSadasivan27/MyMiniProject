@@ -49,7 +49,7 @@
       <h1>Profile</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'farmerhome' %}">Home</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
           <li class="breadcrumb-item">Users</li>
           <li class="breadcrumb-item active">Profile</li>
         </ol>
@@ -63,8 +63,8 @@
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <img src="{% static 'admin/assets/img/profile-img.jpg' %}" alt="Profile" class="rounded-circle">
-              <h2>{{request.session.first_name}}</h2>
+              <img src="{{user.imageURL}}" alt="Profile" class="rounded-circle">
+              <h2>{{request.session.first_name}} {{request.session.last_name}}</h2>
               <h3>{{request.session.role}}</h3>
 <!--              <div class="social-links mt-2">-->
 <!--                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>-->
@@ -92,9 +92,9 @@
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
                 </li>
 
-<!--                <li class="nav-item">-->
-<!--                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">Settings</button>-->
-<!--                </li>-->
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#Address">Address</button>
+                </li>
 
                 <li class="nav-item">
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
@@ -124,15 +124,6 @@
                     <div class="col-lg-9 col-md-8">{{request.session.role}}</div>
                   </div>
 
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Country</div>
-                    <div class="col-lg-9 col-md-8">USA</div>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Address</div>
-                    <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
-                  </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Phone</div>
@@ -149,13 +140,16 @@
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
-                  <form>
+                  <form method="POST" action = " Updatefarmer" class="update-form" enctype="multipart/form-data" id="update-form">
+                    {% csrf_token %}
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="assets/img/profile-img.jpg" alt="Profile">
+                        <img src="{{user.imageURL}}" alt="Profile">
                         <div class="pt-2">
-                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                           <input type="file" name="pimage" id="pImage" autofocus="false" value="{{user.image}}" autocomplete="off" class="form-control" accept="image/x-png,image/gif,image/jpeg,image/HEIC" > <br>
+
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
                         </div>
                       </div>
@@ -164,50 +158,24 @@
                     <div class="row mb-3">
                       <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}">
+                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}">
                       </div>
                     </div>
                       <div class="row mb-3">
                       <label for="lastname" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}">
+                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}">
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="about" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                      <label for="role" class="col-md-4 col-lg-3 col-form-label">role</label>
                       <div class="col-md-8 col-lg-9">
-                        <textarea name="about" class="form-control" id="about" style="height: 100px">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</textarea>
+                        <input name="role" type="text" class="form-control" id="role" value="{{request.session.role}}" readonly>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="company" class="col-md-4 col-lg-3 col-form-label">role</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="company" type="text" class="form-control" id="company" value="{{request.session.role}}">
-                      </div>
-                    </div>
 
-                    <div class="row mb-3">
-                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">District</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="job" type="text" class="form-control" id="Job" value="">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">LandMark</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="country" type="text" class="form-control" id="Country" value="USA">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">pin</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="address" type="text" class="form-control" id="Address" value="A108 Adam Street, New York, NY 535022">
-                      </div>
-                    </div>
 
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
@@ -257,6 +225,68 @@
                   </form><!-- End Profile Edit Form -->
 
                 </div>
+                <div class="tab-pane fade profile-edit pt-3" id="Address">
+
+                  <!-- Profile Edit Form -->
+                  <form method="POST" action = "Addfarmeraddress" class="update-form" enctype="multipart/form-data" id="Address-form">
+                    {% csrf_token %}
+
+
+                    <div class="row mb-4">
+                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}">
+                      </div>
+                    </div>
+                        <div class="row mb-2">
+                      <label for="District" class="col-md-4 col-lg-3 col-form-label">District</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}">
+                      </div>
+                    </div>
+                      <div class="row mb-4">
+                      <label for="Panchayat" class="col-md-4 col-lg-3 col-form-label">Panchayat</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}">
+                      </div>
+                    </div>
+
+                    <div class="row mb-4">
+                      <label for="city" class="col-md-4 col-lg-3 col-form-label">City</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}">
+                      </div>
+                    </div>
+                    <div class="row mb-4">
+                      <label for="landmark" class="col-md-4 col-lg-3 col-form-label">Landmark</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}">
+                      </div>
+                    </div>
+
+
+
+                     <div class="row mb-4">
+                      <label for="Pincode" class="col-md-4 col-lg-3 col-form-label">Pincode</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="pincode" type="text" class="form-control" id="Pincode" value="{{address.pin}}">
+                      </div>
+                    </div>
+                    <div class="row mb-4">
+                      <label for="Aadhar" class="col-md-4 col-lg-3 col-form-label">Aadhar</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="Aadhar" type="file" class="form-control" id="Aadhar" value="{{address.imageURL}}">
+                      </div>
+                    </div>
+
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form><!-- End Profile Edit Form -->
+
+                </div>
+
 
 <!--                <div class="tab-pane fade pt-3" id="profile-settings">-->
 
@@ -305,7 +335,6 @@
                   <form method="POST" action = "FarmerChangepassword" class="register-form" id="register-form">
                     {% csrf_token %}
 
-
                     <div class="row mb-3">
                       <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                       <div class="col-md-8 col-lg-9">
@@ -315,9 +344,9 @@
                     </div>
 
                     <div class="row mb-3">
-                      <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                      <label  class="col-md-4 col-lg-3 col-form-label">New Password</label>
                       <div class="col-md-8 col-lg-9">
-                       <input name="newpassword" type="password" class="form-control" id="newPassword" onkeyup='passwordValidation(this)' placeholder="Enter a new Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}"
+                        <input name="newpassword" type="password" class="form-control" id="newPassword" onkeyup='passwordValidation(this)' placeholder="Enter a new Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}"
   title="Must contain at least one  number and one uppercase and lowercase letter and special character and must contain 8field" >
                       <span id="pass1" class="new" style="color:red;"></span>
                       </div>
@@ -326,12 +355,13 @@
                     <div class="row mb-3">
                       <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
                       <div class="col-md-8 col-lg-9">
-                         <input name="renewpassword" type="password" onkeyup='cpasswordValidation(this)' placeholder="Enter your new Password again" class="form-control" id="renewPassword">
+                        <input name="renewpassword" type="password" onkeyup='cpasswordValidation(this)' placeholder="Enter your new Password again" class="form-control" id="renewPassword">
                          <span id="pass2" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
                     <div class="text-center">
+
                       <button type="submit" class="btn btn-primary">Change Password</button>
                     </div>
                   </form><!-- End Change Password Form -->
@@ -348,7 +378,7 @@
 
   </main><!-- End #main -->
 
- 
+
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -362,9 +392,11 @@
   <script src="{% static 'admin/assets/vendor/tinymce/tinymce.min.js' %}"></script>
   <script src="{% static 'admin/assets/vendor/php-email-form/validate.js' %}"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <!-- Template Main JS File -->
   <script src="{% static 'admin/assets/js/main.js' %}"></script>
-
 <script>
 
 function passwordValidation(inputTxt){
@@ -406,7 +438,7 @@ function cpasswordValidation(inputTxt){
             textField.textContent = '';
             textField.style.color = "red";
         }
-
+}
         function allownums(a)
 {
 

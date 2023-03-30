@@ -10,10 +10,9 @@
 	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-	</head>
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	  </head>
 	<body>
 	<section class="ftco-section">
 		{% block content %}
@@ -28,29 +27,31 @@
 					<h4 class="text-center mb-4">APPROVE FARMER</h4>
 					<div class="table-wrap">
 						<table class="table">
-					    <thead class="thead-primary">
+
 					      <tr>
-					        <th>FIRSTNAME</th>
-					        <th>LAST NAME</th>
+					        <th>NAME</th>
+					        <th>ADDRESS</th>
 					        <th>EMAIL</th>
 					        <th>PHONE NUMBER</th>
-					        <th>STATUS</th>
+					        <th>AADHAR</th>
 					        <th>APPROVE</th>
 					      </tr>
-					    </thead>
-					    <tbody>
+
+
+						<p></p>
 						{% for value in values %}
 					      <tr>
 
-					        <th scope="row" class="scope" >{{value.first_name}}</th>
-					        <td>{{value.last_name}}</td>
-					        <td>{{value.email}}</td>
-					        <td>{{value.phone_no}}</td>
-					        <td>{{value.status}}</td>
-					        <td><a href="/Admins/Activate/{{value.id}}/" class="btn btn-primary">Activate</a></td>
+					        <th scope="row" class="scope" >{{value.user.first_name}} {{value.user.last_name}}</th>
+					        <td>{{value.address}},{{value.city}},{{value.panchayat}},
+								{{value.district}},Pin:{{value.pin}}</td>
+					        <td>{{value.user.email}}</td>
+					        <td>{{value.user.phone_no}}</td>
+					        <td><img src="{{value.imageURL}}" style="width: 60%;" alt="img"></td>
+					        <td><a href="/Admins/Activate/{{value.user.id}}/" class="btn btn-primary">Activate</a></td>
 					      </tr>
 						 {% endfor %}
-					    </tbody>
+
 					  </table>
 					</div>
 				</div>

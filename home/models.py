@@ -72,8 +72,13 @@ class Address(models.Model):
     pin = models.CharField(max_length=200)
     Aadhar = models.ImageField(default='default.png',upload_to = 'userimage/')
     city = models.CharField(max_length=200)
-    idproof = models.ImageField(upload_to =  None)
     user = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
+    def imageURL(self):
+        try:
+            url = self.Aadhar.url
+        except:
+            url = ''
+        return url
 
 
 

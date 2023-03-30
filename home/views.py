@@ -115,11 +115,17 @@ def adminhome(request):
 
 
 def farmerhome(request):
-    return render(request, 'home/farmerhome.html')
+    person = request.session['id']
+    user = Registration.objects.get(id=person)
+    print(user.image)
+    return render(request, 'home/farmerhome.html', {'user': user})
 
 
 def delivaryhome(request):
-    return render(request, 'delivaryboy/delivaryhome.html')
+    person = request.session['id']
+    user = Registration.objects.get(id=person)
+    print(user.image)
+    return render(request, 'delivaryboy/delivaryhome.html',{'user':user})
 
 
 def index(request):
@@ -282,7 +288,7 @@ class LoginPage(View):
                 messages.warning(request, 'Successfully Logged')
                 return redirect('Catagorydisplay')
         elif Registration.objects.filter(email=username, password=password, role='Farmer').exists():
-            if Registration.objects.filter(email=username, password=password, status='active').exists():
+            if Registration.objects.filter(email=username, password=password).exists():
                 farmer_login = Registration.objects.filter(email=username, password=password)
                 print(farmer_login)
                 for admin in farmer_login:

@@ -147,7 +147,7 @@
                       <div class="col-md-8 col-lg-9">
                         <img src="{{user.imageURL}}" alt="Profile">
                         <div class="pt-2">
-                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image" ><i class="bi bi-upload"></i></a>
                            <input type="file" name="pimage" id="pImage" autofocus="false" value="{{user.image}}" autocomplete="off" class="form-control" accept="image/x-png,image/gif,image/jpeg,image/HEIC" > <br>
 
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
@@ -158,13 +158,13 @@
                     <div class="row mb-3">
                       <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}">
+                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}" required>
                       </div>
                     </div>
                       <div class="row mb-3">
                       <label for="lastname" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}">
+                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}" required>
                       </div>
                     </div>
 
@@ -180,14 +180,19 @@
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="phone" type="text" class="form-control" id="Phone" value="{{request.session.phone_no}}">
+                        <input name="phone" type="text" class="form-control" id="Phone" value="{{request.session.phone_no}}"  onkeyup="phoneValidation(this)" placeholder="phone"
+                        oninvalid="setCustomValidity('Invalid pin')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="phone1" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="{{request.session.email}}">
+                        <input name="email" type="email" class="form-control" id="Email" value="{{request.session.email}}" required>
                       </div>
                     </div>
 
@@ -235,32 +240,32 @@
                     <div class="row mb-4">
                       <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}">
+                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}" required>
                       </div>
                     </div>
                         <div class="row mb-2">
                       <label for="District" class="col-md-4 col-lg-3 col-form-label">District</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}">
+                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}" required>
                       </div>
                     </div>
                       <div class="row mb-4">
                       <label for="Panchayat" class="col-md-4 col-lg-3 col-form-label">Panchayat</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}">
+                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}" required>
                       </div>
                     </div>
 
                     <div class="row mb-4">
                       <label for="city" class="col-md-4 col-lg-3 col-form-label">City</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}">
+                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}" required>
                       </div>
                     </div>
                     <div class="row mb-4">
                       <label for="landmark" class="col-md-4 col-lg-3 col-form-label">Landmark</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}">
+                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}" required>
                       </div>
                     </div>
 
@@ -269,7 +274,11 @@
                      <div class="row mb-4">
                       <label for="Pincode" class="col-md-4 col-lg-3 col-form-label">Pincode</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="pincode" type="text" class="form-control" id="Pincode" value="{{address.pin}}">
+                        <input name="pincode" type="text" class="form-control" id="Pincode" value="{{address.pin}}"  onkeyup="pinValidation(this)" placeholder="Pincode" value="{{address.pin}}"
+                        oninvalid="setCustomValidity('Invalid pin')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                        <span id="pin" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
@@ -397,7 +406,18 @@
   $('#pImage').click(function(){
       $('#p_image_select').click();
   });
+        function allownums(a)
+{
 
+if(a < 1 ||a > 15)
+alert("invalid")
+else
+alert("vaild")
+}
+
+
+</script>
+<script>
 function passwordValidation(inputTxt){
 
     var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
@@ -417,38 +437,87 @@ function passwordValidation(inputTxt){
         textField.style.color = "red";
     }
 }
-function cpasswordValidation(inputTxt){
+function cpasswordValidation(inputTxt) {
 
-    var regx =  document.getElementById("newPassword").value;
-    var regy =  document.getElementById("renewPassword").value;
-    var textField = document.getElementById("pass2");
-    var textField1 = document.getElementById("pass1");
+  var regx = document.getElementById("newPassword").value;
+  var regy = document.getElementById("renewPassword").value;
+  var textField = document.getElementById("pass2");
+  var textField1 = document.getElementById("pass1");
 
-    if(inputTxt.value != '' ){
-            if(regx == regy){
-                textField.textContent = '';
-                textField.style.color = "green";
+  if (inputTxt.value != '') {
+    if (regx == regy) {
+      textField.textContent = '';
+      textField.style.color = "green";
 
-            }else{
-                textField.textContent = 'Entered to passwords are not same!!';
-                textField.style.color = "red";
-            }
-        }else{
-            textField.textContent = '';
-            textField.style.color = "red";
+    } else {
+      textField.textContent = 'Entered to passwords are not same!!';
+      textField.style.color = "red";
+    }
+  } else {
+    textField.textContent = '';
+    textField.style.color = "red";
+  }
+
+  function pinValidation(inputTxt) {
+
+    var regx =686513;
+    var textField = document.getElementById("pin");
+
+    if (inputTxt.value != '') {
+
+      if (inputTxt.value.length == 6) {
+
+        if (inputTxt.value.match(regx)) {
+          textField.textContent = '';
+          textField.style.color = "green";
+
+        } else {
+          textField.textContent = 'Delivary only in pincode 686513!';
+          textField.style.color = "red";
         }
+      } else {
+        textField.textContent = 'your input must be 6 chracters';
+        textField.style.color = "red";
+      }
+    } else {
+      textField.textContent = 'your are not allowed  to leave a field  empty';
+      textField.style.color = "red";
+    }
+  }
 
-        function allownums(a)
-{
+  function phoneValidation(inputTxt) {
 
-if(a < 1 ||a > 15)
-alert("invalid")
-else
-alert("vaild")
-}
-}
+    var regx = /[6-9]{1}[0-9]{9}/;
+    var textField = document.getElementById("phone1");
+
+    if (inputTxt.value != '') {
+
+      if ((inputTxt.value.length == 10)) {
+
+        if (inputTxt.value.match(regx)) {
+          textField.textContent = '';
+          textField.style.color = "green";
+
+        } else {
+          textField.textContent = 'please enter a valid number';
+          textField.style.color = "red";
+        }
+      } else {
+        textField.textContent = 'your input must be a 10 digit number';
+        textField.style.color = "red";
+      }
+    } else {
+      textField.textContent = 'your are not allowed  to leave a field  empty';
+      textField.style.color = "red";
+    }
+  }
 
 </script>
+
+
+
+
+
 {% endblock content %}
 </body>
 

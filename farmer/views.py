@@ -3,19 +3,30 @@ from django.http.response import HttpResponse
 from django.views import View
 from home.models import MyProduct
 from django.shortcuts import redirect, render
-from home.models import Registration,Catagory
+from home.models import Registration,Catagory,Address
 import subprocess
+from home.decorators import user_login_required
+from django.utils.decorators import method_decorator
 
 def Predictproduct(request):
-    # run your machine learning script using subprocess
-    subprocess.run(['python', 'farmer/Machine_learning_knn.py'])
-    return render(request, 'home/farmerhome.html')
+    id = request.session.get('id')
+    if not Registration.objects.filter(id=id, status="active").exists():
+       return HttpResponse("<script>alert('Add your Address to Activate your Account');window.location='/farmerhome/';</script>")
+    else:
+        subprocess.run(['python', 'farmer/Machine_learning_knn.py'])
+        return redirect('/farmerhome')
 
 class Addproduct(View):
     def get(self,request):
-        mycat=Catagory.objects.all()
+        id = request.session.get('id')
 
-        return render(request,'farmer/product_add.html',{'mycat':mycat})
+        if not Registration.objects.filter(id=id,status="active").exists():
+            return HttpResponse(
+                "<script>alert('Add your Address to Activate your Account');window.location='/farmerhome/';</script>")
+        else:
+            mycat=Catagory.objects.all()
+
+            return render(request,'farmer/product_add.html',{'mycat':mycat})
 
 
 class ProductAdd(View):
@@ -37,16 +48,45 @@ class ProductAdd(View):
         return HttpResponse("<script>alert('Product Added');window.location='/farmer/Addproduct';</script>")
         return render(request, 'farmer/product_add.html')
 
+@method_decorator(user_login_required, name='dispatch')
+class Updatefarmer(View):
+    def post(self, request):
+        pimage = request.FILES.get("pimage")
+        first_name = request.POST.get("firstname")
+        last_name = request.POST.get("lastname")
+        email = request.POST.get("email")
+        phone_no = ','.join(request.POST.getlist("phone"))
+        print(first_name, last_name, email, phone_no, pimage)
+        id = request.session.get('id')
+        user = Registration.objects.get(id=id)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone_no = phone_no
+        user.email = email
+        user.image = pimage
+        user.save()
+        print(user.image)
+        context = {'user': user}
+        return render(request,'farmer/farmerprofile.html',context)
+
+
 
 
 
 class Farmerprofile(View):
     def get(self,request):
-        l_id=request.session.get('id')
-        print(l_id)
-        return render(request,'farmer/farmerprofile.html')
+        id = request.session.get('id')
+        user = Registration.objects.get(id=id)
+        if Address.objects.filter(user_id=id).exists():
+            address = Address.objects.get(user_id=id)
+            print(user)
+            context = {'user': user, 'address': address}
+            return render(request,'farmer/farmerprofile.html', context)
+        else:
+            context = {'user': user}
+            return render(request,'farmer/farmerprofile.html', context)
 
-
+@method_decorator(user_login_required, name='dispatch')
 class FarmerChangepassword(View):
     def post(self, request):
         id = request.session.get('id')
@@ -61,3 +101,72 @@ class FarmerChangepassword(View):
              return HttpResponse("<script>alert('Succesfully updated');window.location='Farmerprofile';</script>")
         else:
             return HttpResponse("<script>alert('current password is wrong');window.location='Farmerprofile';</script>")
+
+
+@method_decorator(user_login_required, name='dispatch')
+class Addfarmeraddress(View):
+    def post(self, request):
+        id = request.session['id']
+        if Registration.objects.filter(id=id,status="inactive"):
+            if not Address.objects.filter(user_id=id).exists():
+
+                address = request.POST.get("Address")
+                District = request.POST.get("District")
+                panchayat = request.POST.get("panchayat")
+                city = request.POST.get("city")
+                landmark = request.POST.get("landmark")
+                pincode = request.POST.get("pincode")
+                Aadhar = request.FILES.get("Aadhar")
+
+                r=Address(address=address,district=District,panchayat=panchayat,city=city,Aadhar=Aadhar,landmark=landmark,pin=pincode,user_id=id)
+                r.save()
+                address = Address.objects.get(user_id=id)
+                user = Registration.objects.get(id=id)
+                context={'address':address,'user':user}
+                return HttpResponse("<script>alert('profile updated.wait for adminApproval');window.location='Farmerprofile';</script>")
+
+                return render(request, 'farmer/farmerprofile.html', context)
+            else:
+                address = request.POST.get("Address")
+                District = request.POST.get("District")
+                panchayat = request.POST.get("panchayat")
+                city = request.POST.get("city")
+                landmark = request.POST.get("landmark")
+                pincode = request.POST.get("pincode")
+                Aadhar = request.FILES.get("Aadhar")
+                user = Address.objects.get(user_id=id)
+                user.address = address
+                user.district = District
+                user.panchayat = panchayat
+                user.city = city
+                user.landmark = landmark
+                user.pin = pincode
+                user.Aadhar = Aadhar
+                user.save()
+                address = Address.objects.get(user_id=id)
+                user = Registration.objects.get(id=id)
+                context = {'address': address, 'user': user}
+                return HttpResponse("<script>alert('Succesfully updated..wait for Approval');window.location='Farmerprofile';</script>")
+                return render(request, 'farmer/farmerprofile.html', context)
+        else:
+            address = request.POST.get("Address")
+            District = request.POST.get("District")
+            panchayat = request.POST.get("panchayat")
+            city = request.POST.get("city")
+            landmark = request.POST.get("landmark")
+            pincode = request.POST.get("pincode")
+            Aadhar = request.FILES.get("Aadhar")
+            user = Address.objects.get(user_id=id)
+            user.address = address
+            user.district = District
+            user.panchayat = panchayat
+            user.city = city
+            user.landmark = landmark
+            user.pin=pincode
+            user.Aadhar = Aadhar
+            user.save()
+            address = Address.objects.get(user_id=id)
+            user = Registration.objects.get(id=id)
+            context={'address':address,'user':user}
+            return HttpResponse("<script>alert('Succesfully updated');window.location='Farmerprofile';</script>")
+            return render(request, 'farmer/farmerprofile.html', context)

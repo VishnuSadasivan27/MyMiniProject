@@ -28,16 +28,23 @@ class Deliboyprofile(View):
 class Viewmyjob(View):
     def get(self,request):
         id = request.session.get('id')
-        l_id = request.session.get('first_name')
-        if not Address.objects.filter(user_id=id).exists():
-            return HttpResponse("<script>alert('Add your Address in Your profile');window.location='/delivaryhome/';</script>")
+        pincode=Address.objects.filter(user_id=id).values('pin').get()['pin']
+        print(pincode)
+        if Address.objects.filter(user_id=id,user_id__status="active").exists():
+            myorders=Order.objects.all()
+            for order in myorders:
+                print(order.myorder.pincode)
+                if order.myorder.pincode == str(pincode):
+                    orders=Order.objects.filter(myorder_id__pincode=pincode)
+                    return render(request, 'delivaryboy/myjob.html',{'orders':orders})
+                else:
+                    return render(request, 'delivaryboy/myjob.html')
+        elif  Address.objects.filter(user_id=id, user_id__status="inactive").exists():
+            return HttpResponse("<script>alert('please wait for admin approval');window.location='/delivaryhome/';</script>")
         else:
-            print(l_id)
-            if l_id=="joyel":
-                orders=Cus_address.objects.filter(pincode="686513")
-                return render(request, 'delivaryboy/myjob.html',{'orders':orders})
-            else:
-                return render(request, 'delivaryboy/myjob.html')
+            return HttpResponse("<script>alert('Add your Address in Your profile');window.location='/delivaryhome/';</script>")
+
+
 
 
 @method_decorator(user_login_required, name='dispatch')

@@ -11,9 +11,10 @@
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<!--	<link rel="stylesheet" href="{% static 'css/style.css' %}">-->
 
 	</head>
+
 	<body>
 	<section class="ftco-section">
 		{% block content %}
@@ -25,45 +26,115 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h4 class="text-center mb-4">APPROVE DELIVARY BOY</h4>
+					<h4 class="text-center mb-4">APPROVE DELIVARY_BOY</h4>
+                     <form method="POST" action="/Admins/Deliactivate/{{value.user.id}}/" enctype="multipart/form-data" onsubmit=""></form>
 					<div class="table-wrap">
 						<table class="table">
-					    <thead class="thead-primary">
+
 					      <tr>
-					        <th>FIRSTNAME</th>
-					        <th>LAST NAME</th>
+					        <th>NAME</th>
+					        <th>ADDRESS</th>
 					        <th>EMAIL</th>
 					        <th>PHONE NUMBER</th>
-					        <th>STATUS</th>
+					        <th>AADHAR</th>
+							<th>PINCODE</th>
 					        <th>APPROVE</th>
 					      </tr>
-					    </thead>
-					    <tbody>
+
+
+						<p></p>
 						{% for value in values %}
 					      <tr>
 
-					        <th scope="row" class="scope" >{{value.first_name}}</th>
-					        <td>{{value.last_name}}</td>
-					        <td>{{value.email}}</td>
-					        <td>{{value.phone_no}}</td>
-					        <td>{{value.status}}</td>
-					        <td><a href="/Admins/Deliactivate/{{value.id}}/" class="btn btn-primary">Activate</a></td>
+					        <th scope="row" class="scope" >{{value.user.first_name}} {{value.user.last_name}}</th>
+					        <td>{{value.address}},{{value.city}},{{value.panchayat}},
+								{{value.district}},Pin:{{value.pin}}</td>
+					        <td>{{value.user.email}}</td>
+					        <td>{{value.user.phone_no}}</td>
+					        <td><img src="{{value.imageURL}}" style="width: 60%;" alt="img"></td>
+							 <td><input type="text" name="pincode" data-id="delivarypin{{value.user.id}}" class="pincheck" id="delivarypin{{value.user.id}}" value="{{value.pin}}"  ><span id="pincodeError"  style="color: red;"></span></td>
+
+					         <td><a href="" class="btn btn-primary" data-id="{{value.user.id}}" required pattern="/^[6][0-9]{5}$/">Activate</a></td>
 					      </tr>
 						 {% endfor %}
-					    </tbody>
+
 					  </table>
 					</div>
+					</form>
 				</div>
 			</div>
 		</div>
 
 	</section>
-{% endblock content %}
-	<script src="js/jquery.min.js"></script>
-  <script src="js/popper.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/main.js"></script>
+
+<!--	<script src="js/jquery.min.js"></script>-->
+<!--  <script src="js/popper.js"></script>-->
+<!--  <script src="js/bootstrap.min.js"></script>-->
+<!--  <script src="{% static 'admin/assets/js/main.js' %}"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script>
+$(document).on('keyup', '.pincheck', function() {
+  // attach keyup event handler to the input field
+
+	var id = $(this).data('id');
+    regex = /^[6][0-9]{5}$/;
+
+	var delivarypin = $('#' + id).val();
+
+    // validate the input value
+    if (delivarypin.length != 6 || !/^\d+$/.test(delivarypin) || !regex.test(delivarypin)) {
+      $("#pincodeError").text("Please enter a valid 6-digit pincode");
+    } else {
+      $("#pincodeError").empty();
+    }
+});
+
+
+$(document).on('click', '.btn', function() {
+
+  var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+  var id = $(this).data('id');
+  var delivarypin = $('#delivarypin' + id).val();
+  event.preventDefault();
+  // validate the input value
+  var regex = /^[6][0-9]{5}$/;
+  if (delivarypin.length != 6 || !/^\d+$/.test(delivarypin) || !regex.test(delivarypin)) {
+    $("#pincodeError").text("Please enter a valid 6-digit pincode");
+    return; // stop the function from executing further
+  } else {
+    $("#pincodeError").empty();
+  }
+
+  alert("Do You Want To Activate  Delivary Boy")
+  console.log("The product quantity: " + id + ", The delivery pin: " + delivarypin);
+  $.ajax({
+    url: "{% url 'Deliactivate' %}",
+    type: 'POST',
+    data: {
+      'ids': id,
+      'pincode': delivarypin
+    },
+    headers: {
+      "X-CSRFToken": csrftoken
+    },
+    success: function(data) {
+      $('.uniquetotal-price[data-id="' + id + '"]').text(data.data);
+      window.location.href = "/Admins/Deliboyapprove";
+      console.log("The product total: " + data.data);
+    },
+    error: function(xhr, status, error) {
+      alert(xhr.responseJSON.error);
+    }
+  });
+});
+
+
+</script>
+
 
 	</body>
+{% endblock content %}
 </html>
 

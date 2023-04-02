@@ -64,8 +64,8 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
               <img src="{{user.imageURL}}" alt="Profile" class="rounded-circle">
-              <h2>{{request.session.first_name}} {{request.session.last_name}}</h2>
-              <h3>{{request.session.role}}</h3>
+              <h2>{{user.first_name}} {{user.last_name}}</h2>
+              <h3>{{user.role}}</h3>
 <!--              <div class="social-links mt-2">-->
 <!--                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>-->
 <!--                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>-->
@@ -111,28 +111,28 @@
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">First Name</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.first_name}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.first_name}}</div>
                   </div>
                     <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Last Name</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.last_name}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.last_name}}</div>
                   </div>
 
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Title</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.role}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.role}}</div>
                   </div>
 
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Phone</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.phone_no}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.phone_no}}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.email}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.email}}</div>
                   </div>
 
                 </div>
@@ -140,7 +140,7 @@
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
-                  <form method="POST" action = "Updatecustomer" class="update-form" enctype="multipart/form-data" id="update-form">
+                  <form method="POST" action = "Updatecustomer" class="update-form" enctype="multipart/form-data" >
                     {% csrf_token %}
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
@@ -148,7 +148,8 @@
                         <img src="{{user.imageURL}}" alt="Profile">
                         <div class="pt-2">
                           <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image" ><i class="bi bi-upload"></i></a>
-                           <input type="file" name="pimage" id="pImage" autofocus="false" value="{{user.image}}" autocomplete="off" class="form-control" accept="image/x-png,image/gif,image/jpeg,image/HEIC" > <br>
+                           <input type="file" name="pimage" autofocus="false"  autocomplete="off" class="form-control" id="myFileInput" accept="image/*" required> <br>
+                             <span id="imageError" style="color:red;"></span>
 
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
                         </div>
@@ -158,20 +159,29 @@
                     <div class="row mb-3">
                       <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}" required>
+                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{user.first_name}}"  onkeyup="fnameValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                                oninvalid="setCustomValidity('Invalid firstname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="fname" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
                       <div class="row mb-3">
                       <label for="lastname" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}" required>
+                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{user.last_name}}"  onkeyup="lnameValidation(this)" required pattern="^[a-zA-Z]+$"
+                                oninvalid="setCustomValidity('Invalid lastname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="lname" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="role" class="col-md-4 col-lg-3 col-form-label">role</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="role" type="text" class="form-control" id="role" value="{{request.session.role}}" readonly>
+                        <input name="role" type="text" class="form-control" id="role" value="{{user.role}}" readonly>
                       </div>
                     </div>
 
@@ -180,8 +190,8 @@
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="phone" type="text" class="form-control" id="Phone" value="{{request.session.phone_no}}"  onkeyup="phoneValidation(this)" placeholder="phone"
-                        oninvalid="setCustomValidity('Invalid pin')"
+                        <input name="phone" type="text" class="form-control" id="Phone" value="{{user.phone_no}}"  onkeyup="phoneValidation(this)" required pattern="[6-9]{1}[0-9]{9}"
+                        oninvalid="setCustomValidity('Invalid phone')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30" required>
                         <span id="phone1" class="new" style="color:red;"></span>
@@ -192,7 +202,11 @@
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="{{request.session.email}}" required>
+                        <input name="email" type="email" class="form-control" id="Email" value="{{user.email}}" onkeyup="emailValidation(this)" required pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                        oninvalid="setCustomValidity('Invalid mail')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="mail" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
@@ -240,32 +254,52 @@
                     <div class="row mb-4">
                       <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}" required>
+                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}" onkeyup="addValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                         oninvalid="setCustomValidity('Invalid address')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="add" class="new" style="color:red;"></span>
                       </div>
                     </div>
                         <div class="row mb-2">
                       <label for="District" class="col-md-4 col-lg-3 col-form-label">District</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}" required>
+                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}" onkeyup="disValidation(this)" required pattern="^[a-zA-Z]+$"
+                           oninvalid="setCustomValidity('Invalid distrct')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="dis" class="new" style="color:red;"></span>
                       </div>
                     </div>
                       <div class="row mb-4">
                       <label for="Panchayat" class="col-md-4 col-lg-3 col-form-label">Panchayat</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}" required>
+                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}" onkeyup="panValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                          oninvalid="setCustomValidity('Invalid panchayat')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="pan" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
                     <div class="row mb-4">
                       <label for="city" class="col-md-4 col-lg-3 col-form-label">City</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}" required>
+                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}" onkeyup="citValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                            oninvalid="setCustomValidity('Invalid city')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="cit" class="new" style="color:red;"></span>
                       </div>
                     </div>
                     <div class="row mb-4">
                       <label for="landmark" class="col-md-4 col-lg-3 col-form-label">Landmark</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}" required>
+                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}"  onkeyup="lanValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                            oninvalid="setCustomValidity('Invalid landmark')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="lan" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
@@ -274,11 +308,13 @@
                      <div class="row mb-4">
                       <label for="Pincode" class="col-md-4 col-lg-3 col-form-label">Pincode</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="pincode" type="text" class="form-control" id="Pincode" value="{{address.pin}}"  onkeyup="pinValidation(this)" placeholder="Pincode" value="{{address.pin}}"
-                        oninvalid="setCustomValidity('Invalid pin')"
+                        <input name="pincode" type="text" class="form-control" id="Pincode" value="{{address.pin}}" onkeyup="pinValidation(this)" required pattern="^[6][0-9]{5}$"
+                           oninvalid="setCustomValidity('Invalid pincode')"
                                 oninput="setCustomValidity('')"
-                                maxlength= "30">
-                        <span id="pin" class="new" style="color:red;"></span>
+                                maxlength= "30" required>
+                                 <span id="pin" class="new" style="color:red;"></span>
+
+
                       </div>
                     </div>
 
@@ -342,7 +378,7 @@
                       <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="cpassword" type="password" class="form-control" onkeyup="curpasswordValidation(this)" placeholder="Enter you current Password" id="currentPassword" required>
-                        <span id="pass" class="new" style="color:red;"></span>
+                        <span id="cpass" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
@@ -418,6 +454,21 @@ alert("vaild")
 
 </script>
 <script>
+
+function curpasswordValidation(inputTxt){
+
+    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
+    var textField = document.getElementById("cpass");
+
+    if(inputTxt.value != '' ){
+
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
 function passwordValidation(inputTxt){
 
     var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
@@ -428,13 +479,16 @@ function passwordValidation(inputTxt){
                 textField.textContent = '';
                 textField.style.color = "green";
 
+
             }else{
                 textField.textContent = 'Must contain at least one number and one uppercase and lowercase letter and aleast 5 characters';
                 textField.style.color = "red";
+
             }
     }else{
         textField.textContent = 'your are not allowed  to leave a field  empty';
         textField.style.color = "red";
+
     }
 }
 function cpasswordValidation(inputTxt) {
@@ -449,71 +503,371 @@ function cpasswordValidation(inputTxt) {
       textField.textContent = '';
       textField.style.color = "green";
 
+
+
     } else {
       textField.textContent = 'Entered to passwords are not same!!';
       textField.style.color = "red";
+
+
     }
   } else {
     textField.textContent = '';
     textField.style.color = "red";
+
+
   }
+}
 
-  function pinValidation(inputTxt) {
+function fnameValidation(inputTxt){
 
-    var regx =686513;
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("fname");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
+function lnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("lname");
+    textField.textContent = '';
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
+function emailValidation(inputTxt){
+    // ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    var regx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+    var textField = document.getElementById("mail");
+    textField.textContent = '';
+
+    if(inputTxt.value != '' ){
+        if(inputTxt.value.match(regx)){
+            textField.textContent = '';
+            textField.style.color = "green";
+
+
+        }else{
+            textField.textContent = 'email id  is not valid!!! please insert a valid one';
+            textField.style.color = "red";
+
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+
+
+
+function pinValidation(inputTxt){
+    // ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    regx = /^[6][0-9]{5}$/;
     var textField = document.getElementById("pin");
+    textField.textContent = '';
 
-    if (inputTxt.value != '') {
+    if(inputTxt.value != '' ){
+        if(inputTxt.value.match(regx)){
+            textField.textContent = '';
+            textField.style.color = "green";
 
-      if (inputTxt.value.length == 6) {
 
-        if (inputTxt.value.match(regx)) {
-          textField.textContent = '';
-          textField.style.color = "green";
+        }else{
+            textField.textContent = ' please insert a valid pin';
+            textField.style.color = "red";
 
-        } else {
-          textField.textContent = 'Delivary only in pincode 686513!';
-          textField.style.color = "red";
+
         }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+
+var input = document.getElementById("myFileInput");
+var error = document.getElementById("imageError");
+
+input.addEventListener("change", function() {
+  var file = input.files[0];
+  var reader = new FileReader();
+
+  reader.onloadend = function() {
+    // Check if file is an image
+    if (file.type.indexOf("image") !== 0) {
+      error.textContent = "Selected file is not an image.";
+      input.value = "";
+      return;
+    }
+
+    // Check if file is too large (max 5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      error.textContent = "Selected image is too large. Max size is 5 MB.";
+      input.value = "";
+      return;
+    }
+
+    // Image is valid
+    error.textContent = "";
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
+
+
+function phoneValidation(inputTxt) {
+
+  var regx = /[6-9]{1}[0-9]{9}/;
+  var textField = document.getElementById("phone1");
+  textField.textContent = '';
+
+  if (inputTxt.value != '') {
+
+    if ((inputTxt.value.length == 10)) {
+
+      if (inputTxt.value.match(regx)) {
+        textField.textContent = '';
+        textField.style.color = "green";
+
       } else {
-        textField.textContent = 'your input must be 6 chracters';
+        textField.textContent = 'please enter a valid number';
         textField.style.color = "red";
       }
     } else {
-      textField.textContent = 'your are not allowed  to leave a field  empty';
+      textField.textContent = 'your input must be a 10 digit number';
       textField.style.color = "red";
     }
+  } else {
+    textField.textContent = 'your are not allowed  to leave a field  empty';
+    textField.style.color = "red";
   }
-
-  function phoneValidation(inputTxt) {
-
-    var regx = /[6-9]{1}[0-9]{9}/;
-    var textField = document.getElementById("phone1");
-
-    if (inputTxt.value != '') {
-
-      if ((inputTxt.value.length == 10)) {
-
-        if (inputTxt.value.match(regx)) {
-          textField.textContent = '';
-          textField.style.color = "green";
-
-        } else {
-          textField.textContent = 'please enter a valid number';
-          textField.style.color = "red";
-        }
-      } else {
-        textField.textContent = 'your input must be a 10 digit number';
-        textField.style.color = "red";
-      }
-    } else {
-      textField.textContent = 'your are not allowed  to leave a field  empty';
-      textField.style.color = "red";
-    }
-  }
+}
 
 </script>
+<script>
+function addValidation(inputTxt){
 
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("add");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function disValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("dis");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function panValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("pan");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function citValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("cit");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function lanValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("lan");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
+
+
+</script>
 
 
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% extends 'home/main.html' %}
+{% load static %}
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'customer/style.css' %}">
+    <title>Complete your purchase</title>
+    <style>
+        body{
+            margin-top: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<!--    <header>-->
+<!--        <h1 class="logo">My order</h1>-->
+
+<!--        <div class="menu-icons-container">-->
+<!--           <img src="Resources/Search.svg" alt="" class="icon">-->
+<!--           <img src="Resources/Profile.svg" alt="" class="icon">-->
+<!--           <img src="Resources/Cart.svg" alt="" class="icon">-->
+<!--        </div>-->
+<!--    </header>-->
+
+<!--    <div class="progress-checkout-container">-->
+<!--        <div class="progress-step-container">-->
+<!--            <div class="step-check"></div>-->
+<!--            <span class="step-title">Orderplaced</span>-->
+<!--        </div>-->
+<!--        <div class="progress-step-container">-->
+<!--            <div class="step-check"></div>-->
+<!--            <span class="step-title">Accepted</span>-->
+<!--        </div>-->
+<!--        <div class="progress-step-container">-->
+<!--            <div class="step-check"></div>-->
+<!--            <span class="step-title">Shipping</span>-->
+<!--        </div>-->
+
+<!--    </div>-->
+
+    <div class="form-container">
+        <h2 class="form-title">Delivary Boy Details</h2>
+        <form action="" class="checkout-form">
+            <div class="input-line">
+                <label for="name">Name on Boy</label>
+                <input type="text" name="name" id="name" placeholder="name" readonly>
+            </div>
+            <div class="input-line">
+                <label for="name">Phone Number</label>
+                <input type="text" name="name" id="number" placeholder="" readonly>
+            </div>
+
+
+<!--            <input type="button" value="Complete purchase">-->
+        </form>
+    </div>
+
+</body>
+</html>
+{% endblock content %}

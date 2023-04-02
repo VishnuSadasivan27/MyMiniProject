@@ -37,15 +37,26 @@
                 <div class="card-heading"></div>
                 <div class="card-body">
                     <h2 class="title">Add catagory</h2>
-                     <form method="POST" action="Uploadcatagory" enctype="multipart/form-data" onsubmit="">
+                     <form method="POST" action="Uploadcatagory" id="myForm" enctype="multipart/form-data" onsubmit="">
                          {% csrf_token %}
                         <div class="input-group">
-                            <input class="input--style-2" type="text" placeholder="Catagory Name" name="cataname">
+                            <input class="input--style-2" type="text" placeholder="Catagory Name" name="cataname" onkeyup="catnameValidation(this)"
+                                oninvalid="setCustomValidity('Invalid Name')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="name" class="new" style="color:red;"></span>
+
                         </div>
 
                         <div class="input-group">
                             <div class="rs-select2 js-select-simple select--no-search">
-							<input class="input--style-2" type="text" placeholder="discription" name="discription">
+							<input class="input--style-2" type="text" placeholder="discription" name="discription" onkeyup="disValidation(this)"
+                                oninvalid="setCustomValidity('Invalid Description')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="disname" class="new" style="color:red;"></span>
+
+
                                 <!-- <select name="class"> -->
                                     <!-- <option disabled="disabled" selected="selected">Class</option> -->
                                     <!-- <option>Class 1</option> -->
@@ -58,7 +69,8 @@
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
-                                    <input class="input--style-2" type="file" placeholder="catagoryimage" name="cataimage">
+                                    <input class="input--style-2" type="file" placeholder="catagoryimage" name="cataimage" id="myFileInput" accept="image/*">
+                                    <span id="imageError" style="color:red;"></span>
                                 </div>
                             </div>
                         </div>
@@ -80,6 +92,124 @@
 
     <!-- Main JS-->
     <script src="{% static 'catagory/js/global.js' %}"></script>
+<script>
+function catnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("name");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+                inputTxt.focus();
+                return false;
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+                inputTxt.focus();
+                return false;
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+            inputTxt.focus();
+            return false;
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+         inputTxt.focus();
+         return false;
+    }
+}
+var form = document.getElementById("myForm");
+form.addEventListener("submit", function(event) {
+    var nameField = document.getElementById("name");
+    if (nameField.style.color === "red") {
+        alert("Please correct errors in the form before submitting.");
+        event.preventDefault();
+    }
+});
+
+
+function disValidation(inputTxt){
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("disname");
+
+    if (inputTxt.value != '') {
+        if (inputTxt.value.length >= 2) {
+            if (inputTxt.value.match(regx)) {
+                textField.textContent = '';
+                textField.style.color = "green";
+                return true;
+            } else {
+                textField.textContent = 'Only characters are allowed to be inserted!';
+                textField.style.color = "red";
+                inputTxt.focus();
+                return false;
+            }
+        } else {
+            textField.textContent = 'Your input must be more than two characters.';
+            textField.style.color = "red";
+            inputTxt.focus();
+            return false;
+        }
+    } else {
+        textField.textContent = 'You are not allowed to leave a field empty.';
+        textField.style.color = "red";
+        inputTxt.focus();
+        return false;
+    }
+}
+
+var form = document.getElementById("myForm");
+form.addEventListener("submit", function(event) {
+    var nameField = document.getElementById("disname");
+    if (nameField.style.color === "red") {
+        alert("Please correct errors in the form before submitting.");
+        event.preventDefault();
+    }
+});
+var input = document.getElementById("myFileInput");
+var error = document.getElementById("imageError");
+
+input.addEventListener("change", function() {
+  var file = input.files[0];
+  var reader = new FileReader();
+
+  reader.onloadend = function() {
+    // Check if file is an image
+    if (file.type.indexOf("image") !== 0) {
+      error.textContent = "Selected file is not an image.";
+      input.value = "";
+      return;
+    }
+
+    // Check if file is too large (max 5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      error.textContent = "Selected image is too large. Max size is 5 MB.";
+      input.value = "";
+      return;
+    }
+
+    // Image is valid
+    error.textContent = "";
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
+
+
+</script>
 
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 

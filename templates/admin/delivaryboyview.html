@@ -11,7 +11,7 @@
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<!--	<link rel="stylesheet" href="{% static 'css/style.css' %}">-->
 
 	</head>
 	<body>
@@ -28,26 +28,31 @@
 					<h4 class="text-center mb-4">DelivaryBoy Table</h4>
 					<div class="table-wrap">
 						<table class="table">
-					    <thead class="thead-primary">
+
 					      <tr>
-					        <th>FIRSTNAME</th>
-					        <th>LAST NAME</th>
+					        <th>NAME</th>
+					        <th>ADDRESS</th>
 					        <th>EMAIL</th>
 					        <th>PHONE NUMBER</th>
-					        <th>STATUS</th>
-
+					        <th>AADHAR</th>
+							<th>PINCODE</th>
+					        <th>APPROVE</th>
 					      </tr>
-					    </thead>
-					    <tbody>
-						{% for boy in boys %}
+
+
+						<p></p>
+						{% for value in values %}
 					      <tr>
 
-					        <th scope="row" class="scope" >{{boy.first_name}}</th>
-					        <td>{{boy.last_name}}</td>
-					        <td>{{boy.email}}</td>
-					        <td>{{boy.phone_no}}</td>
-					        <td>{{boy.status}}</td>
-                             <td><a href="/Admins/Deliboydeactivate/{{boy.id}}/" class="btn btn-primary">Dectivate</a></td>
+					        <th scope="row" class="scope" >{{value.user.first_name}} {{value.user.last_name}}</th>
+					        <td>{{value.address}},{{value.city}},{{value.panchayat}},
+								{{value.district}},Pin:{{value.pin}}</td>
+					        <td>{{value.user.email}}</td>
+					        <td>{{value.user.phone_no}}</td>
+					        <td><img src="{{value.imageURL}}" style="width: 60%;" alt="img"></td>
+							 <td><input type="text" name="pincode" data-id="delivarypin{{value.user.id}}" class="pincheck" id="delivarypin{{value.user.id}}" value="{{value.pin}}"  ><span id="pincodeError"  style="color: red;"></span></td>
+
+                             <td><a href="/Admins/Deliboydeactivate/{{value.user.id}}/" class="btn btn-primary">Dectivate</a></td>
 					      </tr>
 						 {% endfor %}
 					    </tbody>

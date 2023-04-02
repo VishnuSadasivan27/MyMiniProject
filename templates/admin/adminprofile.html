@@ -206,26 +206,33 @@
 
                 <div class="tab-pane fade pt-3" id="profile-change-password">
                   <!-- Change Password Form -->
-                  <form>
-
+                  <form method="POST" action="/AdminPasswordchange" id="myForm">
+                    {% csrf_token %}
                     <div class="row mb-3">
                       <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="password" type="password" class="form-control" id="currentPassword">
+                        <input name="cpassword" type="password" class="form-control" id="currentPassword" onkeyup="curpasswordValidation(this)" placeholder="Enter you current Password" id="currentPassword" required>
+                        <span id="cpass" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                        <input name="newpassword" type="password" class="form-control" id="newPassword" onkeyup='passwordValidation(this)' placeholder="Enter a new Password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}"
+  title="Must contain at least one  number and one uppercase and lowercase letter and special character and must contain 8field" >
+                      <span id="pass1" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                        <input name="renewpassword" type="password" class="form-control" id="renewPassword"onkeyup='cpasswordValidation(this)' placeholder="Enter your new Password again" class="form-control" id="renewPassword">
+                         <span id="pass2" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
 
@@ -262,6 +269,96 @@
 
   <!-- Template Main JS File -->
   <script src="{% static 'admin/assets/js/main.js' %}"></script>
+<script>
+function curpasswordValidation(inputTxt){
+
+    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
+    var textField = document.getElementById("cpass");
+
+    if(inputTxt.value != '' ){
+         textField.textContent = '';
+         textField.style.color = "red";
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+
+    }
+}
+
+function passwordValidation(inputTxt){
+
+    var regx = /(?=.*\d)(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]).{8,}/;
+    var textField = document.getElementById("pass1");
+
+    if(inputTxt.value != '' ){
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+                inputTxt.focus();
+                return false;
+
+
+            }else{
+                textField.textContent = 'Must contain at least one number and one uppercase and lowercase letter and aleast 5 characters';
+                textField.style.color = "red";
+                inputTxt.focus();
+                return false;
+
+            }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+        inputTxt.focus();
+        return false;
+
+    }
+}
+var form = document.getElementById("myForm");
+form.addEventListener("submit", function(event) {
+    var nameField = document.getElementById("pass1");
+    if (nameField.style.color === "red") {
+        alert("Please correct errors in the form before submitting.");
+        event.preventDefault();
+    }
+});
+function cpasswordValidation(inputTxt) {
+
+  var regx = document.getElementById("newPassword").value;
+  var regy = document.getElementById("renewPassword").value;
+  var textField = document.getElementById("pass2");
+  var textField1 = document.getElementById("pass1");
+
+  if (inputTxt.value != '') {
+    if (regx == regy) {
+      textField.textContent = '';
+      textField.style.color = "green";
+      inputTxt.focus();
+      return false;
+
+    } else {
+      textField.textContent = 'Entered to passwords are not same!!';
+      textField.style.color = "red";
+      inputTxt.focus();
+      return false;
+    }
+  } else {
+    textField.textContent = '';
+    textField.style.color = "red";
+    inputTxt.focus();
+    return false;
+  }
+}
+
+var form = document.getElementById("myForm");
+form.addEventListener("submit", function(event) {
+    var nameField = document.getElementById("pass2");
+    if (nameField.style.color === "red") {
+        alert("Please correct errors in the form before submitting.");
+        event.preventDefault();
+    }
+});
+</script>
 {% endblock content %}
 </body>
 

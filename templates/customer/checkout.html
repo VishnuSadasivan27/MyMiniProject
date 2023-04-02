@@ -28,24 +28,44 @@
                     <p>Shipping Information:</p>
                     <hr>
                     <div class="form-field">
-                        <input class="form-control" type="text" name="address" placeholder="Address" value="{{address.address}}">
+                        <input class="form-control" type="text" name="address" placeholder="Address" value="{{address.address}}" onkeyup="addValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                         oninvalid="setCustomValidity('Invalid address')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="add" class="new" style="color:red;"></span>
                 </div>
               <div class="form-field">
-                <input class="form-control" type="text" name="district"  placeholder="district" value="{{address.district}}">
+                <input class="form-control" type="text" name="district"  placeholder="district" value="{{address.district}}"  onkeyup="disValidation(this)" required pattern="^[a-zA-Z]+$"
+                           oninvalid="setCustomValidity('Invalid distrct')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="dis" class="new" style="color:red;"></span>
             </div>
 
 
                 <div class="form-field">
-                        <input class="form-control" type="text" name="panchayat"  placeholder="Panchayat" value="{{address.panchayat}}">
+                        <input class="form-control" type="text" name="panchayat"  placeholder="Panchayat" value="{{address.panchayat}}" onkeyup="panValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                          oninvalid="setCustomValidity('Invalid panchayat')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="pan" class="new" style="color:red;"></span>
                     </div>
 
 
                     <div class="form-field">
-                        <input class="form-control" type="text" name="city" placeholder="City" value="{{address.city}}">
+                        <input class="form-control" type="text" name="city" placeholder="City" value="{{address.city}}" onkeyup="citValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                            oninvalid="setCustomValidity('Invalid city')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="cit" class="new" style="color:red;"></span>
                     </div>
 
                      <div class="form-field">
-                        <input class="form-control" type="text" name="landmark"  placeholder="landmark" value="{{address.landmark}}">
+                        <input class="form-control" type="text" name="landmark"  placeholder="landmark" value="{{address.landmark}}" onkeyup="lanValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                            oninvalid="setCustomValidity('Invalid landmark')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="lan" class="new" style="color:red;"></span>
                     </div>
 
                     <div class="form-field">
@@ -217,12 +237,12 @@
          cart = {}
         document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
           
-         window.location.href = "{% url 'store' %}"
+
         })
     }
 function pinValidation(inputTxt){
 
-    var regx = 686513;
+    var regx = /^[6][0-9]{5}$/;
     var textField = document.getElementById("pin");
 
     if(inputTxt.value != '' ){
@@ -270,6 +290,204 @@ function phoneValidation(inputTxt){
     }else{
         textField.textContent = 'your are not allowed  to leave a field  empty';
         textField.style.color = "red";
+    }
+}
+function addValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("add");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function addValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("add");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function disValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("dis");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function panValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("pan");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function citValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("cit");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function lanValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("lan");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
     }
 }
 </script>

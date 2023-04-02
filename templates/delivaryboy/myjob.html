@@ -9,14 +9,12 @@
                 <thead>
                     <tr>
 
-                        <th>First Names</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Panchayat</th>
-                        <th>City</th>
-                        <th>Pin</th>
-                        <th>Contact No</th>
+                        <th>Customer Name</th>
+                        <th>Customer Email and Phone</th>
+                        <th>Customer Address</th>
+                        <th>Farmer name</th>
+                        <th>Farmer Email and Phone</th>
+                        <th>Product details</th>
                         <th>Option</th>
                         <th>Option  </th>
 
@@ -27,14 +25,13 @@
                 <!-- <td><a href=""><div class="btn btn-success">Approve</div></a></td> -->
                 {% for order in orders%}
                   <tr>
-                <td>{{order.customer.first_name}}</td>
-                <td>{{order.customer.last_name}}</td>
-                 <td>{{order.customer.email}}</td>
-                <td>{{order.address}}</td>
-                <td>{{order.panchayat}}</td>
-                <td>{{order.city}}</td>
-                <td>{{order.pin}}</td>
-                 <td>{{order.phone}}</td>
+                <td>{{order.customer.first_name}} {{order.customer.last_name}}</td>
+                <td>{{order.customer.email}},{{order.myorder.phone}}</td>
+                 <td style="height: 100px;">{{order.myorder.address}},{{order.myorder.panchayat}},{{order.myorder.city}},{{order.myorder.pincode}},</td>
+                <td>{{order.cart.product.farmer.first_name}} {{order.cart.product.farmer.last_name}}</td>
+                <td>{{order.cart.product.farmer.phone_no}} {{order.cart.product.farmer.email}}</td>
+                <td>{{order.cart.product.Product_name}} {{order.cart.quantity}}kg</td>
+
 
 
                 <td><a href=""<div class="btn btn-success">Accept</div></a></td>

@@ -22,7 +22,9 @@ class Addcatagory(View):
         return render(request,'admin/catagory.html')
 class Deliboyapprove(View):
     def get(self,request):
-        values = Registration.objects.filter(role='Delivery_Boy',status="inactive").values()
+        values = Address.objects.filter(user_id__role='Delivery_Boy', user_id__status="inactive").all()
+        # values=Address.objects.all()
+        print(values)
         return render(request,'admin/delivaryboyapprove.html',{'values':values})
 class Customerview(View):
     def get(self,request):
@@ -35,22 +37,29 @@ class Deletedcustomer(View):
         return render(request,'admin/deletedcustomer.html',{'customers':customers})
 class Farmerview(View):
     def get(self,request):
-        farmers = Registration.objects.filter(role="Farmer",status='active').values()
-        return render(request,'admin/farmerview.html',{'farmers':farmers})
+        values = Address.objects.filter(user_id__role="Farmer",user_id__status='active').all()
+        return render(request,'admin/farmerview.html',{'values':values})
 class Delivaryboyview(View):
     def get(self,request):
-        boys = Registration.objects.filter(role="Delivery_Boy",status='active').values()
-        return render(request,'admin/delivaryboyview.html',{'boys':boys})
+        values = Address.objects.filter(user_id__role="Delivery_Boy",user_id__status='active').all()
+        return render(request,'admin/delivaryboyview.html',{'values':values})
 class Deliactivate(View):
-    def get(self,request,id):
+   print("entereddddddddddddd")
+   def post(self, request):
+        pincode = request.POST.get("pincode")
+        id = request.POST.get("ids")
+        print(pincode)
+        print(id)
         dele=Registration.objects.get(id=id)
+        boys=Address.objects.get(user_id=id)
+        boys.pin=pincode
+        boys.save()
         dele.status="active"
         print(dele.status)
         dele.save()
-        values = Registration.objects.filter(role='Delivery_Boy',status="inactive").values()
-        return render(request, 'admin/delivaryboyapprove.html',{'values': values})
+        data={'pincode':pincode}
+        return JsonResponse(data)
 
-        return HttpResponse("<script>alert('Activated ');window.location='/AdminsFarmer_approval';</script>")
 class Activate(View):
     def get(self,request,id):
         dele=Registration.objects.get(id=id)
@@ -87,16 +96,16 @@ class Farmerdeactivate(View):
         dele.status = "inactive"
         print(dele.status)
         dele.save()
-        farmers= Registration.objects.filter(status="active", role='Farmer').values()
-        return render(request,'admin/farmerview.html',{'farmers':farmers})
+        values= Address.objects.filter(user_id__status="active",user_id__role='Farmer').all()
+        return render(request,'admin/farmerview.html',{'values':values})
 class Deliboydeactivate(View):
     def get(self,request,id):
         dele = Registration.objects.get(id=id)
         dele.status = "inactive"
         print(dele.status)
         dele.save()
-        boys= Registration.objects.filter(status="active", role='Delivery_Boy').values()
-        return render(request,'admin/farmerview.html',{'boys':boys})
+        values= Address.objects.filter(user_id__status="active",user_id__role='Delivery_Boy').all()
+        return render(request,'admin/farmerview.html',{'values':values})
 
 def customersearchbar(request):
     if request.method == 'GET':

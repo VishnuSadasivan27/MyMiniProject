@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from django.utils.decorators import method_decorator
 import django.contrib.sessions
+from datetime import datetime
 from django.template import loader
 from .decorators import user_login_required
 from django.contrib.auth.decorators import login_required
@@ -143,8 +144,12 @@ def signup(request):
 @user_login_required
 def store(request,id):
     datas = MyProduct.objects.filter(catagory_id=id)
+    print("ggggggggggggggggggggggggggggggggggggg",datas)
     person = request.session['id']
     user = Registration.objects.get(id=person)
+    today = datetime.now().date()
+    expired_products = MyProduct.objects.filter(expirydate__lte=today)
+    expired_products.delete()
     print(user.image)
     return render(request, 'home/store.html', {'datas': datas, 'user': user})
 
@@ -263,6 +268,7 @@ class LoginPage(View):
                 email = admin.email
                 request.session['email'] = admin.email
                 request.session['password'] = admin.password
+                request.session['id'] = admin.id
                 print(email)
                 customers = Registration.objects.filter(role="Customer", status='active').values()
                 count = customers.count()
@@ -358,6 +364,7 @@ class Orderaddress(View):
         landmark = request.POST.get("landmark")
         pincode = request.POST.get("pincode")
         phone = request.POST.get("phone")
+
         r = Cus_address(customer_id=cus_id, address=address, district=district, panchayat=panchayat, city=city,
                         pincode=pincode, landmark=landmark, phone=phone)
         r.save()
@@ -388,13 +395,39 @@ class Changepassword(View):
         new_pass2 = request.POST.get("renewpassword")
         print(old_pass, new_pass1, new_pass2);
         current_password = Registration.objects.filter(id=id).values('password').get()['password']
-        if (old_pass == current_password):
-            user.update(password=new_pass1)
-            return HttpResponse(
-                "<script>alert('Succesfully updated');window.location='customercustomerprofile';</script>")
+        if (new_pass1 == new_pass2):
+            if (old_pass == current_password):
+                user.update(password=new_pass1)
+                return HttpResponse(
+                    "<script>alert('Succesfully updated');window.location='customercustomerprofile';</script>")
+            else:
+                return HttpResponse(
+                    "<script>alert('current password is wrong');window.location='customercustomerprofile';</script>")
         else:
-            return HttpResponse(
-                "<script>alert('current password is wrong');window.location='customercustomerprofile';</script>")
+            return HttpResponse("<script>alert('Re-entered Password is wrong');window.location='/Admins/Adminprofile';</script>")
+
+
+
+@method_decorator(user_login_required, name='dispatch')
+class AdminPasswordchange(View):
+    def post(self, request):
+        id = request.session.get('id')
+        print(id)
+        user = AdminLogin.objects.filter(id=id)
+        old_pass = request.POST.get("cpassword")
+        new_pass1 = request.POST.get("newpassword")
+        new_pass2 = request.POST.get("renewpassword")
+        print(old_pass, new_pass1, new_pass2);
+        current_password = AdminLogin.objects.filter(id=id).values('password').get()['password']
+        if (new_pass1==new_pass2):
+            if (old_pass == current_password):
+                user.update(password=new_pass1)
+                return HttpResponse(
+                    "<script>alert('Succesfully updated');window.location='/Admins/Adminprofile';</script>")
+            else:
+                return HttpResponse("<script>alert('current password is wrong');window.location='/Admins/Adminprofile';</script>")
+        else:
+            return HttpResponse("<script>alert('Re-entered Password is wrong');window.location='/Admins/Adminprofile';</script>")
 
 # class MyProduct(View):
 #     model = MyProduct

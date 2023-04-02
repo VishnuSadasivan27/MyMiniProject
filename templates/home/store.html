@@ -3,57 +3,83 @@
 {% block content %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'store/storemain.css' %}">
-<style>
-    img.thumbnail{
+    <style>
 
-    }
-	.col-lg-4{
-		            width: 30%;
-                    margin: 15px;
-                    box-sizing: border-box;
-                    float:left;
-                    text-align:center;
-                    border-radius: 20px;
-                    cursor: pointer;
-                    padding-top: 10px;
-                    box-shadow:0 14px 28px rgba(0,0,0,0),
-                    0 10px 10px rgba(0,0,0,0.22);
-                    transition: .4s;
-                    background: #f2f2f2;
-	}
-</style>
+        img.thumbnail{
+
+        }
+        .col-lg-4 {
+            width: 30%;
+            margin: 15px;
+            box-sizing: border-box;
+            float: left;
+            text-align: center;
+            border-radius: 20px;
+            cursor: pointer;
+            padding-top: 10px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0),
+            0 10px 10px rgba(0, 0, 0, 0.22);
+            transition: .4s;
+            background: #f2f2f2;
+        }
+                .col-lg-9 {
+            width: 60%;
+            margin: 15px;
+            box-sizing: border-box;
+            float: left;
+            margin-top: 200px;
+            margin-left: 300px;
+            align:center ;
+            text-align: center;
+            border-radius: 20px;
+            cursor: pointer;
+            background-color: #4caf50;
+            padding-top: 30px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0),
+            0 10px 10px rgba(0, 0, 0, 0.22);
+            transition: .4s;
+            background: #f2f2f2;
+        }
+          .error{
+              font-weight: bold;
+              color: #FF0000;
+              font-family:"Rage Italic";
+          }
+
+    </style>
+
+       {% if not datas %}
+
+        <div class="col-lg-9" >
+            <div class="box-element productvalue">
+                <h1 class="error">NO PRODUCT TO SHOW</h1>
+            </div>
+        </div>
+
+        {% else %}
+
+
     <div class="row">
-<!--		 <form method="POST" action = "loginpage/" class="login-form" id="login-form">-->
-		{% for data in datas %}
-		<div class="col-lg-4">
+{% for data in datas %}
 
-			<img class="thumbnail" src="{{data.imageURL}}">
-		    <div class="box-element product">
+                <div class="col-lg-4">
+                    <img class="thumbnail" src="{{data.imageURL}}">
+                    <div class="box-element product">
+                        <h6><strong>{{data.Product_name}}</strong></h6>
+                        <hr>
+                        <h6><strong>Quantity:{{data.quantity}} &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Addded Date:{{data.adddate}}  </strong></h6>
+                        <hr>
+                        <h6><strong >Expiry:{{data.expirydate}}</strong></h6>
+                        <hr>
+                        <button data-product={{data.id}}  data-action="add"  class="btn btn-outline-secondary add-btn update-cart">
+                            <a class="btn btn-outline-success" href="{% url 'AddCart' data.id %}">Add to Cart</a>
+                        </button>
+                        <h4 style="display: inline-block;float:right"><strong class="qty" id="qty_sugar">Rs.{{data.price|floatformat:2}}</strong></h4>
+                    </div>
+                </div>
 
-			    <h6><strong>{{data.Product_name}}</strong></h6>
-			    <hr>
-				<h6><strong>Quantity:{{data.quantity}} &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Addded Date:{{data.adddate}}  </strong></h6>
-				<hr>
-				<h6><strong >Expiry:{{data.expirydate}}</strong></h6>
-				<hr>
-<!--				<h6><strong></strong></h6>-->
-<!--				<hr>-->
+        {% endfor %}
+        </div>
 
-
-
-				<button data-product={{data.id}}  data-action="add"  class="btn btn-outline-secondary add-btn update-cart">
-				<a class="btn btn-outline-success" href="{% url 'AddCart' data.id %}">Add to Cart</a></button>
-<!--				<a class="btn btn-outline-success" href="#">View</a>-->
-
-				<h4 style="display: inline-block;float:right"><strong class="qty" id="qty_sugar">Rs.{{data.price|floatformat:2}}</strong></h4>
-
-		 	</div>
-		</div>
-		{% endfor %}
-		{% for messages in messages %}
-		<h3 style="color:beige;"></h3>
-		{% endfor %}
-	</div>
-
-{% endblock content %}
-
+  {% endif %}
+{% endblock %}

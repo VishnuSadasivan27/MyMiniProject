@@ -22,7 +22,6 @@ class OrderItem(models.Model):
 
 class Cus_address(models.Model):
     customer = models.ForeignKey(Registration, on_delete=models.SET_NULL,null=True,blank =True)
-    myorder = models.ForeignKey(OrderItem, on_delete=models.SET_NULL, null=True, blank=True)
     address=models.CharField(max_length=200)
     district=models.CharField(max_length=200)
     panchayat=models.CharField(max_length=200)
@@ -35,8 +34,10 @@ class Cus_address(models.Model):
 class Order(models.Model):
     customer = models.ForeignKey(Registration, on_delete=models.SET_NULL,null=True,blank =True)
     myorder = models.ForeignKey(Cus_address, on_delete=models.SET_NULL,null=True,blank =True)
+    cart = models.ForeignKey(OrderItem, on_delete=models.SET_NULL,null=True,blank =True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False,null=True,blank=False)
+
     # transaction_id = models.CharField(max_length=200,null=True)
     # delivarycharge = models.CharField(max_length=100)
     # quantity = models.CharField(max_length=100)

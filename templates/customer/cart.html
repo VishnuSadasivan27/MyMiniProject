@@ -36,7 +36,7 @@
 <div class="col-6 card-title">
 <h1 class="mb-4 product_name">{{item.product.Product_name}}</h1>
 <p class="mb-2">PRICE:{{item.product.price|floatformat:2}}$</p>
-<p class="mb-2">TOTAL QUANTITY-{{item.product.quantity}}KG</p>
+<!--<p class="mb-1">TOTAL QUANTITY REMAINING-</p><span id="result2">{{value}}</span>Kg-->
 <p class="mb-3">EXPIRY DATE: {{item.product.expirydate}}</p>
 
 </div>
@@ -244,9 +244,11 @@
 				$('.quantity-input[data-id="' + id + '"]').text(data.quantity);  // use correct JSON keys
 				$('.total-price[data-id="' + id + '"]').text(data.total);
 				$('.uniquetotal-price[data-id="' + id + '"]').text(data.total1);
-				$('.shipping-price[data-id="' + id + '"]').text(data.shipping)
+				$('.shipping-price[data-id="' + id + '"]').text(data.shipping);
+				$('.remaining[data-id="' + id + '"]').text(data.value);
 				$('#result').text(data.total1);
 				$('#result1').text(data.shipping);
+				$('#result2').text(data.value);
 				console.log("The product quantity: " + data.quantity);
 				console.log("The product total: " + data.total);
 				console.log("The product total: " + data.total1);
@@ -273,6 +275,8 @@
 				$('.shipping-price[data-id="' + id + '"]').text(data.shipping)
 				$('#result').text(data.total1);
 				$('#result1').text(data.shipping);
+				$('#result2').text(data.value);
+
 				console.log("The product quantity: " + data.quantity);
 				console.log("The product total: " + data.total);
 				console.log("The product shipping: " + data.shipping);

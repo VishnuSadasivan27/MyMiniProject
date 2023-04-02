@@ -40,8 +40,11 @@ def plusqty(request):
     user = request.session.get('id')
     carts = OrderItem.objects.filter(customer_id=user)
     cart = get_object_or_404(OrderItem, id=id)
-
-    if int(cart.product.quantity) > cart.quantity:
+    pro= OrderItem.objects.filter(id=id).values('product').get()['product']
+    print(pro)
+    print(cart.product.quantity)
+    print(cart.quantity)
+    if (int (cart.product.quantity) != 0):
         cart.quantity += 1
         cart.total = Decimal(str(cart.quantity)) * Decimal(str(cart.product.price))
         print(cart.total)
@@ -53,8 +56,12 @@ def plusqty(request):
             total1 += int(i.total)
         print("The rotal",total1)
         shipping = total1 + 50
+        value = MyProduct.objects.get(id=pro)
+        value.quantity=int(value.quantity)-1
+        print(value.quantity)
 
-        data = {'quantity': cart.quantity, 'total': cart.total, 'total1': total1, 'shipping': shipping}
+        value.save()
+        data = {'quantity': cart.quantity, 'total': cart.total, 'total1': total1,'shipping':shipping}
         return JsonResponse(data)
     else:
         data = {'error': 'Out of Stock'}
@@ -65,9 +72,13 @@ def minusqty(request):
     print("my id is",id)
     user = request.session.get('id')
     carts = OrderItem.objects.filter(customer_id=user)
+    pro= OrderItem.objects.filter(id=id).values('product').get()['product']
+    print(pro)
+
     cart = get_object_or_404(OrderItem, id=id)
 
-    if int(cart.product.quantity) > 1:
+
+    if int(cart.quantity) >= 1:
         cart.quantity -= 1
         cart.total = Decimal(str(cart.quantity)) * Decimal(str(cart.product.price))
         print(cart.total)
@@ -79,11 +90,14 @@ def minusqty(request):
             total1 += int(i.total)
         print("The rotal", total1)
         shipping=total1+50
-
-        data = {'quantity': cart.quantity, 'total': cart.total, 'total1': total1,'shipping':shipping}
+        value = MyProduct.objects.get(id=pro)
+        value.quantity=int(value.quantity)+1
+        print(value.quantity)
+        value.save()
+        data = {'quantity': cart.quantity, 'total': cart.total, 'total1': total1,'shipping':shipping,'value':value.quantity}
         return JsonResponse(data)
     else:
-        data = {'error': 'Out of Stock'}
+        data = {'error': 'negative is not applicable'}
         return JsonResponse(data, status=400)
 @user_login_required
 def plusqty1(request,id):
@@ -157,10 +171,13 @@ class AddCart(View):
             customer = request.session.get('id')
             # print(cart)
             print(customer)
-            if OrderItem.objects.filter(product_id=id).exists():
+            if OrderItem.objects.filter(product_id=id,customer_id=customer).exists():
                 return HttpResponse("<script>alert('Products already exists in cart');window.location='/customer/ViewCart';</script>")
             else:
-                addcart=OrderItem(product_id=id,customer_id=customer)
+                product=MyProduct.objects.get(id=id)
+                product.quantity=int(product.quantity)-1
+                product.save()
+                addcart=OrderItem(product_id=id,customer_id=customer,quantity=1)
                 addcart.total=int(addcart.total)+int(addcart.product.price)
 
                 addcart.totalproductcost = int(addcart.totalproductcost) + int(addcart.total)
@@ -192,8 +209,14 @@ class RemoveCart(View):
         print("remove item id",id)
         customer=request.session.get('id')
         cart_id= OrderItem.objects.filter(id=id)
+        cart_quantity= OrderItem.objects.filter(id=id).values('quantity').get()['quantity']
         cart = OrderItem.objects.filter(customer_id=customer)
+        pro = OrderItem.objects.filter(id=id).values('product').get()['product']
+        value=MyProduct.objects.get(id=pro)
         cart_id.delete()
+        value.quantity=int(value.quantity)+cart_quantity
+        print(value.quantity)
+        value.save()
         total1 = 0
         for i in cart:
             total1 += int(i.total)
@@ -243,11 +266,18 @@ def payment(request):
 @user_login_required
 def thanks(request):
     cus_id = request.session.get('id')
-    cartitem = Cus_address.objects.filter(customer_id=cus_id)
-    complete="True"
-    a=Order(customer_id=cus_id,complete=complete)
-    print(cus_id,complete)
-    a.save()
+    address = Cus_address.objects.latest('updated_date')
+    pinid=address.id
+    pincode=Cus_address.objects.filter(id=pinid).values('pincode').get()['pincode']
+    cart=OrderItem.objects.filter(customer_id=cus_id)
+    boy=Address.objects.filter(user_id__role="Delivary_boy",pin=pincode)
+    print(boy)
+    print(address.id)
+    for i in cart:
+        complete="True"
+        a=Order(myorder=address,cart=i,customer_id=cus_id,complete=complete)
+        print(cus_id,complete)
+        a.save()
     user=Registration.objects.get(id=cus_id)
     return render(request, 'customer/thanks.html',{'user':user})
 @method_decorator(user_login_required, name='dispatch')
@@ -268,7 +298,8 @@ class Updatecustomer(View):
         user.image = pimage
         user.save()
         print(user.image)
-        context = {'user': user}
+        address = Address.objects.get(user_id=id)
+        context = {'user': user,'address':address}
         return render(request,'customer/customerprofile.html',context)
 @method_decorator(user_login_required, name='dispatch')
 class Addaddress(View):
@@ -307,3 +338,8 @@ class Addaddress(View):
             user = Registration.objects.get(id=id)
             context={'address':address,'user':user}
             return render(request, 'customer/customerprofile.html', context)
+
+@method_decorator(user_login_required, name='dispatch')
+class OrderPlaced(View):
+    def get(self, request):
+        return render(request, 'customer/Orderplaced.html')

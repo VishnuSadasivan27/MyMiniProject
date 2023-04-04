@@ -1,9 +1,10 @@
 from django.urls import path
 from . import views
-from customer.views import Customerprofile,AddCart,Checkout,Cart,OrderPlaced,ViewCart,RemoveCart,Updatecustomer
+from customer.views import Customerprofile,Trackmyemployee,AddCart,Checkout,Cart,OrderPlaced,ViewCart,RemoveCart,Updatecustomer
 
 # from Agrikart.home import views
 urlpatterns = [
+   path('Trackmyemployee',Trackmyemployee.as_view(),name='Trackmyemployee'),
    path('customerprofile',Customerprofile.as_view(),name='Customerprofile'),
    path('OrderPlaced',OrderPlaced.as_view(),name='OrderPlaced'),
    path('AddCart/<id>/',AddCart.as_view(), name='AddCart'),

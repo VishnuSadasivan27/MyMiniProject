@@ -370,7 +370,7 @@ class Orderaddress(View):
         r.save()
         if not Address.objects.filter(user_id=cus_id).exists():
             print(cus_id, address, panchayat, city, pincode, phone)
-            add = Address(address=address, panchayat=panchayat, district=district, city=city, pincode=pincode,
+            add = Address(address=address, panchayat=panchayat, district=district, city=city, pin=pincode,
                           landmark=landmark, user_id=cus_id)
             add.save()
             return redirect('payment')

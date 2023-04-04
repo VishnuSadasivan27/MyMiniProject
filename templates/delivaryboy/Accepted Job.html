@@ -14,6 +14,7 @@
                         <th>Customer Address</th>
                         <th>Farmer name</th>
                         <th>Farmer Email and Phone</th>
+                        <th>Farmer Address</th>
                         <th>Product details</th>
                         <th>Option</th>
 
@@ -23,18 +24,19 @@
                 <tbody>
 
                 <!-- <td><a href=""><div class="btn btn-success">Approve</div></a></td> -->
-                {% for order in orders%}
+                {% for order in delivary %}
                   <tr>
-                <td>{{order.customer.first_name}} {{order.customer.last_name}}</td>
-                <td>{{order.customer.email}},{{order.myorder.phone}}</td>
-                 <td style="height: 100px;">{{order.myorder.address}},{{order.myorder.panchayat}},{{order.myorder.city}},{{order.myorder.pincode}},</td>
-                <td>{{order.cart.product.farmer.first_name}} {{order.cart.product.farmer.last_name}}</td>
-                <td>{{order.cart.product.farmer.phone_no}} {{order.cart.product.farmer.email}}</td>
-                <td>{{order.cart.product.Product_name}} {{order.cart.quantity}}kg</td>
+                <td>{{order.cart.customer.first_name}} {{order.cart.customer.last_name}}</td>
+                <td>{{order.cart.customer.email}},{{order.cart.myorder.phone}}</td>
+                 <td style="height: 100px;">{{order.cart.myorder.address}},{{order.cart.myorder.panchayat}},{{order.cart.myorder.city}},{{order.cart.myorder.pincode}},</td>
+                <td>{{order.cart.cart.product.farmer.first_name}} {{order.cart.cart.product.farmer.last_name}}</td>
+                <td>{{order.cart.cart.product.farmer.phone_no}} {{order.cart.cart.product.farmer.email}}</td>
+                <td>{{order.farmer.address}},{{order.farmer.district}},{{order.farmer.panchayat}},{{order.farmer.city}} city,{{order.farmer.landmark}}</td>
+                <td>{{order.cart.cart.product.Product_name}} {{order.cart.cart.quantity}}kg</td>
 
 
 
-                <td><a href="{% url 'Delivaryjobaccept' order.id %}"><div class="btn btn-success">Accept</div></a></td>
+                <td><a href=""><div class="btn btn-success">Order Placed</div></a></td>
 
                   </tr>
 

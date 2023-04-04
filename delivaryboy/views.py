@@ -9,7 +9,8 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from home.views import Registration
 from customer.models import Order,Cus_address
-from home.models import Address
+from delivaryboy.models import DelivaryAssign
+from home.models import Address,MyProduct
 # Create your views here.
 class Deliboyprofile(View):
     def get(self,request):
@@ -28,15 +29,19 @@ class Deliboyprofile(View):
 class Viewmyjob(View):
     def get(self,request):
         id = request.session.get('id')
-        pincode=Address.objects.filter(user_id=id).values('pin').get()['pin']
-        print(pincode)
+        user=Registration.objects.get(id=id)
         if Address.objects.filter(user_id=id,user_id__status="active").exists():
             myorders=Order.objects.all()
+            pincode = Address.objects.filter(user_id=id).values('pin').get()['pin']
+            print(pincode)
             for order in myorders:
                 print(order.myorder.pincode)
-                if order.myorder.pincode == str(pincode):
-                    orders=Order.objects.filter(myorder_id__pincode=pincode)
-                    return render(request, 'delivaryboy/myjob.html',{'orders':orders})
+                if order.complete :
+                    if order.myorder.pincode == str(pincode):
+                        orders=Order.objects.filter(myorder_id__pincode=pincode,complete=True)
+                        return render(request, 'delivaryboy/myjob.html',{'orders':orders,'user':user })
+                    else:
+                        return render(request, 'delivaryboy/myjob.html')
                 else:
                     return render(request, 'delivaryboy/myjob.html')
         elif  Address.objects.filter(user_id=id, user_id__status="inactive").exists():
@@ -151,5 +156,33 @@ class AddBoyaddress(View):
             context={'address':address,'user':user}
             return HttpResponse("<script>alert('Succesfully updated');window.location='Deliboyprofile';</script>")
 
+class Delivaryjobaccept(View):
+    def get(self,request,id):
+        deliboy = request.session.get('id')
+        deliid=Registration.objects.get(id=deliboy)
+        orderplaced=Order.objects.get(id=id)
+        print(orderplaced.cart.product.farmer.id)
+        farmeraddress=Address.objects.get(user_id=orderplaced.cart.product.farmer.id)
+        r=DelivaryAssign(boy=deliid,farmer=farmeraddress,cart=orderplaced)
+        r.save()
+        orderplaced.complete= False
+        orderplaced.save()
+        print(orderplaced.complete)
+        return HttpResponse("<script>alert('Succesfully updated');window.location='/delivaryboy/Viewmyjob';</script>")
 
+
+class AcceptedJob(View):
+    def get(self,request):
+        id = request.session.get('id')
+        user=Registration.objects.get(id=id)
+        if Address.objects.filter(user_id=id,user_id__status="active").exists():
+            delivary=DelivaryAssign.objects.filter(boy_id=id)
+            print(delivary)
+            return render(request, 'delivaryboy/Accepted Job.html', {'delivary': delivary,'user':user})
+        elif Address.objects.filter(user_id=id, user_id__status="inactive").exists():
+            return HttpResponse(
+                "<script>alert('please wait for admin approval');window.location='/delivaryhome/';</script>")
+        else:
+            return HttpResponse(
+                "<script>alert('Add your Address in Your profile');window.location='/delivaryhome/';</script>")
 

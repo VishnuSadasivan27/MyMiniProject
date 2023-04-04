@@ -147,36 +147,45 @@
                   <form method="POST" action = " Updatedelivaryboy" class="update-form" enctype="multipart/form-data" id="update-form">
                      {% csrf_token %}
                     <div class="row mb-3">
-                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                     <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
                         <img src="{{user.imageURL}}" alt="Profile">
                         <div class="pt-2">
-                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                           <input type="file" name="pimage" id="pImage" autofocus="false" value="{{user.image}}" autocomplete="off" class="form-control" accept="image/x-png,image/gif,image/jpeg,image/HEIC" > <br>
-                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image" ><i class="bi bi-upload"></i></a>
+                           <input type="file" name="pimage" autofocus="false"  autocomplete="off" class="form-control" id="myFileInput" accept="image/*" required> <br>
+                             <span id="imageError" style="color:red;"></span>
+
                           <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
                         </div>
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">First Name</label>
+                      <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="firstname" type="text" class="form-control" id="fullName" value="{{user.first_name}}">
+                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{user.first_name}}"  onkeyup="fnameValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                                oninvalid="setCustomValidity('Invalid firstname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="fname" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
                       <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
+                      <label for="lastname" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="lastname" type="text" class="form-control" id="lastName" value="{{user.last_name}}">
+                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{user.last_name}}"  onkeyup="lnameValidation(this)" required pattern="^[a-zA-Z]+$"
+                                oninvalid="setCustomValidity('Invalid lastname')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="lname" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
-
                     <div class="row mb-3">
-                      <label for="company" class="col-md-4 col-lg-3 col-form-label">role</label>
+                      <label for="role" class="col-md-4 col-lg-3 col-form-label">role</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="role" type="text" class="form-control" id="company" value="{{user.role}}" readonly>
+                        <input name="role" type="text" class="form-control" id="role" value="{{user.role}}" readonly>
                       </div>
                     </div>
 
@@ -185,16 +194,26 @@
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="phone" type="text" class="form-control" id="Phone" value="{{user.phone_no}}">
+                        <input name="phone" type="text" class="form-control" id="Phone" value="{{user.phone_no}}"  onkeyup="phoneValidation(this)" required pattern="[6-9]{1}[0-9]{9}"
+                        oninvalid="setCustomValidity('Invalid phone')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="phone1" class="new" style="color:red;"></span>
+
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="{{user.email}}">
+                        <input name="email" type="email" class="form-control" id="Email" value="{{user.email}}" onkeyup="emailValidation(this)" required pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                        oninvalid="setCustomValidity('Invalid mail')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="mail" class="new" style="color:red;"></span>
                       </div>
                     </div>
+
 
 
 <!--                    <div class="row mb-3">-->
@@ -241,36 +260,54 @@
                     <div class="row mb-4">
                       <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}">
+                        <input name="Address" type="text" class="form-control" id="Addres" value="{{address.address}}" onkeyup="addValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                         oninvalid="setCustomValidity('Invalid address')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="add" class="new" style="color:red;"></span>
                       </div>
                     </div>
                         <div class="row mb-2">
                       <label for="District" class="col-md-4 col-lg-3 col-form-label">District</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}">
+                        <input name="District" type="text" class="form-control" id="District" value="{{address.district}}" onkeyup="disValidation(this)" required pattern="^[a-zA-Z]+$"
+                           oninvalid="setCustomValidity('Invalid distrct')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="dis" class="new" style="color:red;"></span>
                       </div>
                     </div>
                       <div class="row mb-4">
                       <label for="Panchayat" class="col-md-4 col-lg-3 col-form-label">Panchayat</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}">
+                        <input name="panchayat" type="text" class="form-control" id="Panchayat" value="{{address.panchayat}}" onkeyup="panValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                          oninvalid="setCustomValidity('Invalid panchayat')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="pan" class="new" style="color:red;"></span>
                       </div>
                     </div>
 
                     <div class="row mb-4">
                       <label for="city" class="col-md-4 col-lg-3 col-form-label">City</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}">
+                        <input name="city" type="text" class="form-control" id="city" value="{{address.city}}" onkeyup="citValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                            oninvalid="setCustomValidity('Invalid city')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="cit" class="new" style="color:red;"></span>
                       </div>
                     </div>
                     <div class="row mb-4">
                       <label for="landmark" class="col-md-4 col-lg-3 col-form-label">Landmark</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}">
+                        <input name="landmark" type="text" class="form-control" id="landmark" value="{{address.landmark}}"  onkeyup="lanValidation(this)" required pattern="^[a-zA-Z\s]+$"
+                            oninvalid="setCustomValidity('Invalid landmark')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30" required>
+                        <span id="lan" class="new" style="color:red;"></span>
                       </div>
                     </div>
-
-
 
                      <div class="row mb-4">
                       <label for="Pincode" class="col-md-4 col-lg-3 col-form-label">Assigned place Pincode</label>
@@ -281,7 +318,8 @@
                     <div class="row mb-4">
                       <label for="Aadhar" class="col-md-4 col-lg-3 col-form-label">Aadhar</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="Aadhar" type="file" class="form-control" id="Aadhar" value="{{address.imageURL}}">
+                        <input type="file" name="pimage" autofocus="false"  autocomplete="off" class="form-control" id="myimageInput" accept="image/*" required> <br>
+                             <span id="imageproblem" style="color:red;"></span>
                       </div>
                     </div>
 
@@ -441,6 +479,385 @@ function cpasswordValidation(inputTxt){
             textField.style.color = "red";
         }
 }
+</script>
+<script>
+function addValidation(inputTxt){
+
+  var regx = /^[a-zA-Z\s]+$/;
+  var textField = document.getElementById("add");
+
+
+  if(inputTxt.value != '' ){
+
+      if(inputTxt.value.length >= 1){
+
+          if(inputTxt.value.match(regx)){
+              textField.textContent = '';
+              textField.style.color = "green";
+
+
+
+          }else{
+              textField.textContent = 'only characters are allowded to insert!';
+              textField.style.color = "red";
+
+
+          }
+      }else{
+          textField.textContent = 'your input must me more than two chracters';
+          textField.style.color = "red";
+
+      }
+  }else{
+      textField.textContent = 'your are not allowed  to leave a field  empty';
+      textField.style.color = "red";
+
+  }
+}
+function disValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("dis");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function panValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("pan");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function citValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("cit");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+function lanValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("lan");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
+var input = document.getElementById("myimageInput");
+var error = document.getElementById("imageproblem");
+
+input.addEventListener("change", function() {
+  var file = input.files[0];
+  var reader = new FileReader();
+
+  reader.onloadend = function() {
+    // Check if file is an image
+    if (file.type.indexOf("image") !== 0) {
+      error.textContent = "Selected file is not an image.";
+      input.value = "";
+      return;
+    }
+
+    // Check if file is too large (max 5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      error.textContent = "Selected image is too large. Max size is 5 MB.";
+      input.value = "";
+      return;
+    }
+
+    // Image is valid
+    error.textContent = "";
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+<script>
+
+function fnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("fname");
+
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
+function lnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z]+$/;
+    var textField = document.getElementById("lname");
+    textField.textContent = '';
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+
+    }
+}
+
+function emailValidation(inputTxt){
+    // ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    var regx = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+    var textField = document.getElementById("mail");
+    textField.textContent = '';
+
+    if(inputTxt.value != '' ){
+        if(inputTxt.value.match(regx)){
+            textField.textContent = '';
+            textField.style.color = "green";
+
+
+        }else{
+            textField.textContent = 'email id  is not valid!!! please insert a valid one';
+            textField.style.color = "red";
+
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+
+
+
+function pinValidation(inputTxt){
+    // ^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$
+    regx = /^[6][0-9]{5}$/;
+    var textField = document.getElementById("pin");
+    textField.textContent = '';
+
+    if(inputTxt.value != '' ){
+        if(inputTxt.value.match(regx)){
+            textField.textContent = '';
+            textField.style.color = "green";
+
+
+        }else{
+            textField.textContent = ' please insert a valid pin';
+            textField.style.color = "red";
+
+
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+    }
+}
+
+var input = document.getElementById("myFileInput");
+var error = document.getElementById("imageError");
+
+input.addEventListener("change", function() {
+  var file = input.files[0];
+  var reader = new FileReader();
+
+  reader.onloadend = function() {
+    // Check if file is an image
+    if (file.type.indexOf("image") !== 0) {
+      error.textContent = "Selected file is not an image.";
+      input.value = "";
+      return;
+    }
+
+    // Check if file is too large (max 5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      error.textContent = "Selected image is too large. Max size is 5 MB.";
+      input.value = "";
+      return;
+    }
+
+    // Image is valid
+    error.textContent = "";
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
+
+
+function phoneValidation(inputTxt) {
+
+  var regx = /[6-9]{1}[0-9]{9}/;
+  var textField = document.getElementById("phone1");
+  textField.textContent = '';
+
+  if (inputTxt.value != '') {
+
+    if ((inputTxt.value.length == 10)) {
+
+      if (inputTxt.value.match(regx)) {
+        textField.textContent = '';
+        textField.style.color = "green";
+
+      } else {
+        textField.textContent = 'please enter a valid number';
+        textField.style.color = "red";
+      }
+    } else {
+      textField.textContent = 'your input must be a 10 digit number';
+      textField.style.color = "red";
+    }
+  } else {
+    textField.textContent = 'your are not allowed  to leave a field  empty';
+    textField.style.color = "red";
+  }
+}
+
 </script>
 {% endblock content %}
 </body>

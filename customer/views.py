@@ -1,7 +1,9 @@
 from _decimal import Decimal
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import HttpResponse
 from django.views import View
 import stripe
+import requests
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
@@ -135,20 +137,29 @@ def plusqty1(request,id):
 class Checkout(View):
     def get(self,request):
         id=request.session.get('id')
+        user = Registration.objects.get(id=id)
         carts = OrderItem.objects.filter(customer_id=id)
-        print(carts)
-        print("heyyyyyyyiww",id)
+        if Address.objects.filter(user_id=id):
+            print(carts)
+            print("heyyyyyyyiww",id)
 
-        total = 0
-        for i in carts:
-            print(i)
-            total +=int( i.total )
-        total=total+50
-        print(total)
-        user=Registration.objects.get(id=id)
-        address=Address.objects.get(user_id=id)
+            total = 0
+            for i in carts:
+                print(i)
+                total +=int( i.total )
+            total=total+50
+            print(total)
+            address=Address.objects.get(user_id=id)
 
-        return render(request,'customer/checkout.html',{'total':total,'user':user,'address':address})
+            return render(request,'customer/checkout.html',{'total':total,'user':user,'address':address})
+        else:
+            total = 0
+            for i in carts:
+                print(i)
+                total += int(i.total)
+            total = total + 50
+            print(total)
+            return render(request, 'customer/checkout.html', {'user': user,'total':total})
 
 @method_decorator(user_login_required, name='dispatch')
 class Cart(View):
@@ -343,3 +354,7 @@ class Addaddress(View):
 class OrderPlaced(View):
     def get(self, request):
         return render(request, 'customer/Orderplaced.html')
+
+
+
+

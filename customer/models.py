@@ -36,7 +36,8 @@ class Order(models.Model):
     myorder = models.ForeignKey(Cus_address, on_delete=models.SET_NULL,null=True,blank =True)
     cart = models.ForeignKey(OrderItem, on_delete=models.SET_NULL,null=True,blank =True)
     date_ordered = models.DateTimeField(auto_now_add=True)
-    complete = models.BooleanField(default=False,null=True,blank=False)
+    complete =  models.CharField(max_length=200,default="inactive")
+
 
     # transaction_id = models.CharField(max_length=200,null=True)
     # delivarycharge = models.CharField(max_length=100)

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends 'admin/catagorymain.html' %}
+{% extends 'farmer/farmmain.html' %}
 {% load static %}
 {% block content %}
 <html lang="en">
@@ -253,7 +253,7 @@
 						<h2>Catagory <b>View</b></h2>
 					</div>
 					<div class="col-sm-6">
-						<a href="{% url 'Addcatagory' %}" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Catagory</span></a>
+						<a href="{% url 'Addproduct' %}" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New product</span></a>
 <!--						<a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>-->
 					</div>
                 </div>
@@ -267,14 +267,18 @@
 								<label for="selectAll"></label>
 							</span>
 						</th>
-                        <th>Catagory Name</th>
-                        <th>Catagory Image</th>
-						<th>Discription</th>
+                        <th>Product name</th>
+                        <th>Price</th>
+						<th>Quantity</th>
+                        <th>Image</th>
+                        <th>Catagory</th>
+						<th>Added Date</th>
+                        <th>Expiry Date</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for cata in catas%}
+                {% for pro in myproduct %}
                     <tr>
 						<td>
 							<span class="custom-checkbox">
@@ -282,12 +286,16 @@
 								<label for="checkbox5"></label>
 							</span>
 						</td>
-                        <td>{{cata.catagory_name}}</td>
-                        <td><img src="{{cata.imageURL}}"></td>
-						<td>{{cata.discription}}</td>
+                        <td>{{pro.Product_name}}</td>
+                        <td>{{pro.price}}</td>
+                        <td>{{pro.quantity}}</td>
+                        <td><img src="{{pro.imageURL}}"></td>
+						<td>{{pro.catagory.catagory_name}}</td>
+                        <td>{{pro.adddate}}</td>
+                        <td>{{pro.expirydate}}</td>
                         <td>
-                            <a href="{% url 'CatagoryEdit' cata.id %}" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                            <a href="#deleteEmployeeModal" method="post" class="deletecatagory"  data-id="{{cata.id}}"  data-toggle="modal"><i class="material-icons"  data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                            <a href="{% url 'Editproduct' pro.id %}" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                            <a href="#deleteEmployeeModal" method="post" class="deletecatagory"  data-id="{{pro.id}}"  data-toggle="modal"><i class="material-icons"  data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                         </td>
                     </tr>
                {% endfor %}
@@ -347,7 +355,7 @@ $(document).on('click', '.delete-confirm', function(e) {
     var csrftoken = $("[name=csrfmiddlewaretoken]").val();
     var id = $('#deleteEmployeeModal').data('id');
     $.ajax({
-        url: "{% url 'RemoveCatagory' %}",
+        url: "{% url 'RemoveProduct' %}",
         type: 'POST',
         data: {'ids': id},
         headers: { "X-CSRFToken": csrftoken },
@@ -356,7 +364,7 @@ $(document).on('click', '.delete-confirm', function(e) {
         },
         success: function(data) {
             $('.uniquetotal-price[data-id="' + id + '"]').text(data.data);
-            window.location.href="Viewcatagory";
+            window.location.href="Viewaddedproduct";
             console.log("The product total: " + data.data);
         },
         error: function(xhr, status, error) {

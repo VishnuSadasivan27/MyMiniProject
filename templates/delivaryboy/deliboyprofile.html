@@ -150,12 +150,13 @@
                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
                         <img src="{{user.imageURL}}" alt="Profile">
-                        <div class="pt-2">
-                          <a input type="file" name="p_image_select" id="image" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image" ><i class="bi bi-upload"></i></a>
-                           <input type="file" name="pimage" autofocus="false"  autocomplete="off" class="form-control" id="myFileInput" accept="image/*" required> <br>
-                             <span id="imageError" style="color:red;"></span>
+                        <div class="pt-2" style="display: flex;">
+                          <a input type="file" name="p_image_select" id="p_image_select" autofocus="false" autocomplete="off"  accept="image/x-png,image/gif,image/jpeg" class="btn btn-primary btn-sm" title="Upload new profile image" ><i class="bi bi-upload"></i></a>
+                           <input type="file" name="pimage" hidden autofocus="false"  autocomplete="off" class="form-control" id="myFileInput" accept="image/*" required> <br>
 
-                          <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+
+                          <a href="#" style="margin-left: 10px;" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                            <span id="imageError" style="color:red;"></span>
                         </div>
                       </div>
                     </div>
@@ -316,9 +317,9 @@
                       </div>
                     </div>
                     <div class="row mb-4">
-                      <label for="Aadhar" class="col-md-4 col-lg-3 col-form-label">Aadhar</label>
+                      <label for="myimageInput" class="col-md-4 col-lg-3 col-form-label">Aadhar</label>
                       <div class="col-md-8 col-lg-9">
-                        <input type="file" name="pimage" autofocus="false"  autocomplete="off" class="form-control" id="myimageInput" accept="image/*" required> <br>
+                        <input type="file" name="Aadhar" autofocus="false"  autocomplete="off" class="form-control" id="myimageInput" accept="image/*" required> <br>
                              <span id="imageproblem" style="color:red;"></span>
                       </div>
                     </div>
@@ -435,9 +436,16 @@
   <script src="{% static 'admin/assets/vendor/simple-datatables/simple-datatables.js' %}"></script>
   <script src="{% static 'admin/assets/vendor/tinymce/tinymce.min.js' %}"></script>
   <script src="{% static 'admin/assets/vendor/php-email-form/validate.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <!-- Template Main JS File -->
   <script src="{% static 'admin/assets/js/main.js' %}"></script>
+<script>
+    $("#p_image_select").click(function(){
+    $("#myFileInput").click();
+  });
+</script>
 <script>
 function passwordValidation(inputTxt){
 

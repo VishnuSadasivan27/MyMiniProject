@@ -1,15 +1,15 @@
-import pyttsx3  # Importing pyttsx3 library to convert text into speech.
-import pandas as pd  # Importing pandas library
-from sklearn import preprocessing  # Importing sklearn library. This is a very powerfull library for machine learning. Scikit-learn is probably the most useful library for machine learning in Python. The sklearn library contains a lot of efficient tools for machine learning and statistical modeling including classification, regression, clustering and dimensionality reduction.
-from sklearn.neighbors import KNeighborsClassifier  # Importing Knn Classifier from sklearn library.
-import numpy as np  # Importing numpy to do stuffs related to arrays
-import PySimpleGUI as sg  # Importing pysimplegui to make a Graphical User Interface.
+import pyttsx3
+import pandas as pd
+from sklearn import preprocessing
+from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
+import PySimpleGUI as sg
 
-excel = pd.read_excel('farmer/Crop.xlsx', header=0)  # Importing our excel data from a specific file.
-print(excel)  # Printing our excel file data.
-print(excel.shape)  # Checking out the shape of our data.
+excel = pd.read_excel('farmer/Crop.xlsx', header=0)
+print(excel)
+print(excel.shape)
 
-engine = pyttsx3.init('sapi5')  # Defining the speech rate, type of voice etc.
+engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 rate = engine.getProperty('rate')
 engine.setProperty('rate', rate - 20)
@@ -17,13 +17,13 @@ engine.setProperty('voice', voices[0].id)
 
 
 def speak(
-        audio):  # Defining a speak function. We can call this function when we want to make our program to speak something.
+        audio):
     engine.say(audio)
     engine.runAndWait()
 
 
-le = preprocessing.LabelEncoder()  # Various machine learning algorithms require numerical input data, so you need to represent categorical columns in a numerical column. In order to encode this data, you could map each value to a number. This process is known as label encoding, and sklearn conveniently will do this for you using Label Encoder.
-crop = le.fit_transform(list(excel["CROP"]))  # Mapping the values in weather into numerical form.
+le = preprocessing.LabelEncoder()
+crop = le.fit_transform(list(excel["CROP"]))
 
 NITROGEN = list(excel["NITROGEN"])  # Making the whole row consisting of nitrogen values to come into nitrogen.
 PHOSPHORUS = list(excel["PHOSPHORUS"])  # Making the whole row consisting of phosphorus values to come into phosphorus.
@@ -41,8 +41,7 @@ features = np.array([NITROGEN, PHOSPHORUS, POTASSIUM, TEMPERATURE, HUMIDITY, PH,
 
 features = features.transpose()  # Making transpose of the features
 print(features.shape)  # Printing the shape of the features after getting transposed.
-print(
-    crop.shape)  # Printing the shape of crop. Please note that the shape of the features and crop should match each other to make predictions.
+print(crop.shape)  # Printing the shape of crop. Please note that the shape of the features and crop should match each other to make predictions.
 
 model = KNeighborsClassifier(n_neighbors=3)  # The number of neighbors is the core deciding factor. K is generally an odd number if the number of classes is 2. When K=1, then the algorithm is known as the nearest neighbor algorithm.
 model.fit(features,crop)  # fit your model on the train set using fit() and perform prediction on the test set using predict().

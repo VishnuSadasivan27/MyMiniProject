@@ -37,10 +37,10 @@
                 <div class="card-heading"></div>
                 <div class="card-body">
                     <h2 class="title">Add catagory</h2>
-                     <form method="POST" action="Uploadcatagory" id="myForm" enctype="multipart/form-data" onsubmit="">
+                     <form method="POST" action="/Admins/CatagoryEditSubmit/{{catagory.id}}" id="myForm" enctype="multipart/form-data" onsubmit="">
                          {% csrf_token %}
                         <div class="input-group">
-                            <input class="input--style-2" type="text" placeholder="Catagory Name" name="cataname" onkeyup="catnameValidation(this)" required pattern="^[a-zA-Z\s'-]+$"
+                            <input class="input--style-2" type="text" placeholder="Catagory Name" name="cataname" value="{{catagory.catagory_name}}" onkeyup="catnameValidation(this)" required pattern="^[a-zA-Z\s]+$"
                                 oninvalid="setCustomValidity('Invalid Name')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30">
@@ -50,7 +50,7 @@
 
                         <div class="input-group">
                             <div class="rs-select2 js-select-simple select--no-search">
-							<input class="input--style-2" type="text" placeholder="discription" name="discription" onkeyup="disValidation(this)" required pattern="^[a-zA-Z\s'-]+$"
+							<input class="input--style-2" type="text" placeholder="discription" value="{{catagory.discription}}" name="discription" onkeyup="disValidation(this)" required pattern="^[a-zA-Z\s]+$"
                                 oninvalid="setCustomValidity('Invalid Description')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30">
@@ -69,7 +69,8 @@
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
-                                    <input class="input--style-2" type="file" placeholder="catagoryimage" name="cataimage" id="myFileInput" accept="image/*" required>
+                                    <h4 style="color: #9e0505">Current image: {{ catagory.catagory_image}}</h4>
+                                    <input class="input--style-2" type="file" placeholder="catagoryimage" name="cataimage" id="myFileInput" accept="image/*">
                                     <span id="imageError" style="color:red;"></span>
                                 </div>
                             </div>
@@ -129,6 +130,7 @@ function catnameValidation(inputTxt){
          return false;
     }
 }
+
 
 function disValidation(inputTxt){
     var regx = /^[a-zA-Z\s]+$/;

@@ -13,6 +13,7 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default=1, null=True, blank=True)
     totalproductcost= models.IntegerField(default=0, null=True, blank=True)
     total = models.IntegerField(default=0, null=True, blank=True)
+    state = models.CharField(max_length=200, default="active")
     date_added = models.DateTimeField(auto_now_add=True)
 
     # @property

@@ -1,8 +1,10 @@
 from django.urls import path
 from . import views
-from Admins.views import Farmer_approve,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
+from Admins.views import Farmer_approve,CatagoryEditSubmit,CatagoryEdit,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
 urlpatterns = [
    path('Farmer_approval',Farmer_approve.as_view(),name='Farmer_approval'),
+   path('CatagoryEdit/<id>', CatagoryEdit.as_view(), name='CatagoryEdit'),
+   path('CatagoryEditSubmit/<id>', CatagoryEditSubmit.as_view(), name='CatagoryEditSubmit'),
    path('Customerview',Customerview.as_view(),name='Customerview'),
    path('Addcatagory',Addcatagory.as_view(),name='Addcatagory'),
    path('Deletecustomer',Deletedcustomer.as_view(),name='Deletecustomer'),

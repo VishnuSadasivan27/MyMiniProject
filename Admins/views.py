@@ -1,4 +1,4 @@
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse,HttpResponseBadRequest
 from django.views import View
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -79,9 +79,10 @@ class Deactivate(View):
         print(dele.status)
         dele.save()
         customers = Registration.objects.filter(role='Customer',status="active").values()
+        return HttpResponse("<script>alert('Dectivated ');window.location='/Admins/Customerview';</script>")
+
         return render(request, 'admin/customerview.html', {'customers': customers})
 
-        return HttpResponse("<script>alert('Activated ');window.location='/AdminsFarmer_approval';</script>")
 class Activatecustomer(View):
     def get(self, request, id):
         dele = Registration.objects.get(id=id)
@@ -89,6 +90,7 @@ class Activatecustomer(View):
         print(dele.status)
         dele.save()
         customers = Registration.objects.filter(status="inactive",role='Customer').values()
+        return HttpResponse("<script>alert('Activated ');window.location='/Admins/Deletecustomer';</script>")
         return render(request,'admin/deletedcustomer.html',{'customers':customers})
 class Farmerdeactivate(View):
     def get(self,request,id):
@@ -97,6 +99,7 @@ class Farmerdeactivate(View):
         print(dele.status)
         dele.save()
         values= Address.objects.filter(user_id__status="active",user_id__role='Farmer').all()
+        return HttpResponse("<script>alert('Deactivated ');window.location='/Admins/Farmerview';</script>")
         return render(request,'admin/farmerview.html',{'values':values})
 class Deliboydeactivate(View):
     def get(self,request,id):
@@ -186,11 +189,14 @@ class Uploadcatagory(View):
             catagoryname=request.POST.get('cataname')
             description=request.POST.get('discription')
             cataimage=request.FILES.get('cataimage')
-            cata=Catagory(catagory_name=catagoryname,catagory_image=cataimage,discription=description)
-            cata.save()
-            return HttpResponse("<script>alert('Product is Added');window.location='/adminhome/';</script>")
+            if not Catagory.objects.filter(catagory_name=catagoryname).exists():
+                cata=Catagory(catagory_name=catagoryname,catagory_image=cataimage,discription=description)
+                cata.save()
+                return HttpResponse("<script>alert('Product is Added');window.location='/adminhome/';</script>")
+            else:
+                return HttpResponse("<script>alert('catagory is already exists');window.location='/Admins/Addcatagory';</script>")
 
-            return redirect('')
+                return redirect('')
 
 class Viewcatagory(View):
     def get(self,request):
@@ -206,5 +212,60 @@ class RemoveCatagory(View):
         cata_id.delete()
         data={'data':"succees"}
         return JsonResponse(data)
+
+class CatagoryEdit(View):
+    def get(self, request,id):
+        catagory=Catagory.objects.get(id=id)
+        print(catagory.catagory_image)
+        return render(request,'admin/catagoryedit.html',{'catagory':catagory})
+
+class CatagoryEditSubmit(View):
+    def post(self, request,id):
+        print(id)
+        catagory=Catagory.objects.get(id=id)
+        catagories=Catagory.objects.all()
+        print("enthadaaa")
+        if request.method == 'POST':
+            catagoryname = request.POST.get('cataname')
+            description = request.POST.get('discription')
+            cataimage = request.FILES.get('cataimage')
+
+            if catagory.catagory_name==catagoryname:
+                catagory.discription=description
+                print(catagory.discription)
+                if cataimage==None:
+                    catagory.catagory_image=catagory.catagory_image
+                    catagory.save()
+                    print("haiii")
+                    return HttpResponse("<script>alert('Catagory Updated');window.location='/Admins/Viewcatagory'; event.preventDefault();</script>")
+                else:
+                    catagory.catagory_image=cataimage
+                    catagory.save()
+                    print("polii")
+                    return HttpResponse("<script>alert('Catagory Updated1');window.location='/Admins/Viewcatagory'; event.preventDefault();</script>")
+            else:
+                for cata in catagories:
+                    print(cata.catagory_name)
+                    if cata.catagory_name==catagoryname:
+                        print("podaaaaa")
+                        return HttpResponse("<script>alert('Catagory exist');window.location='/Admins/CatagoryEdit/{0}''; event.preventDefault();</script>".format(id))
+                        break
+
+                else:
+                    catagory.catagory_name=catagoryname
+                    catagory.discription = description
+                    if cataimage == None:
+                        catagory.catagory_image = catagory.catagory_image
+                        print("endaaa")
+                        catagory.save()
+                        return HttpResponse("<script>alert('Catagory Updated3');window.location='/Admins/Viewcatagory'; event.preventDefault();</script>")
+                    else:
+                        catagory.catagory_image = cataimage
+                        catagory.save()
+                        return HttpResponse("<script>alert('Catagory Updated4');window.location='/Admins/Viewcatagory'; event.preventDefault();</script>")
+
+            return HttpResponseBadRequest("Invalid Request")
+
+
 
 

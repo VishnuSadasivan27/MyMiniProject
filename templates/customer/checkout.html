@@ -69,7 +69,7 @@
                     </div>
 
                     <div class="form-field">
-                        <input class="form-control" type="text" name="pincode" id=pincode onkeyup="pinValidation(this)" placeholder="Pincode" value="{{address.pin}}"
+                        <input class="form-control" type="text" name="pincode" id=pincode onkeyup="pinValidation(this)" placeholder="Pincode" value="{{address.pin}}" required pattern="^(686513|686512)$"
                         oninvalid="setCustomValidity('Invalid pin')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30">
@@ -241,8 +241,9 @@
         })
     }
 function pinValidation(inputTxt){
-
-    var regx = /^[6][0-9]{5}$/;
+    //
+    // var regx = /^[6][0-9]{5}$/;
+    var regx=/^(686513|686512)$/;
     var textField = document.getElementById("pin");
 
     if(inputTxt.value != '' ){
@@ -254,7 +255,7 @@ function pinValidation(inputTxt){
                 textField.style.color = "green";
 
             }else{
-                textField.textContent = 'Delivary only in pincode 686513!';
+                textField.textContent = 'Delivary only in pincode 686513 and 686512!';
                 textField.style.color = "red";
             }
         }else{

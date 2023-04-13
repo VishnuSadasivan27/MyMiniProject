@@ -96,21 +96,6 @@ def searchbar1(request):
             return "No search result!!!"
 
 
-# def searchbar1(request):
-#     if request.method == 'GET':
-#         query = request.GET.get('text')
-#         if query:
-#             print("fffffffffffffff")
-#             multiple_q = Q(Q(Product_name=query) | Q(price=query))
-#             datas = MyProduct.objects.filter(multiple_q)  # convert QuerySet to list of dictionaries
-#             response_data = {'datas': list(datas)}  # wrap the list in a dictionary
-#             response = JsonResponse(response_data, status=200)
-#             response['X-Frame-Options'] = 'DENY'  # set the X-Frame-Options header to DENY
-#             return response
-#         else:
-#             return JsonResponse({"error": "No search result!!!"}, status=400)
-
-
 def adminhome(request):
     return render(request, 'home/adminhome.html')
 
@@ -118,8 +103,9 @@ def adminhome(request):
 def farmerhome(request):
     person = request.session['id']
     user = Registration.objects.get(id=person)
+    totalproduct=MyProduct.objects.filter(farmer_id=user).count()
     print(user.image)
-    return render(request, 'home/farmerhome.html', {'user': user})
+    return render(request, 'home/farmerhome.html', {'user': user,'totalproduct':totalproduct})
 
 
 def delivaryhome(request):
@@ -136,20 +122,22 @@ def index(request):
 def Login(request):
     return render(request, 'home/Login.html')
 
-
+@user_login_required
 def signup(request):
     return render(request, 'home/signup.html')
 
 
 @user_login_required
 def store(request,id):
-    datas = MyProduct.objects.filter(catagory_id=id)
+    datas = MyProduct.objects.filter(catagory_id=id,state='active')
     print("ggggggggggggggggggggggggggggggggggggg",datas)
     person = request.session['id']
     user = Registration.objects.get(id=person)
     today = datetime.now().date()
     expired_products = MyProduct.objects.filter(expirydate__lte=today)
-    expired_products.delete()
+    for expiry in expired_products:
+        expiry.state='inactive'
+        expiry.save()
     print(user.image)
     return render(request, 'home/store.html', {'datas': datas, 'user': user})
 

@@ -357,4 +357,31 @@ class OrderPlaced(View):
 
 
 
+class Trackmyemployee(View):
+    def get(self, request):
+        # Replace YOUR_ACCESS_TOKEN with your Mapbox access token
+        mapbox_access_token = 'pk.eyJ1IjoidmlzaG51c2FkYXNpdmFuIiwiYSI6ImNsZzBkNzNxdDB0eGQzb21zOXliMGF2YzYifQ.7RmUJTHmLKMKR-ArFHqn2A'
 
+        address = request.session.get('email')
+        url = 'https://nominatim.openstreetmap.org/search'
+        params = {'q': address, 'format': 'json'}
+
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+
+        # Get the latitude and longitude coordinates from the first result
+        data = response.json()
+        if len(data) == 0:
+            raise ValueError(f'No results found for address "{address}"')
+        latitude = float(data[0]['lat'])
+        longitude = float(data[0]['lon'])
+
+        delivery_boy_latitude = latitude
+        delivery_boy_longitude = longitude
+
+        # Pass the location data and Mapbox access token to the HTML template
+        context = {
+            'delivery_boy_latitude': delivery_boy_latitude,
+            'delivery_boy_longitude': delivery_boy_longitude,
+             }
+        return render(request, 'customer/delivery_boy_location.html', context)

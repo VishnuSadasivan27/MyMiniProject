@@ -38,14 +38,14 @@
                     <h2 class="title">Add product</h2>
                 </div>
                 <div class="card-body">
-                     <form method="POST" action="ProductAdd" enctype="multipart/form-data" novalidate>
+                     <form method="POST" action="/farmer/Editmyproduct/{{product.id}}" enctype="multipart/form-data" novalidate>
                             {% csrf_token %}
 
 					 <div class="form-row">
                             <div class="name">Product Name</div>
                             <div class="value">
                                 <div class="input-group">
-                                    <input class="input--style-5" type="text" name="product_name" onkeyup='nameValidation(this)' class="form-control"  placeholder="Enter Product Name" required pattern="[a-zA-Z]{2,20}"
+                                    <input class="input--style-5" type="text" name="product_name" onkeyup='nameValidation(this)' value="{{product.Product_name}}" class="form-control"  placeholder="Enter Product Name" required pattern="[a-zA-Z]{2,20}"
                                   oninvalid="setCustomValidity('Invalid Productname')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30"> <br>
@@ -55,10 +55,10 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="name">Price/Kg</div>
+                            <div class="name">Price</div>
                             <div class="value">
                                 <div class="input-group">
-                                    <input class="input--style-5" type="text" name="price" onkeyup='priceValidation(this)'class="form-control"  placeholder="Enter Product Price" required pattern="\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?"
+                                    <input class="input--style-5" type="text" name="price" value="{{product.price}}" onkeyup='priceValidation(this)'class="form-control"  placeholder="Enter Product Price" required pattern="^\d{1,5}(\.\d{1,2})?$"
                                  oninvalid="setCustomValidity('Invalid price')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30"> <br>
@@ -71,7 +71,7 @@
                             <div class="name">Quantity</div>
                             <div class="value">
                                 <div class="input-group">
-                                    <input class="input--style-5" type="text" name="quantity"  onkeyup='quantityValidation(this)' class="form-control"  placeholder="Enter Product Quantity" required pattern="\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?"
+                                    <input class="input--style-5" type="text" name="quantity" value="{{product.quantity}}" onkeyup='quantityValidation(this)' class="form-control"  placeholder="Enter Product Quantity" required pattern="\d{1,5}(\.\d{1,2})?"
                                  oninvalid="setCustomValidity('Invalid Quantity')"
                                 oninput="setCustomValidity('')"
                                 maxlength= "30"> <br>
@@ -84,7 +84,7 @@
                             <div class="name">Image</div>
                             <div class="value">
                                 <div class="input-group">
-
+                                    <h4 style="color: #9e0505">Current Product image: {{ product.image }}</h4>
                                     <input class="input--style-5" type="file" name="primage"  id="myFileInput" accept="image/*" required><br>
                                  <span id="imageError" style="color:red;"></span></br>
                                 </div>
@@ -94,7 +94,7 @@
                             <div class="name">Expiry date</div>
                             <div class="value">
                                 <div class="input-group">
-                                    <input class="input--style-5" type="date" name="expiry" id="expiry"  required>
+                                    <input class="input--style-5" type="date" value="{{formatted_date}}" name="expiry" id="expiry"  required>
                                 </div>
                             </div>
                         </div>
@@ -107,8 +107,11 @@
                                         <select name="catagory" required onsubmit="return validateForm();">
 
                                            {% for cat in mycat %}
-                                            <option selected>{{ cat.catagory_name }}</option>
-
+                                                {% if product.catagory and cat.catagory_name == product.catagory.catagory_name %}
+                                                    <option value="{{ product.catagory.catagory_name }}" selected>{{ cat.catagory_name }}</option>
+                                                {% else %}
+                                                    <option value="{{ cat.catagory_name }}">{{ cat.catagory_name }}</option>
+                                                {% endif %}
                                            {% endfor %}
 
                                         </select>
@@ -166,6 +169,7 @@ function nameValidation(inputTxt){
         textField.style.color = "red";
     }
 }
+
 function priceValidation(inputTxt){
 
     var regx = /^\d{1,6}(\.\d{1,2})?$/;
@@ -192,10 +196,9 @@ function priceValidation(inputTxt){
         textField.style.color = "red";
     }
 }
-
 function quantityValidation(inputTxt){
 
-    var regx = /\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/;
+    var regx = /^\d{1,5}(\.\d{1,2})?$/;
     var textField = document.getElementById("quantity1");
 
     if(inputTxt.value != '' ){
@@ -272,6 +275,9 @@ input.addEventListener("change", function() {
             return false;
         }
     }
+</script>
+<script>
+document.getElementById('myFileInput').value = '{{product.ImageURL}}';
 </script>
 
 

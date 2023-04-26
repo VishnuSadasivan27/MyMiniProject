@@ -1,40 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Delivery Boy Location</title>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet' />
+    <title>My Map</title>
+    <link rel="stylesheet" href="{% static 'ol/ol.css' %}" type="text/css">
+    <script src="{% static 'ol/ol.js' %}"></script>
   </head>
   <body>
-    <div id="map"></div>
+    <div id="map" style="width: 100%; height: 500px;"></div>
     <script>
-      // Initialize the Mapbox Map
-           function initMap() {
-              mapboxgl.accessToken = '{{ MAPBOX_ACCESS_TOKEN }}';
-              var location = ['{{ delivery_boy_longitude }}', '{{ delivery_boy_latitude }}'];
-              var map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: location,
-                zoom: 14
-              });
-
-              // Add a marker for the delivery boy's location
-              var marker = new mapboxgl.Marker()
-                .setLngLat(location)
-                .addTo(map);
-            }
-
+      var center = {{ center|safe }};
+      var zoom = {{ zoom }};
+      var map = new ol.Map({
+        target: 'map',
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.OSM()
+          })
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat(center),
+          zoom: zoom
+        })
+      });
     </script>
-    <script async defer src="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet' />
-    <script async defer src="https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js"></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet' />
-    <script async defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.css"
-      type="text/css"
-    />
   </body>
 </html>

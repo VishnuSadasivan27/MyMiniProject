@@ -11,3 +11,11 @@ class DelivaryAssign(models.Model):
     cart = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
     status= models.BooleanField(default=False)
     assigned_date= models.DateTimeField(auto_now_add=True)
+
+class DelivaryBoyLeave(models.Model):
+    boy = models.ForeignKey(Registration, on_delete=models.SET_NULL, null=True, blank=True)
+    reason = models.CharField(max_length=100,null=True)
+    state= models.CharField(max_length=200,default="pending")
+    pincode = models.CharField(max_length=200)
+    assigned_date = models.DateTimeField(auto_now_add=True)
+    required_date = models.DateTimeField()

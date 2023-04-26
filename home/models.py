@@ -121,7 +121,7 @@ class MyProduct(models.Model):
     catagory= models.ForeignKey(Catagory, on_delete=models.CASCADE, max_length=100, null=True)
     adddate = models.DateField(auto_now_add=True)
     expirydate = models.DateField("expirydate",null=True)
-    state= models.CharField(max_length=200,default="active")
+    state= models.CharField(max_length=200,default="not expired")
     farmer = models.ForeignKey(Registration, on_delete=models.CASCADE, max_length=100, null=True)
 
     def __str__(self):

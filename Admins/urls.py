@@ -1,8 +1,13 @@
 from django.urls import path
 from . import views
-from Admins.views import Farmer_approve,CatagoryEditSubmit,CatagoryEdit,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
+from Admins.views import Farmer_approve,Deletedelivaryboyleave,DelivaryCancelledLeave,Approveleave,DelivaryLeaveview,Removetheproduct,Allproductview,CatagoryEditSubmit,CatagoryEdit,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
 urlpatterns = [
-   path('Farmer_approval',Farmer_approve.as_view(),name='Farmer_approval'),
+   path('Removetheproduct',Removetheproduct.as_view(),name='Removetheproduct'),
+   path('Deletedelivaryboyleave',Deletedelivaryboyleave.as_view(), name='Deletedelivaryboyleave'),
+   path('DelivaryCancelledLeave',DelivaryCancelledLeave.as_view(),name='DelivaryCancelledLeave'),
+   path('Approveleave',Approveleave.as_view(),name='Approveleave'),
+   path('DelivaryLeaveview',DelivaryLeaveview.as_view(),name='DelivaryLeaveview'),
+   path('Farmer_approval', Farmer_approve.as_view(), name='Farmer_approval'),
    path('CatagoryEdit/<id>', CatagoryEdit.as_view(), name='CatagoryEdit'),
    path('CatagoryEditSubmit/<id>', CatagoryEditSubmit.as_view(), name='CatagoryEditSubmit'),
    path('Customerview',Customerview.as_view(),name='Customerview'),
@@ -11,6 +16,7 @@ urlpatterns = [
    path('Farmerview',Farmerview.as_view(),name='Farmerview'),
    path('Delivaryboyview',Delivaryboyview.as_view(),name='Delivaryboyview'),
    path('Deliboyapprove',Deliboyapprove.as_view(),name='Deliboyapprove'),
+   path('Allproductview', Allproductview.as_view(), name='Allproductview'),
    path('Activate/<int:id>/',Activate.as_view(),name='Activate'),
    path('Activatecustomer/<int:id>/',Activatecustomer.as_view(),name='Activatecustomer'),
    path('Deactivate/<int:id>/',Deactivate.as_view(),name='Deactivate'),

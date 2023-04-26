@@ -4,14 +4,24 @@ from django.views import View
 from django.shortcuts import redirect, render
 from home.models import MyProduct
 from customer.models import OrderItem
+from django.http import JsonResponse
 from home.decorators import user_login_required
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from home.views import Registration
 from customer.models import Order,Cus_address
-from delivaryboy.models import DelivaryAssign
+from delivaryboy.models import DelivaryAssign,DelivaryBoyLeave
 from home.models import Address,MyProduct
 # Create your views here.
+
+
+class Leaveapplyform(View):
+    def get(self,request):
+        id=request.session.get('id')
+        user = Registration.objects.get(id=id)
+        return render(request, 'delivaryboy/leave.html', {'user': user})
+
+
 class Deliboyprofile(View):
     def get(self,request):
         l_id=request.session.get('id')
@@ -155,7 +165,7 @@ class AddBoyaddress(View):
             user = Registration.objects.get(id=id)
             context={'address':address,'user':user}
             return HttpResponse("<script>alert('Succesfully updated');window.location='Deliboyprofile';</script>")
-
+@method_decorator(user_login_required, name='dispatch')
 class Delivaryjobaccept(View):
     def get(self,request,id):
         deliboy = request.session.get('id')
@@ -170,7 +180,7 @@ class Delivaryjobaccept(View):
         print(orderplaced.complete)
         return HttpResponse("<script>alert('Succesfully updated');window.location='/delivaryboy/Viewmyjob';</script>")
 
-
+@method_decorator(user_login_required, name='dispatch')
 class AcceptedJob(View):
     def get(self,request):
         id = request.session.get('id')
@@ -185,4 +195,50 @@ class AcceptedJob(View):
         else:
             return HttpResponse(
                 "<script>alert('Add your Address in Your profile');window.location='/delivaryhome/';</script>")
+@method_decorator(user_login_required, name='dispatch')
+class ApplyLeave(View):
+    def post(self,request):
+        id = request.session.get('id')
+        pin= Address.objects.filter(user_id=id).values('pin').get()['pin']
+        user=Registration.objects.get(id=id)
+        reason=request.POST.get('reason')
+        date = request.POST.get('date')
+        print(pin,reason,date)
+        deli=DelivaryBoyLeave.objects.filter(id=1).values('required_date').get()['required_date']
+        print(deli)
+        if not DelivaryBoyLeave.objects.filter(boy_id=id,required_date=date, pincode=pin).exists():
+            if not DelivaryBoyLeave.objects.filter(required_date=date,pincode=pin).exists():
+                leave = DelivaryBoyLeave(boy_id=id,reason=reason,required_date=date,pincode=pin)
+                leave.save()
+                return HttpResponse("<script>alert('Your leave has succesfully applied');window.location='/delivaryhome/';</script>")
 
+            else:
+                return HttpResponse("<script>alert('Your companion has already applied on that date');window.location='/delivaryboy/Leaveapplyform';</script>")
+        else:
+            return HttpResponse("<script>alert('You have already applied leave on this date');window.location='/delivaryboy/Leaveapplyform';</script>")
+
+class Leaveview(View):
+    def get(self,request):
+        id=request.session.get('id')
+        user = Registration.objects.get(id=id)
+        leaves=DelivaryBoyLeave.objects.filter(boy_id=id)
+        return render(request, 'delivaryboy/myleaves.html', {'user': user,'leaves':leaves})
+
+@method_decorator(user_login_required, name='dispatch')
+class Deletemyleave(View):
+    def post(self, request):
+        id = request.POST.get('ids')
+        print("remove item id",id)
+        if DelivaryBoyLeave.objects.filter(id=id,state="pending").exists():
+            print("haiiiiiiiiiii123")
+            cata_id=DelivaryBoyLeave.objects.filter(id=id, state="pending")
+            cata_id.delete()
+            data={'data':"succees"}
+        elif DelivaryBoyLeave.objects.filter(id=id, state="Approved").exists():
+            print("haiiiiiiiiiii")
+            cata_id = DelivaryBoyLeave.objects.get(id=id, state="Approved")
+            print(cata_id)
+            cata_id.state="Cancelled"
+            cata_id.save()
+            data = {'data': "succees"}
+        return JsonResponse(data)

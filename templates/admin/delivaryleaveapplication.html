@@ -1,0 +1,245 @@
+{% extends 'admin/deliboysearchmain.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<div class="container">
+        <div class="table-responsive">
+            <br>
+            <br>
+            <br>
+            <table class="table text-center">
+                <thead>
+                    <tr>
+
+                        <th>Name</th>
+                        <th>Delivary_Boy Id</th>
+                        <th>Reason</th>
+                        <th>Working On</th>
+                        <th>Leave Added on</th>
+                        <th>Leave Required on</th>
+                        <th>status</th>
+                        <th>Approve </th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                <!-- <td><a href=""><div class="btn btn-success">Approve</div></a></td> -->
+                {% for leave in leaves %}
+                  <tr>
+                 <td>{{leave.boy.first_name}}{{leave.boy.first_name}}</td>
+                 <td>{{leave.boy.id}}</td>
+                <td>{{leave.reason}}</td>
+                <td>{{leave.pincode}}</td>
+                <td>{{leave.assigned_date}}</td>
+                <td>{{ leave.required_date|date:"F d, Y" }}</td>
+                <td>{{leave.state}}</td>
+
+
+
+
+
+                <td><a href="#ApproveModal" method="post" class="Approveleave"  data-id="{{leave.id}}"  data-toggle="modal"><i class="material-icons"  data-toggle="tooltip" title="Delete">&#xe862;</i></a></td>
+
+                  </tr>
+
+                 {% endfor %}
+
+
+	<!-- Delete Modal HTML -->
+	<div id="ApproveModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form>
+					<div class="modal-header">
+						<h4 class="modal-title">Approve Leave</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					</div>
+					<div class="modal-body">
+						<p>Are you sure you want to Approve?</p>
+						<p class="text-warning"><small>This action cannot be undone.</small></p>
+					</div>
+					<div class="modal-footer">
+						<input type="button" class="cancel btn-success" data-dismiss="modal" value="Cancel">
+						<input type="submit" class="delete-confirm btn-primary" value="Approve">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+               <!-- <td><div class="btn btn-primary">Approve</div> </td>
+                        <td><div class="btn btn-primary1">Cancel </div> </td>  -->
+
+                        <!-- <td>.com</td>
+                        <td>1 Year</td>
+                        <td>$70.00</td>
+                        <td>$5</td>
+                        <td>$5</td>
+                        <td>$70.00</td>
+                         <td>$5</td>
+                        <td>$70.00</td>
+
+                        <td><div class="btn btn-primary">Approve</div> </td>
+                        <td><div class="btn btn-primary1">Cancel </div> </td>
+                    </tr>
+                    <tr>
+                        <td>.in</td>
+                        <td>1 Year</td>
+                        <td>$50.00</td>
+                        <td>$3</td>
+                        <td>$5</td>
+                        <td><div class="btn btn-primary">Sign Up </div> </td>
+                    </tr>
+                    <tr>
+                        <td>.org</td>
+                        <td>1 Year</td>
+                        <td>$90.00</td>
+                        <td>$7</td>
+                        <td>$5</td>
+                        <td><div class="btn btn-primary">Sign Up </div> </td>
+                    </tr>
+                    <tr>
+                        <td>.com</td>
+                        <td>1 Year</td>
+                        <td>$70.00</td>
+                        <td>$5</td>
+                        <td>$5</td>
+                        <td><div class="btn btn-primary">Sign Up </div> </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<style>
+*{
+    margin: 10;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color:#fff;
+    padding: 10px 10px 0 10px;
+}
+
+.container .table thead tr th{
+    background-color:#673AB7;
+    padding: 30px 10px;
+    border: none;
+    color: white;
+}
+td:nth-child(2n+1){
+    background-color: #EDE7F6;
+}
+td:nth-child(2n){
+    background-color: white;
+}
+.container .table tbody tr td {
+    padding: 30px 10px;
+    font-weight: 600;
+}
+.btn.btn-primary{
+    background-color:green;
+    padding: 10px;
+    width: 80px;
+    border: 1px solid #fff ;
+}
+.btn.btn-primary1{
+    background-color: red;
+    padding: 10px;
+    width: 80px;
+    border: 1px solid #673AB7 ;
+}
+/* .btn.btn-primary1:hover{
+    background-color: red;
+}
+.btn.btn-primary:hover{
+    background-color: green;
+ } */
+/* Modal styles */
+	.modal .modal-dialog {
+		max-width: 400px;
+	}
+	.modal .modal-header, .modal .modal-body, .modal .modal-footer {
+		padding: 20px 30px;
+	}
+	.modal .modal-content {
+		border-radius: 3px;
+	}
+	.modal .modal-footer {
+		background: #ecf0f1;
+		border-radius: 0 0 3px 3px;
+	}
+    img{
+        width:50px;
+        height:50px;
+    }
+    .modal .modal-title {
+        display: inline-block;
+    }
+	.modal .form-control {
+		border-radius: 2px;
+		box-shadow: none;
+		border-color: #dddddd;
+	}
+	.modal textarea.form-control {
+		resize: vertical;
+	}
+	.modal .btn {
+		border-radius: 2px;
+		min-width: 100px;
+	}
+	.modal form label {
+		font-weight: normal;
+	}
+	.container{
+		margin-top:40px;
+	}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="{% static 'catagory/catagoryview/myscript.js' %}"></script>
+<script>
+$(document).on('click', '.Approveleave', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    $('#ApproveModal').data('id', id).modal('show');
+});
+
+$(document).on('click', '.delete-confirm', function(e) {
+    e.preventDefault();
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+    var id = $('#ApproveModal').data('id');
+
+    $.ajax({
+        url: "{% url 'Approveleave' %}",
+        type: 'POST',
+        data: {'ids': id},
+        headers: { "X-CSRFToken": csrftoken },
+        beforeSend: function() {
+            $('#ApproveModal').modal('hide');
+        },
+        success: function(data) {
+            $('.uniquetotal-price[data-id="' + id + '"]').text(data.data);
+            window.location.href="DelivaryLeaveview";
+            console.log("The product total: " + data.data);
+        },
+        error: function(xhr, status, error) {
+            alert(xhr.responseJSON.error);
+        }
+    });
+});
+
+
+
+</script>
+
+{% endblock %}

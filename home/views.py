@@ -122,21 +122,21 @@ def index(request):
 def Login(request):
     return render(request, 'home/Login.html')
 
-@user_login_required
+
 def signup(request):
     return render(request, 'home/signup.html')
 
 
 @user_login_required
 def store(request,id):
-    datas = MyProduct.objects.filter(catagory_id=id,state='active')
+    datas = MyProduct.objects.filter(catagory_id=id,state='not expired')
     print("ggggggggggggggggggggggggggggggggggggg",datas)
     person = request.session['id']
     user = Registration.objects.get(id=person)
     today = datetime.now().date()
     expired_products = MyProduct.objects.filter(expirydate__lte=today)
     for expiry in expired_products:
-        expiry.state='inactive'
+        expiry.state='expired'
         expiry.save()
     print(user.image)
     return render(request, 'home/store.html', {'datas': datas, 'user': user})

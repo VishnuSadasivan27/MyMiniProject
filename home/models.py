@@ -113,10 +113,18 @@ class Catagory(models.Model):
             url = ''
         return url
 
+class MyAnalysisProduct(models.Model):
+    Product_name = models.CharField(max_length=200, null=True)
+    quantity = models.CharField(max_length=100, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    soldprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
+
 class MyProduct(models.Model):
     Product_name = models.CharField(max_length = 200,null=True)
     price = models.CharField(max_length=100,null=True)
     quantity = models.CharField(max_length=100,null=True)
+    Addedquantity= models.CharField(max_length=100,null=True)
     image = models.ImageField(null=True, blank=True)
     catagory= models.ForeignKey(Catagory, on_delete=models.CASCADE, max_length=100, null=True)
     adddate = models.DateField(auto_now_add=True)

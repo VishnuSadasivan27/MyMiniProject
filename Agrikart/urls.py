@@ -19,6 +19,7 @@ from django.urls.conf import include
 from django.conf.urls.static import static
 from django.conf import settings
 from customer import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('home.urls')),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('farmer/',include('farmer.urls')),
     path('Admins/',include('Admins.urls')),
     path('thanks/', views.thanks,name="thanks"),
+    path('farmerthanks/<int:id>/', views.farmerthanks,name='farmerthanks'),
     path('delivaryboy/',include('delivaryboy.urls')),
     # path('captcha',include('captcha.urls')),
     

@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+{% extends 'farmer/farmmain.html' %}
+{% load static %}
+{% block content %}
+<html lang="en">
+
+<head>
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Colorlib Templates">
+    <meta name="author" content="Colorlib">
+    <meta name="keywords" content="Colorlib Templates">
+
+    <!-- Title Page-->
+
+
+    <!-- Icons font CSS-->
+    <link href="{% static 'catagory/vendor/mdi-font/css/material-design-iconic-font.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'catagory/vendor/font-awesome-4.7/css/font-awesome.min.css' %}" rel="stylesheet" media="all">
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+    <!-- Vendor CSS-->
+    <link href="{% static 'catagory/vendor/select2/select2.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'catagory/vendor/datepicker/daterangepicker.css' %}" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="{% static 'catagory/css/main.css' %}" rel="stylesheet" media="all">
+</head>
+
+<body>
+    <div class="page-wrapper bg-red p-t-180 p-b-100 font-robo">
+        <div class="wrapper wrapper--w960">
+            <div class="card card-2">
+                <div class="card-heading"></div>
+                <div class="card-body">
+                    <h2 class="title">Predict cost</h2>
+                     <form method="POST" action="" id="myForm" enctype="multipart/form-data" onsubmit="">
+                         {% csrf_token %}
+                        <div class="input-group">
+                            <input class="input--style-2" type="text" placeholder="Product Name" data-id="productname" id="productname" name="proname" onkeyup="catnameValidation(this)" required pattern="^[a-zA-Z\s'-]+$"
+                                oninvalid="setCustomValidity('Invalid Name')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="name" class="new" style="color:red;"></span>
+
+                        </div>
+
+                        <div class="input-group">
+                            <div class="rs-select2 js-select-simple select--no-search">
+							<input class="input--style-2" type="text" placeholder="Cost Expecting" data-id="price" id="price" name="cost" onkeyup="disValidation(this)" required pattern="^\d{1,6}(\.\d{1,2})?$"
+                                oninvalid="setCustomValidity('Invalid Description')"
+                                oninput="setCustomValidity('')"
+                                maxlength= "30">
+                                <span id="disname" class="new" style="color:red;"></span>
+
+
+                                <!-- <select name="class"> -->
+                                    <!-- <option disabled="disabled" selected="selected">Class</option> -->
+                                    <!-- <option>Class 1</option> -->
+                                    <!-- <option>Class 2</option> -->
+                                    <!-- <option>Class 3</option> -->
+                                <!-- </select> -->
+                                <div class="select-dropdown"></div>
+                            </div>
+                        </div>
+                        <div id="alert-message"></div>
+                        <div class="p-t-30">
+                            <button class="btn btn--radius btn--green" type="submit">Predict</button>
+                            <p id="predict-res" style="color: #AF0000">THE PREDICTED COST IS:{{predicted_cost}}</p>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jquery JS-->
+    <script src="{% static 'catagory/vendor/jquery/jquery.min.js' %}"></script>
+    <!-- Vendor JS-->
+    <script src="{% static 'catagory/vendor/select2/select2.min.js' %}"></script>
+    <script src="{% static 'catagory/vendor/datepicker/moment.min.js' %}"></script>
+    <script src="{% static 'catagory/vendor/datepicker/daterangepicker.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <!-- Main JS-->
+    <script src="{% static 'catagory/js/global.js' %}"></script>
+<script>
+$(document).on('click', '.btn', function() {
+
+  var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+  var price = $('#price').val();
+  var productname = $('#productname').val();
+
+  event.preventDefault();
+  $.ajax({
+    url: "{% url 'PredictingCost' %}",
+    type: 'POST',
+    data: {
+      'cost':price,
+      'proname': productname
+    },
+    headers: {
+      "X-CSRFToken": csrftoken
+    },
+    success: function(data) {
+      $('#predict-res').text("THE PREDICTED COST IS: "+data.predicted_cost);
+
+    },
+    error: function(xhr, status, error) {
+
+      alert(xhr.responseJSON.error);
+    }
+  });
+});
+
+
+</script>
+<script>
+function catnameValidation(inputTxt){
+
+    var regx = /^[a-zA-Z\s]+$/;
+    var textField = document.getElementById("name");
+
+    if(inputTxt.value != '' ){
+
+        if(inputTxt.value.length >= 1){
+
+            if(inputTxt.value.match(regx)){
+                textField.textContent = '';
+                textField.style.color = "green";
+                inputTxt.focus();
+                return false;
+
+
+            }else{
+                textField.textContent = 'only characters are allowded to insert!';
+                textField.style.color = "red";
+                inputTxt.focus();
+                return false;
+
+            }
+        }else{
+            textField.textContent = 'your input must me more than two chracters';
+            textField.style.color = "red";
+            inputTxt.focus();
+            return false;
+        }
+    }else{
+        textField.textContent = 'your are not allowed  to leave a field  empty';
+        textField.style.color = "red";
+         inputTxt.focus();
+         return false;
+    }
+}
+
+function disValidation(inputTxt){
+    var regx = /^\d{1,6}(\.\d{1,2})?$/;
+    var textField = document.getElementById("disname");
+
+    if (inputTxt.value != '') {
+        if (inputTxt.value.length >= 2) {
+            if (inputTxt.value.match(regx)) {
+                textField.textContent = '';
+                textField.style.color = "green";
+                return true;
+            } else {
+                textField.textContent = 'Only numbers are allowed to be inserted!';
+                textField.style.color = "red";
+                inputTxt.focus();
+                return false;
+            }
+        } else {
+            textField.textContent = 'Your input must be more than two characters.';
+            textField.style.color = "red";
+            inputTxt.focus();
+            return false;
+        }
+    } else {
+        textField.textContent = 'You are not allowed to leave a field empty.';
+        textField.style.color = "red";
+        inputTxt.focus();
+        return false;
+    }
+}
+
+
+var input = document.getElementById("myFileInput");
+var error = document.getElementById("imageError");
+
+input.addEventListener("change", function() {
+  var file = input.files[0];
+  var reader = new FileReader();
+
+  reader.onloadend = function() {
+    // Check if file is an image
+    if (file.type.indexOf("image") !== 0) {
+      error.textContent = "Selected file is not an image.";
+      input.value = "";
+      return;
+    }
+
+    // Check if file is too large (max 5 MB)
+    if (file.size > 5 * 1024 * 1024) {
+      error.textContent = "Selected image is too large. Max size is 5 MB.";
+      input.value = "";
+      return;
+    }
+
+    // Image is valid
+    error.textContent = "";
+  };
+
+  if (file) {
+    reader.readAsDataURL(file);
+  }
+});
+
+
+</script>
+
+<script>
+var alertMessage = "{% if alert_message %}{{ alert_message }}{% endif %}";
+if (alertMessage) {
+  var alertElement = document.getElementById("alert-message");
+  alertElement.innerHTML = alertMessage;
+  alertElement.style.display = "block";
+}
+</script>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
+</html>
+{% endblock %}
+<!-- end document-->

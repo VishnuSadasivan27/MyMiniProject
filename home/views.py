@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from customer.models import Order, Cus_address
+from delivaryboy.models import DelivaryAssign
 from home.models import Registration, MyProduct, AdminLogin, Address,Catagory
 from customer.models import OrderItem
 
@@ -111,8 +112,30 @@ def farmerhome(request):
 def delivaryhome(request):
     person = request.session['id']
     user = Registration.objects.get(id=person)
-    print(user.image)
-    return render(request, 'delivaryboy/delivaryhome.html',{'user':user})
+    myorders = Order.objects.all()
+    pincode = Address.objects.filter(user_id=person).values('pin').get()['pin']
+    print(pincode)
+    for order in myorders:
+        print(order.myorder.pincode)
+        if order.complete:
+            print("hello00")
+            print(order.myorder.pincode)
+            print(pincode)
+            if order.myorder.pincode == str(pincode):
+                print("hhhhhhhhhh")
+                ordercount = Order.objects.filter(myorder_id__pincode=pincode, complete=True).count()
+                print("1111",ordercount)
+                print(user.image)
+                assignedcount = DelivaryAssign.objects.filter(boy_id=person).count()
+                print('424242',assignedcount)
+                myid=order.product.farmer
+                farmerpin=Address.objects.filter(user_id=myid).values('pin').get()['pin']
+
+                return render(request, 'delivaryboy/delivaryhome.html',{'user':user,'ordercount':ordercount,'assignedcount':assignedcount})
+            else:
+                return redirect('/delivaryhome')
+
+
 
 
 def index(request):
@@ -416,6 +439,7 @@ class AdminPasswordchange(View):
                 return HttpResponse("<script>alert('current password is wrong');window.location='/Admins/Adminprofile';</script>")
         else:
             return HttpResponse("<script>alert('Re-entered Password is wrong');window.location='/Admins/Adminprofile';</script>")
+
 
 # class MyProduct(View):
 #     model = MyProduct

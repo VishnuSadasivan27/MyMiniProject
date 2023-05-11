@@ -64,7 +64,7 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
               <img src="{{user.imageURL}}" alt="Profile" class="rounded-circle">
-              <h2>{{request.session.first_name}} {{request.session.last_name}}</h2>
+              <h2>{{user.first_name}} {{user.last_name}}</h2>
               <h3>{{request.session.role}}</h3>
 <!--              <div class="social-links mt-2">-->
 <!--                <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>-->
@@ -111,28 +111,28 @@
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">First Name</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.first_name}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.first_name}}</div>
                   </div>
                     <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Last Name</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.last_name}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.last_name}}</div>
                   </div>
 
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Title</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.role}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.role}}</div>
                   </div>
 
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Phone</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.phone_no}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.phone_no}}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
-                    <div class="col-lg-9 col-md-8">{{request.session.email}}</div>
+                    <div class="col-lg-9 col-md-8">{{user.email}}</div>
                   </div>
 
                 </div>
@@ -158,20 +158,20 @@
                     <div class="row mb-3">
                       <label for="firstname" class="col-md-4 col-lg-3 col-form-label">First Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{request.session.first_name}}">
+                        <input name="firstname" type="text" class="form-control" id="firstname" value="{{user.first_name}}">
                       </div>
                     </div>
                       <div class="row mb-3">
                       <label for="lastname" class="col-md-4 col-lg-3 col-form-label">Last Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{request.session.last_name}}">
+                        <input name="lastname" type="text" class="form-control" id="lastname" value="{{user.last_name}}">
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="role" class="col-md-4 col-lg-3 col-form-label">role</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="role" type="text" class="form-control" id="role" value="{{request.session.role}}" readonly>
+                        <input name="role" type="text" class="form-control" id="role" value="{{user.role}}" readonly>
                       </div>
                     </div>
 
@@ -180,14 +180,14 @@
                     <div class="row mb-3">
                       <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="phone" type="text" class="form-control" id="Phone" value="{{request.session.phone_no}}">
+                        <input name="phone" type="text" class="form-control" id="Phone" value="{{user.phone_no}}">
                       </div>
                     </div>
 
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="{{request.session.email}}">
+                        <input name="email" type="email" class="form-control" id="Email" value="{{user.email}}">
                       </div>
                     </div>
 
@@ -281,7 +281,7 @@
 
 
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                      <button type="submit" class="btn btn-primary">Apply Changes</button>
                     </div>
                   </form><!-- End Profile Edit Form -->
 
@@ -362,7 +362,7 @@
 
                     <div class="text-center">
 
-                      <button type="submit" class="btn btn-primary">Change Password</button>
+                      <button type="submit" class="btn btn-primary">Change</button>
                     </div>
                   </form><!-- End Change Password Form -->
 

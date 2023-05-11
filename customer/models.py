@@ -36,6 +36,10 @@ class Order(models.Model):
     customer = models.ForeignKey(Registration, on_delete=models.SET_NULL,null=True,blank =True)
     myorder = models.ForeignKey(Cus_address, on_delete=models.SET_NULL,null=True,blank =True)
     cart = models.ForeignKey(OrderItem, on_delete=models.SET_NULL,null=True,blank =True)
+    quantity = models.IntegerField(default=1, null=True, blank=True)
+    product = models.ForeignKey(MyProduct, on_delete=models.SET_NULL, null=True)
+    totalproductcost = models.IntegerField(default=0, null=True, blank=True)
+    total = models.IntegerField(default=0, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete =  models.CharField(max_length=200,default="inactive")
 

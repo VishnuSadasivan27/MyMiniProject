@@ -1,6 +1,8 @@
 from _decimal import Decimal
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http.response import HttpResponse
+from django.core.mail import EmailMultiAlternatives
+from Agrikart.settings import EMAIL_HOST_USER
 from django.views import View
 import stripe
 import requests
@@ -13,8 +15,9 @@ from home.decorators import user_login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
-from home.models import MyProduct
+from home.models import MyProduct,MyAnalysisProduct
 from customer.models import OrderItem,Cus_address
+from delivaryboy.models import DelivaryAssign
 from home.models import Address
 from django.shortcuts import redirect, render
 from home.views import Registration
@@ -170,11 +173,17 @@ class Cart(View):
 class Customerprofile(View):
     def get(self,request):
         id=request.session.get('id')
-        user = Registration.objects.get(id=id)
-        address=Address.objects.get(user_id=id)
-        print(user)
-        context={'user':user,'address':address}
-        return render(request,'customer/customerprofile.html',context)
+        if Address.objects.filter(user_id=id).exists():
+            user = Registration.objects.get(id=id)
+            address=Address.objects.get(user_id=id)
+            print(user)
+            context={'user':user,'address':address}
+            return render(request,'customer/customerprofile.html',context)
+        else:
+            user = Registration.objects.get(id=id)
+            print(user)
+            context = {'user': user}
+            return render(request, 'customer/customerprofile.html', context)
 @method_decorator(user_login_required, name='dispatch')
 class AddCart(View):
     def get(self, request,id):
@@ -186,6 +195,7 @@ class AddCart(View):
                 return HttpResponse("<script>alert('Products already exists in cart');window.location='/customer/ViewCart';</script>")
             else:
                 product=MyProduct.objects.get(id=id)
+                quantity = MyProduct.objects.filter(id=id).values('quantity').get()['quantity']
                 product.quantity=int(product.quantity)-1
                 product.save()
                 addcart=OrderItem(product_id=id,customer_id=customer,quantity=1)
@@ -247,7 +257,7 @@ def payment(request):
     for i in carts:
         total1 += int(i.total)
 
-    total=(total1*100)+50
+    total=(total1+50)*100
 
     stripe.api_key = settings.STRIPE_PRIVATE_KEY
     session = stripe.checkout.Session.create(
@@ -286,14 +296,35 @@ def thanks(request):
     print(address.id)
     for i in cart:
         complete="True"
-        a=Order(myorder=address,cart=i,customer_id=cus_id,complete=complete)
+        mycart= OrderItem.objects.filter(id=i.id)
+        total = OrderItem.objects.filter(customer_id=cus_id,id=i.id).values('total').get()['total']
+        totalcost = OrderItem.objects.filter(customer_id=cus_id,id=i.id).values('totalproductcost').get()['totalproductcost']
+        quantity = OrderItem.objects.filter(customer_id=cus_id,id=i.id).values('quantity').get()['quantity']
+        product = OrderItem.objects.filter(customer_id=cus_id,id=i.id).values('product').get()['product']
+        productid = MyProduct.objects.get(id=product)
+        productname = MyProduct.objects.filter(id=product).values('Product_name').get()['Product_name']
+        farmerid=MyProduct.objects.filter(id=product).values('farmer_id').get()['farmer_id']
+        farmeremail=Registration.objects.filter(id=farmerid).values('email').get()['email']
+        customeremail = Registration.objects.filter(id=cus_id).values('email').get()['email']
+        a=Order(myorder=address,cart=i,customer_id=cus_id,product=productid,quantity=quantity,totalproductcost=totalcost,total=total,complete=complete)
         print(cus_id,complete)
         a.save()
+        text_content = "Your " + str(quantity) + "kg " + str(productname) + " was placed with a total cost of " + str(
+            total)
+        msg = EmailMultiAlternatives('Thank You For Purchasing the Product from Agrikart', text_content,
+                                     EMAIL_HOST_USER, [customeremail])
+        msg.send()
+        text_content = "Your " + str(quantity) + "kg " + str(productname) + " was purchased with a total cost of " + str(total)
+        msg = EmailMultiAlternatives('Your Product has purchased!!!!!!!!', text_content,
+                                     EMAIL_HOST_USER, [farmeremail])
+        msg.send()
+
     user=Registration.objects.get(id=cus_id)
     return render(request, 'customer/thanks.html',{'user':user})
 @method_decorator(user_login_required, name='dispatch')
 class Updatecustomer(View):
     def post(self, request):
+        print('podaa')
         pimage = request.FILES.get("pimage")
         first_name = request.POST.get("firstname")
         last_name = request.POST.get("lastname")
@@ -301,17 +332,57 @@ class Updatecustomer(View):
         phone_no = ','.join(request.POST.getlist("phone"))
         print(first_name, last_name, email, phone_no, pimage)
         id = request.session.get('id')
-        user = Registration.objects.get(id=id)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.phone_no = phone_no
-        user.email = email
-        user.image = pimage
-        user.save()
-        print(user.image)
-        address = Address.objects.get(user_id=id)
-        context = {'user': user,'address':address}
-        return render(request,'customer/customerprofile.html',context)
+        if Address.objects.filter(user_id=id).exists():
+            if pimage == None:
+                user = Registration.objects.get(id=id)
+                address = Address.objects.get(user_id=id)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.phone_no = phone_no
+                user.email = email
+                user.image = user.image
+                user.save()
+                print(user.image)
+                context = {'user': user,'address':address}
+                return render(request,'customer/customerprofile.html',context)
+            else:
+                user = Registration.objects.get(id=id)
+                address = Address.objects.get(user_id=id)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.phone_no = phone_no
+                user.email = email
+                user.image = pimage
+                user.save()
+                print(user.image)
+                context = {'user': user, 'address': address}
+                return render(request, 'customer/customerprofile.html', context)
+        else:
+            if pimage == None:
+                user = Registration.objects.get(id=id)
+                address = Address.objects.get(user_id=id)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.phone_no = phone_no
+                user.email = email
+                user.image = user.image
+                user.save()
+                print(user.image)
+                context = {'user': user}
+                return render(request, 'customer/customerprofile.html', context)
+            else:
+                user = Registration.objects.get(id=id)
+                address = Address.objects.get(user_id=id)
+                user.first_name = first_name
+                user.last_name = last_name
+                user.phone_no = phone_no
+                user.email = email
+                user.image = pimage
+                user.save()
+                print(user.image)
+                context = {'user': user}
+                return render(request, 'customer/customerprofile.html', context)
+
 @method_decorator(user_login_required, name='dispatch')
 class Addaddress(View):
     def post(self, request):
@@ -353,7 +424,11 @@ class Addaddress(View):
 @method_decorator(user_login_required, name='dispatch')
 class OrderPlaced(View):
     def get(self, request):
-        return render(request, 'customer/Orderplaced.html')
+        id=request.session.get('id')
+        delivarydetails=DelivaryAssign.objects.filter(cart_id__customer_id=id)
+        user=Registration.objects.get(id=id)
+        myorder=Order.objects.filter(customer_id=id)
+        return render(request, 'customer/Orderplaced.html',{'myorder':myorder,'user':user,'delivarydetails':delivarydetails})
 
 
 
@@ -385,3 +460,24 @@ class Trackmyemployee(View):
             'delivery_boy_longitude': delivery_boy_longitude,
              }
         return render(request, 'customer/delivery_boy_location.html', context)
+
+def farmerthanks(request, id):
+    if request.method == 'GET':
+        log=request.session.get('id')
+        user=id
+        payment1 = DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=user,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending')
+        # payment = list(DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending').all())
+        total = 0
+        for i in payment1:
+            total = total + i.cart.total
+        total = int(total * 100)
+        for j in payment1:
+            j.payforfarmer = "payed"
+            j.save()
+        farmeremail = Registration.objects.filter(id=user).values('email').get()['email']
+        text_content = "Your have payed a total of " + str(total) + "from Agrikart"
+        msg = EmailMultiAlternatives('Thank You For Being the part of Agrikart', text_content,
+                                     EMAIL_HOST_USER, [farmeremail])
+        msg.send()
+
+        return render(request, 'admin/paythanks.html')

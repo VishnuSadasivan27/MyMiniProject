@@ -2,64 +2,194 @@
 {% extends 'home/main.html' %}
 {% load static %}
 {% block content %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'customer/style.css' %}">
-    <title>Complete your purchase</title>
-    <style>
-        body{
-            margin-top: 100px;
+<html>
+
+    <head>
+        <title>Catagory</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+
+        <style>
+            body{
+                    margin: 0;
+                    font-family: sans-serif;
+                    background: #f2f2f2;
+                }
+                h3{
+                    text-align: center;
+                    font-size: 30px;
+                    margin: 0;
+                    padding-top: 10px;
+                }
+                a{
+                    text-decoration: none;
+
+                }
+                .gallery{
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    justify-content:center;
+                    align-items: center;
+                    margin: 50px 0;
+
+                }
+                .content{
+                    width: 20%;
+                    margin: 15px;
+                    box-sizing: border-box;
+                    float:left;
+                    text-align:center;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    padding-top: 10px;
+                    box-shadow:0 14px 28px rgba(0,0,0,0),
+                    0 10px 10px rgba(0,0,0,0.22);
+                    transition: .4s;
+                    background: #f2f2f2;
+                }
+                .content:hover{
+                    box-shadow: 0 3px 6px rgba(0,0,0,0.16),
+                    0 3px 6px rgba(0,0,0,0.23) ;
+                    transform: translate(0px, -8px);
+                }
+                .myimage{
+                    width:200px;
+                    height: 200px;
+                    text-align: center;
+                    margin: 0 auto;
+                    display: block;
+                }
+                p{
+                    text-align: center;
+                    color: #b2bec3;
+                    padding-top: 08px;
+                }
+                h6{
+                    font-size: 26px;
+                    text-align: center;
+                    color:#222f3e;
+                    margin:0;
+                }
+
+                ul{
+                    list-style: none;
+                    display:flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 0;
+
+                }
+                li{
+                    padding-top:5px;
+                }
+                .fa{
+                    font-size:26px;
+                    transition: .4s;
+
+                }
+                .checked{
+                    color: #ff9f43;
+                }
+                .fa:hover{
+                   transform: scale(1,3);
+                   transition: .6s;
+                }
+                button{
+                    text-align: center;
+                    font-size: 24px;
+                    color:#fff;
+                    width:100%;
+                    padding: 15px;
+                    border: 0;
+                    outline: none;
+                    cursor: pointer;
+                    margin-top:5px;
+                    border-bottom-right-radius:20px ;
+                    border-bottom-right-radius: 20px;
+                }
+                .buy-1{
+                    background: #2183a2;
+                }
+                .buy-2{
+                    background: #3b3e6e;
+                }
+                .buy-3{
+                    background: #0b0b0b;
+                }
+                @media(max-width:1000px){
+                    .content{
+                        width: 45px;
+                    }
+                @media(max-width:750px){
+                        .content{
+                            width: 100px;
+                        }
+                }}
+            .col-lg-9 {
+            width: 60%;
+            margin: 15px;
+            box-sizing: border-box;
+            float: left;
+            margin-top: 200px;
+            margin-left: 300px;
+            align:center ;
+            text-align: center;
+            border-radius: 20px;
+            cursor: pointer;
+            background-color: #4caf50;
+            padding-top: 30px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0),
+            0 10px 10px rgba(0, 0, 0, 0.22);
+            transition: .4s;
+            background: #f2f2f2;
         }
-    </style>
-</head>
-<body>
+          .error{
+              font-weight: bold;
+              color: #FF0000;
+              font-family:"Rage Italic";
+          }
+        </style>
+        </head>
+        <body>
+        {% if not myorder %}
 
-<!--    <header>-->
-<!--        <h1 class="logo">My order</h1>-->
-
-<!--        <div class="menu-icons-container">-->
-<!--           <img src="Resources/Search.svg" alt="" class="icon">-->
-<!--           <img src="Resources/Profile.svg" alt="" class="icon">-->
-<!--           <img src="Resources/Cart.svg" alt="" class="icon">-->
-<!--        </div>-->
-<!--    </header>-->
-
-<!--    <div class="progress-checkout-container">-->
-<!--        <div class="progress-step-container">-->
-<!--            <div class="step-check"></div>-->
-<!--            <span class="step-title">Orderplaced</span>-->
-<!--        </div>-->
-<!--        <div class="progress-step-container">-->
-<!--            <div class="step-check"></div>-->
-<!--            <span class="step-title">Accepted</span>-->
-<!--        </div>-->
-<!--        <div class="progress-step-container">-->
-<!--            <div class="step-check"></div>-->
-<!--            <span class="step-title">Shipping</span>-->
-<!--        </div>-->
-
-<!--    </div>-->
-
-    <div class="form-container">
-        <h2 class="form-title">Delivary Boy Details</h2>
-        <form action="" class="checkout-form">
-            <div class="input-line">
-                <label for="name">Name on Boy</label>
-                <input type="text" name="name" id="name" placeholder="name" readonly>
+        <div class="col-lg-9" >
+            <div class="box-element productvalue">
+                <h1 class="error">NO PRODUCT TO SHOW</h1>
             </div>
-            <div class="input-line">
-                <label for="name">Phone Number</label>
-                <input type="text" name="name" id="number" placeholder="" readonly>
-            </div>
-             <a href="{% url 'Trackmyemployee' %}">Track my employee</a>
+        </div>
 
-<!--            <input type="button" value="Complete purchase">-->
-        </form>
-    </div>
+        {% else %}
+            <div class="gallery">
+                {% for details in delivarydetails %}
 
-</body>
-</html>
-{% endblock content %}
+                        <div class="content">
+                            <img src="{{details.cart.cart.product.imageURL}}" class="myimage">
+                            <h3>{{details.cart.cart.product.Product_name}}</h3>
+                            <p>Quantity:{{details.cart.cart.quantity }}</p>
+                             <p>Quantity:{{details.cart.cart.total }}</p>
+                             <p>Delivary Boy:{{details.boy.first_name}}</p>
+                            <p>Delivary Boy Number:{{details.boy.phone_no}}</p>
+                            <p>status:{{details.status}}</p>
+
+<!--                             <ul>-->
+<!--                                <li><i class="fa fa-star checked"></i></li>-->
+<!--                                <li><i class="fa fa-star checked"></i></li>-->
+<!--                                <li><i class="fa fa-star checked"></i></li>-->
+<!--                                <li><i class="fa fa-star"></i></li>-->
+<!--                                <li><i class="fa fa-star"></i></li>-->
+<!--                            </ul>-->
+                            <a href="">
+                            <button class="buy-2">Track my Employee</button>
+                                </div>
+                                  {% endfor %}
+
+
+                    </div>
+         {% endif %}
+
+        </body>
+    {% endblock content %}
+        </html>

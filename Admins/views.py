@@ -1,11 +1,19 @@
 from django.http.response import HttpResponse,HttpResponseBadRequest
 from django.views import View
+import stripe
+from django.core.mail import EmailMultiAlternatives
+from Agrikart.settings import EMAIL_HOST_USER
+from django.conf import settings
+from django.core.files.storage import default_storage
+from django.urls import reverse
+from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
+from django.core import serializers
 from home.decorators import user_login_required
 from home.models import Registration,Catagory,Address,MyProduct
-from delivaryboy.models import DelivaryBoyLeave
+from delivaryboy.models import DelivaryBoyLeave,DelivaryAssign
 from django.contrib import messages
 from django.db.models import Q
 from customer.models import Order
@@ -23,6 +31,55 @@ class Addcatagory(View):
     def get(self,request):
 
         return render(request,'admin/catagory.html')
+
+@method_decorator(user_login_required, name='dispatch')
+class Paymentforfarmerview(View):
+    def get(self,request):
+        values = Address.objects.filter(user_id__role="Farmer", user_id__status='active').all()
+        payment= DelivaryAssign.objects.filter(cart_id__product_id__farmer_id__role="Farmer",status='delivered',payforfarmer='pending').all()
+        print(payment.count())
+        return render(request, 'admin/payforfarmer.html', {'values': values,'payment':payment})
+
+
+@method_decorator(user_login_required, name='dispatch')
+# class Showmypaymentdata(View):
+#     def post(self,request):
+#         id=request.POST.get('ids')
+#         print("my id is",id)
+#         # values = list(Address.objects.filter(user_id__role="Farmer", user_id__status='active').all())
+#         values = list(Address.objects.filter(user_id__role="Farmer", user_id__status='active').all())
+#         payment= DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id, cart_id__product_id__farmer_id__role="Farmer",status='delivered', payforfarmer='pending').all()
+#         pay=DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending').all()
+#         # payment = list(DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending').all())
+#
+#         data = render_to_string('admin/payforfarmer.html', {'values':values,'payment': payment})
+#         data = {'values': serializers.serialize('json', values), 'payment': serializers.serialize('json', payment)}
+#         return JsonResponse(data)
+#         # data = {'values': serializers.serialize('json', values), 'payment': serializers.serialize('json', payment)}
+#         # return JsonResponse(data)
+#         # return render(request, 'admin/payforfarmer.html', {'values': values,'payment':payment})
+
+class Showmypaymentdata(View):
+    def get(self,request,id):
+
+        print("my id is",id)
+        # values = list(Address.objects.filter(user_id__role="Farmer", user_id__status='active').all())
+        values = list(Address.objects.filter(user_id__role="Farmer", user_id__status='active').all())
+        # payment= DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id, cart_id__product_id__farmer_id__role="Farmer",status='delivered', payforfarmer='pending').all()
+        payment=DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending')
+        # payment = list(DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending').all())
+        print(payment.count())
+        total=0
+        for i in payment:
+            total=total+i.cart.total
+        # data = render_to_string('admin/payforfarmer.html', {'values':values,'payment': payment})
+        # data = {'values': serializers.serialize('json', values), 'payment': serializers.serialize('json', payment)}
+        # return JsonResponse(data)
+        # data = {'values': serializers.serialize('json', values), 'payment': serializers.serialize('json', payment)}
+        # return JsonResponse(data)
+        return render(request, 'admin/showpaymentdata.html', {'values': values,'payment':payment,'total':total,'id':id})
+
+
 @method_decorator(user_login_required, name='dispatch')
 class Deliboyapprove(View):
     def get(self,request):
@@ -353,3 +410,38 @@ class Deletedelivaryboyleave(View):
         cata_id.delete()
         data={'data':"succees"}
         return JsonResponse(data)
+
+def farmerpayment(request,id):
+    print(id)
+    payment = DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id, cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending')
+    # payment = list(DelivaryAssign.objects.filter(cart_id__product_id__farmer_id=id,cart_id__product_id__farmer_id__role="Farmer", status='delivered',payforfarmer='pending').all())
+    total = 0
+    for i in payment:
+        total = total + i.cart.total
+    total=int(total*100)
+    stripe.api_key = settings.STRIPE_PRIVATE_KEY
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'inr',
+                'unit_amount': total,
+                'product_data': {
+                    'name': 'Your Cart'
+                },
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url = request.build_absolute_uri(reverse('farmerthanks', args=[id])) + '?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url=request.build_absolute_uri(reverse('Paymentforfarmerview')),
+    )
+
+    context = {
+        'session_id': session.id,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+        'total': total
+    }
+    return render(request, 'admin/userpayment.html', context)
+
+

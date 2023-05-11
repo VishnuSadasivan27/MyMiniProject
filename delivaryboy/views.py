@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.http.response import HttpResponse
 from django.views import View
+import random
 from django.shortcuts import redirect, render
 from home.models import MyProduct
 from customer.models import OrderItem
 from django.http import JsonResponse
+from django.core.mail import EmailMultiAlternatives
+from Agrikart.settings import EMAIL_HOST_USER
 from home.decorators import user_login_required
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
@@ -171,9 +174,19 @@ class Delivaryjobaccept(View):
         deliboy = request.session.get('id')
         deliid=Registration.objects.get(id=deliboy)
         orderplaced=Order.objects.get(id=id)
+        customer=Order.objects.filter(id=id).values('customer').get()['customer']
+        mail=Registration.objects.filter(id=customer).values('email').get()['email']
+        print(mail)
+        ## Generate Code and save it in a session
+        request.session['code'] = random.randint(111111, 999999)
+        ## Send email Functionality
+        text_content = "The product code is " + str(
+            request.session['code'])
+        msg = EmailMultiAlternatives('This is the code for product Purchased in Agrikart', text_content, EMAIL_HOST_USER, [mail])
+        msg.send()
         print(orderplaced.cart.product.farmer.id)
         farmeraddress=Address.objects.get(user_id=orderplaced.cart.product.farmer.id)
-        r=DelivaryAssign(boy=deliid,farmer=farmeraddress,cart=orderplaced)
+        r=DelivaryAssign(boy=deliid,farmer=farmeraddress,cart=orderplaced,delivarycode=request.session['code'])
         r.save()
         orderplaced.complete= False
         orderplaced.save()
@@ -186,7 +199,7 @@ class AcceptedJob(View):
         id = request.session.get('id')
         user=Registration.objects.get(id=id)
         if Address.objects.filter(user_id=id,user_id__status="active").exists():
-            delivary=DelivaryAssign.objects.filter(boy_id=id)
+            delivary=DelivaryAssign.objects.filter(boy_id=id,status="pending")
             print(delivary)
             return render(request, 'delivaryboy/Accepted Job.html', {'delivary': delivary,'user':user})
         elif Address.objects.filter(user_id=id, user_id__status="inactive").exists():
@@ -221,8 +234,16 @@ class Leaveview(View):
     def get(self,request):
         id=request.session.get('id')
         user = Registration.objects.get(id=id)
-        leaves=DelivaryBoyLeave.objects.filter(boy_id=id)
-        return render(request, 'delivaryboy/myleaves.html', {'user': user,'leaves':leaves})
+        if Address.objects.filter(user_id=id, user_id__status="active").exists():
+            leaves=DelivaryBoyLeave.objects.filter(boy_id=id)
+            return render(request, 'delivaryboy/myleaves.html', {'user': user,'leaves':leaves})
+
+        elif Address.objects.filter(user_id=id, user_id__status="inactive").exists():
+            return HttpResponse("<script>alert('please wait for admin approval');window.location='/delivaryhome/';</script>")
+
+        else:
+            return HttpResponse("<script>alert('Add your Address in Your profile');window.location='/delivaryhome/';</script>")
+
 
 @method_decorator(user_login_required, name='dispatch')
 class Deletemyleave(View):
@@ -242,3 +263,22 @@ class Deletemyleave(View):
             cata_id.save()
             data = {'data': "succees"}
         return JsonResponse(data)
+class Orderplaced(View):
+    def post(self,request):
+        id=request.POST.get('ids')
+        otp = request.POST.get('otp')
+        print(id,otp)
+        delivary = DelivaryAssign.objects.get(id=id)
+        realotp=DelivaryAssign.objects.filter(id=id).values('delivarycode').get()['delivarycode']
+        print(realotp)
+        if realotp==otp:
+            delivary.status="delivered"
+            delivary.save()
+            data = {'data': "succees"}
+            return JsonResponse(data)
+        else:
+            print('jggghghgggggggggggggggggggggg')
+            data = {'data': "error"}
+            return JsonResponse(data)
+
+

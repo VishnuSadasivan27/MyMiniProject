@@ -1,5 +1,6 @@
 import pyttsx3
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.neighbors import KNeighborsClassifier
 import numpy as np
@@ -13,7 +14,7 @@ engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 rate = engine.getProperty('rate')
 engine.setProperty('rate', rate - 20)
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[1].id)
 
 
 def speak(
@@ -84,12 +85,37 @@ while True:
     print(predict1)  # Printing the input data value after being reshaped.
     predict1 = predict1.astype(float)
     predict1 = model.predict(predict1)  # Applying the user input data into the model.
-    print(predict1)  # Finally printing out the results.
+    print("predict",predict1)  # Finally printing out the results.
+    # Splitting the Dataset into Training and Testing Sets
+    X = excel.iloc[:, :-1].values
+    y = excel.iloc[:, -1].values
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Training the KNN Model
+    k = 5
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    sample_data=([nitrogen_content, phosphorus_content, potassium_content, temperature_content, humidity_content, ph_content,rainfall])
+    sample_data_array = np.array(sample_data, dtype=float)
+
+    # reshape the array to a 2D array with a single row
+    arr_2d = sample_data_array.reshape(1, -1)
+    crop_predictions = knn.predict(arr_2d)
+    crop = crop_predictions[0]  # Get the first (and only) element of the list
+    crop_str = str(crop)  # Convert the crop name to a string
+    predictedcrop= crop_str.capitalize()
+    # Predict the labels of the test set
+    y_pred = knn.predict(X_test)
+
+    # Calculate the accuracy score
+    score = knn.score(X_test, y_test)
+    print("Accuracy:", score)
+
     crop_name = str()
     if predict1 == 0:  # Above we have converted the crop names into numerical form, so that we can apply the machine learning model easily. Now we have to again change the numerical values into names of crop so that we can print it when required.
         crop_name = 'Apple(ആപ്പിൾ‌)'
     elif predict1 == 1:
-        crop_name = 'Banana(വാഴപ്പഴം)'
+        crop_name = 'Banana(വാഴ)'
     elif predict1 == 2:
         crop_name = 'Blackgram(ഉഴുന്ന്‌)'
     elif predict1 == 3:
@@ -121,7 +147,7 @@ while True:
     elif predict1 == 16:
         crop_name = 'Orange(ഓറഞ്ച്)'
     elif predict1 == 17:
-        crop_name = 'Papaya(ഓമക്കായ്‌,പപ്പായ)'
+        crop_name = 'Papaya(പപ്പായ)'
     elif predict1 == 18:
         crop_name = 'Pigeonpeas(തുവര)'
     elif predict1 == 19:
@@ -155,6 +181,7 @@ while True:
     elif int(rainfall) >= 201:
         rainfall_level = 'heavy rain'
 
+
     if int(nitrogen_content) >= 1 and int(
             nitrogen_content) <= 50:  # Here I have divided the nitrogen values into three categories.
         nitrogen_level = 'less'
@@ -183,7 +210,7 @@ while True:
         phlevel = 'acidic'
     elif float(ph_content) >= 6 and float(ph_content) <= 8:
         phlevel = 'neutral'
-    elif float(ph_content) >= 9 and float(ph_content) <= 14:
+    elif float(ph_content) >= 9:
         phlevel = 'alkaline'
 
     print(crop_name)
@@ -195,10 +222,17 @@ while True:
     print(potassium_level)
     print(phlevel)
 
-    speak(
-        "Sir according to the data that you provided to me. The ratio of nitrogen in the soil is  " + nitrogen_level + ". The ratio of phosphorus in the soil is  " + phosphorus_level + ". The ratio of potassium in the soil is  " + potassium_level + ". The temperature level around the field is  " + temperature_level + ". The humidity level around the field is  " + humidity_level + ". The ph type of the soil is  " + phlevel + ". The amount of rainfall is  " + rainfall_level)  # Making our program to speak about the data that it has received about the crop in front of the user.
-    window['-OUTPUT1-'].update(
-        'The best crop that you can grow : ' + crop_name)  # Suggesting the best crop after prediction.
-    speak("The best crop that you can grow is  " + crop_name)  # Speaking the name of the predicted crop.
+    word = crop_name
+    sliced_word = word[:word.index("(")]
+
+    if (sliced_word==predictedcrop):
+        speak("Sir according to the data that you provided to me. The ratio of nitrogen in the soil is  " + nitrogen_level + ". The ratio of phosphorus in the soil is  " + phosphorus_level + ". The ratio of potassium in the soil is  " + potassium_level + ". The temperature level around the field is  " + temperature_level + ". The humidity level around the field is  " + humidity_level + ". The ph type of the soil is  " + phlevel + ". The amount of rainfall is  " + rainfall_level)  # Making our program to speak about the data that it has received about the crop in front of the user.
+        window['-OUTPUT1-'].update('The best crop that you can grow : ' + crop_name)  # Suggesting the best crop after prediction.
+        speak("The best crop that you can grow is  " + crop_name)  # Speaking the name of the predicted crop.
+    else:
+        speak("Sir according to the data that you provided to me. The ratio of nitrogen in the soil is  " + nitrogen_level + ". The ratio of phosphorus in the soil is  " + phosphorus_level + ". The ratio of potassium in the soil is  " + potassium_level + ". The temperature level around the field is  " + temperature_level + ". The humidity level around the field is  " + humidity_level + ". The ph type of the soil is  " + phlevel + ". The amount of rainfall is  " + rainfall_level)  # Making our program to speak about the data that it has received about the crop in front of the user.
+        window['-OUTPUT1-'].update('The best crop that you can grow : ' + crop_name + 'and' +predictedcrop)  # Suggesting the best crop after prediction.
+        speak("The best crop that you can grow is  " + crop_name+ 'and' +predictedcrop)  # Speaking the name of the predicted crop.
+
 
 window.close()

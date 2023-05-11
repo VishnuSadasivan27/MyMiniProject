@@ -1,8 +1,11 @@
 from django.urls import path
 from . import views
-from Admins.views import Farmer_approve,Deletedelivaryboyleave,DelivaryCancelledLeave,Approveleave,DelivaryLeaveview,Removetheproduct,Allproductview,CatagoryEditSubmit,CatagoryEdit,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
+from Admins.views import Farmer_approve,Showmypaymentdata,Deletedelivaryboyleave,Paymentforfarmerview,DelivaryCancelledLeave,Approveleave,DelivaryLeaveview,Removetheproduct,Allproductview,CatagoryEditSubmit,CatagoryEdit,Customerview,Farmerview,Activate,Deactivate,Viewcatagory,RemoveCatagory,Uploadcatagory,Addcatagory,Deliboydsearchbar,Deliboyapprove,Deliboydeactivate,Deliactivate,Delivaryboyview,Deletedcustomer,Activatecustomer,Farmerdeactivate,Adminprofile
 urlpatterns = [
    path('Removetheproduct',Removetheproduct.as_view(),name='Removetheproduct'),
+   path('farmerpayment/<id>',views.farmerpayment,name='farmerpayment'),
+   path('Showmypaymentdata/<id>',Showmypaymentdata.as_view(),name='Showmypaymentdata'),
+   path('Paymentforfarmerview', Paymentforfarmerview.as_view(), name='Paymentforfarmerview'),
    path('Deletedelivaryboyleave',Deletedelivaryboyleave.as_view(), name='Deletedelivaryboyleave'),
    path('DelivaryCancelledLeave',DelivaryCancelledLeave.as_view(),name='DelivaryCancelledLeave'),
    path('Approveleave',Approveleave.as_view(),name='Approveleave'),

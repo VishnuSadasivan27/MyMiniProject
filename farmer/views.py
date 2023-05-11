@@ -1,9 +1,12 @@
 from datetime import datetime
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from home.models import MyProduct,MyAnalysisProduct
+from sklearn.model_selection import train_test_split
 
 from django.shortcuts import render
 from django.http.response import HttpResponse
 from django.views import View
-from home.models import MyProduct
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from home.models import Registration,Catagory,Address
@@ -45,7 +48,7 @@ class ProductAdd(View):
         print(cataid)
         id=request.session.get('id')
         user = Registration.objects.get(id=id)
-        r = MyProduct(Product_name=Product_name , price=price, quantity=quantity, image=image,expirydate=expirydate,catagory=cataid,farmer=user)
+        r = MyProduct(Product_name=Product_name , price=price, quantity=quantity,Addedquantity=quantity, image=image,expirydate=expirydate,catagory=cataid,farmer=user)
         r.save()
         return HttpResponse("<script>alert('Product Added');window.location='/farmer/Addproduct';</script>")
         return render(request, 'farmer/product_add.html')
@@ -60,16 +63,30 @@ class Updatefarmer(View):
         phone_no = ','.join(request.POST.getlist("phone"))
         print(first_name, last_name, email, phone_no, pimage)
         id = request.session.get('id')
-        user = Registration.objects.get(id=id)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.phone_no = phone_no
-        user.email = email
-        user.image = pimage
-        user.save()
-        print(user.image)
-        context = {'user': user}
-        return render(request,'farmer/farmerprofile.html',context)
+        if pimage==None:
+            user = Registration.objects.get(id=id)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.phone_no = phone_no
+            user.email = email
+            user.image = user.image
+            user.save()
+            print(user.email)
+            print(user.image)
+            context = {'user': user}
+            return render(request,'farmer/farmerprofile.html',context)
+        else:
+            user = Registration.objects.get(id=id)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.phone_no = phone_no
+            user.email = email
+            user.image = pimage
+            user.save()
+            print(user.email)
+            print(user.image)
+            context = {'user': user}
+            return render(request,'farmer/farmerprofile.html',context)
 
 
 
@@ -173,7 +190,7 @@ class Addfarmeraddress(View):
             return HttpResponse("<script>alert('Succesfully updated');window.location='Farmerprofile';</script>")
             return render(request, 'farmer/farmerprofile.html', context)
 
-
+@method_decorator(user_login_required, name='dispatch')
 class Viewaddedproduct(View):
     def get(self,request):
         id = request.session.get('id')
@@ -181,7 +198,7 @@ class Viewaddedproduct(View):
         myproduct=MyProduct.objects.filter(farmer_id=user)
         context= {'myproduct':myproduct,'user':user}
         return render(request, 'farmer/Productview.html', context)
-
+@method_decorator(user_login_required, name='dispatch')
 class RemoveProduct(View):
     def post(self, request):
         id = request.POST.get('ids')
@@ -191,7 +208,7 @@ class RemoveProduct(View):
         product.delete()
         data={'data':"succees"}
         return JsonResponse(data)
-
+@method_decorator(user_login_required, name='dispatch')
 class Editproduct(View):
     def get(self,request,id):
         myid=request.session.get('id')
@@ -209,6 +226,8 @@ class Editproduct(View):
                     break
         context={'user':user,'product':product,'mycat':mycat,'formatted_date':formatted_date}
         return render(request,"farmer/productedit.html",context)
+
+@method_decorator(user_login_required, name='dispatch')
 class Editmyproduct(View):
     def post(self,request,id):
         print(id)
@@ -226,6 +245,7 @@ class Editmyproduct(View):
         editproduct.Product_name=Product_name
         editproduct.price = price
         editproduct.quantity = quantity
+        editproduct.Addedquantity=quantity
         editproduct.expirydate = expirydate
         editproduct.catagory=catagory
         if image==None:
@@ -234,10 +254,99 @@ class Editmyproduct(View):
             editproduct.image=image
         editproduct.save()
 
-
-
-
-
         return HttpResponse("<script>alert('Product Added');window.location='/farmer/Viewaddedproduct';</script>")
 
+@method_decorator(user_login_required, name='dispatch')
+class Predictproductcost(View):
+        def get(self, request):
+
+            return render(request, 'farmer/Predictcostpage.html')
+
+
+# @method_decorator(user_login_required, name='dispatch')
+# class PredictingCost(View):
+#     def post(self, request):
+#         Product_name = request.POST.get("proname")
+#         expected_cost = float(request.POST.get("cost"))
+#
+#         # Filter the queryset to only include the same type of crop
+#         queryset = MyAnalysisProduct.objects.filter(Product_name=Product_name)
+#         print(queryset.count())
+#
+#         # Convert the queryset to a pandas dataframe
+#         data = pd.DataFrame(list(queryset.values()))
+#
+#         # Encode categorical variables
+#         data = pd.get_dummies(data, columns=['Product_name'],)
+#         print("haii")
+#         # Split the data into training and test sets
+#
+#
+#         # Split the data into training and test sets
+#         X_train, X_test, y_train, y_test = train_test_split(data.drop('price', axis=1), data['price'], test_size=0.2,
+#                                                             random_state=42)
+#         print("hello")
+#         # Train a linear regression model on the training data
+#         model = LinearRegression()
+#         model.fit(X_train, y_train)
+#         print(model)
+#
+#         # Evaluate the model on the test data
+#         score = model.score(X_test, y_test)
+#         print(score)
+#
+#         # Use the model to make a prediction for the expected cost
+#         input_data = pd.DataFrame({'Product_name' + Product_name: [1], 'soldprice': [1]})
+#         predicted_cost = model.predict([[expected_cost]])[0]
+#
+#         # Return the predicted cost
+#         print(predicted_cost)
+#
+#         return render(request, 'farmer/Predictcostpage.html')
+
+
+class PredictingCost(View):
+    def post(self, request):
+        Product_name = request.POST.get("proname")
+        expected_cost = float(request.POST.get("cost"))
+        print(Product_name,expected_cost)
+        # Filter the queryset to only include the same type of crop
+        if MyAnalysisProduct.objects.filter(Product_name=Product_name).exists():
+            queryset = MyAnalysisProduct.objects.filter(Product_name=Product_name)
+            print(queryset.count())
+            if queryset.count()>12 :
+
+                # Convert the queryset to a pandas dataframe
+                data = pd.DataFrame(list(queryset.values()))
+
+                # Encode categorical variables
+                data = pd.get_dummies(data, columns=['Product_name'])
+
+                # Split the data into training and test sets
+                X_train, X_test, y_train, y_test = train_test_split(data.drop('price', axis=1), data['price'], test_size=0.8,
+                                                                    random_state=42)
+
+                # Train a linear regression model on the training data
+                model = LinearRegression()
+                model.fit(X_train, y_train)
+
+                # Evaluate the model on the test data
+                score = model.score(X_test, y_test)
+
+
+                # Use the model to make a prediction for the expected cost
+                input_data = pd.DataFrame({'Product_name_' + Product_name: [1], 'soldprice': [1],'quantity': [1], 'id': [1]})
+                input_data['soldprice'] = expected_cost
+                input_data = input_data[X_train.columns]  # Ensure column order is the same as in training data
+                predicted_cost = model.predict(input_data)[0]
+                print(predicted_cost)
+                data = {'predicted_cost': predicted_cost}
+                return JsonResponse(data)
+                 # Return the predicted cost
+            else:
+                return HttpResponse("<script>alert('Not sufficient data to predict');window.location='/farmer/Predictcostpage.html';</script>")
+
+        else:
+            return HttpResponse("<script>alert('Product with that name doesnot exist in the database');window.location='/farmer/Predictcostpage.html';</script>")
+        # return render(request, 'farmer/Predictcostpage.html', {'predicted_cost': predicted_cost})
 

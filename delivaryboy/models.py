@@ -9,8 +9,12 @@ class DelivaryAssign(models.Model):
     boy  = models.ForeignKey(Registration, on_delete=models.SET_NULL,null=True,blank =True)
     farmer = models.ForeignKey(Address, on_delete=models.SET_NULL,null=True,blank =True)
     cart = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
-    status= models.BooleanField(default=False)
+    status= models.CharField(max_length=200, default="pending")
+    payforfarmer = models.CharField(max_length=200, default="pending")
+    payfordelivaryboy = models.CharField(max_length=200, default="pending")
     assigned_date= models.DateTimeField(auto_now_add=True)
+    delivarycode= models.CharField(max_length=200)
+    placeddate= models.CharField(max_length=200)
 
 class DelivaryBoyLeave(models.Model):
     boy = models.ForeignKey(Registration, on_delete=models.SET_NULL, null=True, blank=True)

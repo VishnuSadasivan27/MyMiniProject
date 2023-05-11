@@ -1,10 +1,11 @@
 from django.urls import path
 from . import views
-from delivaryboy.views import Deliboyprofile,Deletemyleave,Leaveview,Leaveapplyform,ApplyLeave,AcceptedJob,Delivaryjobaccept,Viewmyjob,Updatedelivaryboy,AddBoyaddress,DeliboyChangepassword
+from delivaryboy.views import Orderplaced,Deliboyprofile,Deletemyleave,Leaveview,Leaveapplyform,ApplyLeave,AcceptedJob,Delivaryjobaccept,Viewmyjob,Updatedelivaryboy,AddBoyaddress,DeliboyChangepassword
 
 # from Agrikart.home import views
 urlpatterns = [
    path('Deliboyprofile',Deliboyprofile.as_view(),name='Deliboyprofile'),
+   path('Orderplaced',Orderplaced.as_view(),name='Orderplaced'),
    path('Deletemyleave', Deletemyleave.as_view(), name='Deletemyleave'),
    path('Leaveapplyform',Leaveapplyform.as_view(),name='Leaveapplyform'),
    path('Leaveview',Leaveview.as_view(),name='Leaveview'),

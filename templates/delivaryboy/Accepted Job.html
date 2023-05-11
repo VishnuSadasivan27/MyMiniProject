@@ -6,6 +6,8 @@
             <br>
             <br>
             <table class="table text-center">
+
+
                 <thead>
                     <tr>
 
@@ -16,6 +18,8 @@
                         <th>Farmer Email and Phone</th>
                         <th>Farmer Address</th>
                         <th>Product details</th>
+                        <th>Price</th>
+                        <th>OTP</th>
                         <th>Option</th>
 
 
@@ -29,14 +33,16 @@
                 <td>{{order.cart.customer.first_name}} {{order.cart.customer.last_name}}</td>
                 <td>{{order.cart.customer.email}},{{order.cart.myorder.phone}}</td>
                  <td style="height: 100px;">{{order.cart.myorder.address}},{{order.cart.myorder.panchayat}},{{order.cart.myorder.city}},{{order.cart.myorder.pincode}},</td>
-                <td>{{order.cart.cart.product.farmer.first_name}} {{order.cart.cart.product.farmer.last_name}}</td>
-                <td>{{order.cart.cart.product.farmer.phone_no}} {{order.cart.cart.product.farmer.email}}</td>
+                <td>{{order.cart.cart.product.farmer.first_name}} {{order.cart.product.farmer.last_name}}</td>
+                <td>{{order.cart.product.farmer.phone_no}} {{order.cart.product.farmer.email}}</td>
                 <td>{{order.farmer.address}},{{order.farmer.district}},{{order.farmer.panchayat}},{{order.farmer.city}} city,{{order.farmer.landmark}}</td>
-                <td>{{order.cart.cart.product.Product_name}} {{order.cart.cart.quantity}}kg</td>
+                <td>{{order.cart.product.Product_name}} {{order.cart.quantity}}kg</td>
+                <td>{{order.cart.total}}Rs</td>
+                <td style="width: 100px;"><input name="otp" type="otp" id="otp{{order.id}}" class="form-control" id="otp" ><span id="pincodeError"  style="color: red;"></span></td></td>
 
 
 
-                <td><a href=""><div class="btn btn-success">Order Placed</div></a></td>
+                <td><a href=""><div class="btn btn-success" data-id="{{order.id}}">Order Placed</div></a></td>
 
                   </tr>
 
@@ -131,4 +137,43 @@ td:nth-child(2n){
     background-color: green;
  } */
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+$(document).on('click', '.btn', function() {
+
+  var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+  var id = $(this).data('id');
+  var otp = $('#otp' + id).val();
+  event.preventDefault();
+
+  if (otp.length != 6) {
+    $("#pincodeError").text("Please enter a valid 6-digit pincode");
+    return; // stop the function from executing further
+  } else {
+    $("#pincodeError").empty();
+  }
+  $.ajax({
+    url: "{% url 'Orderplaced' %}",
+    type: 'POST',
+    data: {
+      'ids': id,
+      'otp': otp
+    },
+    headers: {
+      "X-CSRFToken": csrftoken
+    },
+    success: function(data) {
+      $('.uniquetotal-price[data-id="' + id + '"]').text(data.data);
+      window.location.href = "/delivaryboy/AcceptedJob";
+      console.log("The product total: " + data.data);
+    },
+    error: function(xhr, status, error) {
+      alert(xhr.responseJSON.error);
+    }
+  });
+});
+
+
+</script>
 {% endblock %}

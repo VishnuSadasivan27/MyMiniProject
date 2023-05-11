@@ -15,6 +15,8 @@
                         <th>Farmer name</th>
                         <th>Farmer Email and Phone</th>
                         <th>Product details</th>
+                        <th>Price</th>
+
                         <th>Option</th>
 
 
@@ -28,9 +30,10 @@
                 <td>{{order.customer.first_name}} {{order.customer.last_name}}</td>
                 <td>{{order.customer.email}},{{order.myorder.phone}}</td>
                  <td style="height: 100px;">{{order.myorder.address}},{{order.myorder.panchayat}},{{order.myorder.city}},{{order.myorder.pincode}},</td>
-                <td>{{order.cart.product.farmer.first_name}} {{order.cart.product.farmer.last_name}}</td>
-                <td>{{order.cart.product.farmer.phone_no}} {{order.cart.product.farmer.email}}</td>
-                <td>{{order.cart.product.Product_name}} {{order.cart.quantity}}kg</td>
+                <td>{{order.product.farmer.first_name}} {{order.product.farmer.last_name}}</td>
+                <td>{{order.product.farmer.phone_no}} {{order.product.farmer.email}}</td>
+                <td>{{order.product.Product_name}} {{order.quantity}}kg</td>
+                <td>{{order.total}}Rs</td>
 
 
 
